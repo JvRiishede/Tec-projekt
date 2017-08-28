@@ -22,3 +22,16 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.sidebar {
+    position: fixed;
+    top: 51px;
+    left: 0;
+    bottom: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.sidebar ul li {
+    padding: 5px 2px
+}
