@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Frontend.Views"
+        xmlns:data="using:Data"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -50,6 +51,7 @@
                     </Grid.RowDefinitions>
                     <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                         <Button Content="Find bruger"></Button>
+                        <ComboBox x:Name="Find_bruger" Header="Bruger" ItemsSource="{x:Bind UCVM.brugere}" DisplayMemberPath="Source"></ComboBox>
                         <TextBlock Text="Nr"></TextBlock>
                         <TextBlock Text="Navn"></TextBlock>
                         <Image>
@@ -58,24 +60,18 @@
                             </Image.Source>
                         </Image>
                     </StackPanel>
-                    <GridView x:Name="Products" Grid.Row="0" Grid.Column="1">
-                        <GridView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Border Background="LightGray" Height="200" Width="200">
-                                        <TextBlock Text="{Binding}" 
-                                                   FontSize="48" Foreground="Green"/>
-                                    </Border>
-                                </Grid>
-                            </DataTemplate>
-                        </GridView.ItemTemplate>
-                        <GridView.Items>
-                            <x:String>One</x:String>
-                            <x:String>Two</x:String>
-                            <x:String>Third</x:String>
-                            <x:String>Fourth</x:String>
-                        </GridView.Items>
-                    </GridView>
+                <GridView x:Name="Products"  Grid.Row="0" Grid.Column="1" IsItemClickEnabled="True" ItemClick="Products_ItemClick" ItemsSource="{x:Bind vare}">
+                    <GridView.ItemTemplate>
+                        <DataTemplate x:DataType="data:Vare">
+                            <Grid>
+                                <Border Background="LightGray" Height="200" Width="200">
+                                    <TextBlock FontSize="35" Text="{x:Bind VareNavn }" Name="{x:Bind VareId}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Green"></TextBlock>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </GridView>
                     <StackPanel x:Name="Order" Grid.Row="0" Grid.Column="2">
                         <ListView ItemsSource="{x:Bind DataList}">
                             <ListView.ItemTemplate>
@@ -89,7 +85,8 @@
                             </ListView.ItemTemplate>
                         </ListView>
                         <Button Content="Køb"></Button>
-                    </StackPanel>
+                        
+                </StackPanel>
             </Grid>
             </ScrollViewer>    
         </Grid>
