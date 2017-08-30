@@ -60,26 +60,23 @@
                             </Image.Source>
                         </Image>
                     </StackPanel>
-                <GridView x:Name="Products"  Grid.Row="0" Grid.Column="1" IsItemClickEnabled="True" ItemClick="Products_ItemClick" ItemsSource="{x:Bind vare}">
+                <GridView x:Name="Products"  Grid.Row="0" Grid.Column="1" IsItemClickEnabled="True" ItemsSource="{x:Bind vare}">
                     <GridView.ItemTemplate>
                         <DataTemplate x:DataType="data:Vare">
                             <Grid>
-                                <Border Background="LightGray" Height="200" Width="200">
-                                    <TextBlock FontSize="35" Text="{x:Bind VareNavn }" Name="{x:Bind VareId}"
-                                               HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Green"></TextBlock>
-                                </Border>
+                                <Button Name="{x:Bind VareId}" Content="{x:Bind VareNavn}" Click="buttonClick" Height="200" Width="200" Background="LightGray" Foreground="Green" FontSize="35"></Button>
                             </Grid>
                         </DataTemplate>
                     </GridView.ItemTemplate>
                 </GridView>
                     <StackPanel x:Name="Order" Grid.Row="0" Grid.Column="2">
-                        <ListView ItemsSource="{x:Bind DataList}">
+                        <ListView ItemsSource="{x:Bind DataList2}">
                             <ListView.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate >
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding Name}"></TextBlock>
                                         <TextBox Text="{Binding Amount}"></TextBox>
-                                        <HyperlinkButton Content="Remove"></HyperlinkButton>
+                                        <HyperlinkButton Content="Remove" Click="DeleteItem"></HyperlinkButton>
                                     </StackPanel>
                                 </DataTemplate>
                             </ListView.ItemTemplate>

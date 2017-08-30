@@ -28,7 +28,10 @@ namespace Frontend.Views
     public sealed partial class UserContent : Page
     {
         private List<Vare> vare;
-        public List<Test2> DataList { get; set; }
+        public List<int> location;
+        public ObservableCollection<Test2> DataList2;
+        public UserContentViewModel UCVM { get; set; }
+        public int DataList2Location;
         public UserContent()
         {
             this.InitializeComponent();
@@ -36,34 +39,39 @@ namespace Frontend.Views
             UCVM.Load();
 
             vare = VareManager.Varer();
-            Debug.WriteLine(vare[0].VareNavn);
-
-            DataList = new List<Test2>
-            {
-                new Test2
-                {
-                    Name = "Name",
-                    Amount = 2
-                },
-                new Test2
-                {
-                    Name = "Name2",
-                    Amount = 4
-                }
-            };
+            DataList2 = new ObservableCollection<Test2>();
+            location = new List<int>();
+            
+            DataList2Location = 0;
+            location.Add(DataList2Location);
         }
-        public UserContentViewModel UCVM { get; set; }
+        
         public class Test2
         {
             public string Name { get; set; }
             public int Amount { get; set; }
         }
 
-        private void Products_ItemClick(object sender, ItemClickEventArgs e)
+        private void buttonClick(object sender, RoutedEventArgs e)
         {
-            
-            //DataList.Add(new Test2 { Name=e.ClickedItem.ToString()})
-            Debug.WriteLine(" ");
+            DataList2.Add(new Test2 { Name = ((Button)sender).Content.ToString(), Amount = DataList2Location });
+            DataList2Location++;
+            location.Add(DataList2Location);
+        }
+
+        private void DeleteItem(object sender, RoutedEventArgs e)
+        {
+            string name = ((HyperlinkButton)sender).Name.ToString();
+            //DataList2Location--;
+            for (int i = 0; i < DataList2.Count; i++)
+            {
+                for (int j = 0; j < location.Count; j++)
+                {
+                    if (DataList2[i].Amount == location[j])
+                        DataList2.RemoveAt(location[j]);
+                }
+            }
+            Debug.WriteLine(name+" "+ DataList2Location);
         }
     }
 }
