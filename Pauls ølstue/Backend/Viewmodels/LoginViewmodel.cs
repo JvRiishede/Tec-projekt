@@ -7,7 +7,8 @@ namespace Backend.Viewmodels
 {
     public class LoginViewmodel
     {
-        public string Username { get; set; }
+        public int VærelseNr { get; set; }
         public string Password { get; set; }
+        public bool RememberMe { get; set; }
     }
 }
