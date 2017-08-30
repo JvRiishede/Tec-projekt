@@ -95,8 +95,12 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Data\DBConnection.cs" />
+    <Compile Include="Data\Vare.cs" />
     <Compile Include="Models\Test.cs" />
+    <Compile Include="Models\UserContentModel.cs" />
     <Compile Include="ViewModels\BaseViewmodel.cs" />
+    <Compile Include="ViewModels\UserContentViewModel.cs" />
     <Compile Include="Views\HelpContent.xaml.cs">
       <DependentUpon>HelpContent.xaml</DependentUpon>
     </Compile>
@@ -154,7 +158,14 @@
       <Version>5.4.0</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MySql.Data.RT">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\MySQL\MySQL Connector Net 6.7.9\Assemblies\RT\MySql.Data.RT.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
