@@ -171,6 +171,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FormAuthenticationService.cs" />
     <Compile Include="Viewmodels\LoginViewmodel.cs" />
+    <Compile Include="Viewmodels\MyPageViewmodel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\w3.css" />
@@ -220,6 +221,7 @@
     <Content Include="Scripts\jquery-3.1.1.min.map" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Dashboard\Index.cshtml" />
+    <Content Include="Views\Account\MyPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

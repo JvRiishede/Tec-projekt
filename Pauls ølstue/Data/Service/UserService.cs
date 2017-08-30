@@ -47,6 +47,73 @@ namespace Data.Service
             return null;
         }
 
+        public bool SaveProfile(string firstname, string lastname, string email, int id)
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "update Bruger set Fornavn = @firstname, Efternavn = @lastname, Email = @email where id = @id";
+                    cmd.Parameters.AddWithValue("@firstname", firstname);
+                    cmd.Parameters.AddWithValue("@lastname", lastname);
+                    cmd.Parameters.AddWithValue("@email", email);
+                    cmd.Parameters.AddWithValue("@id", id);
+                    var count = cmd.ExecuteNonQuery();
+                    if (count > 0)
+                    {
+                        return true;
+                    }
+
+                }
+            }
+            return false;
+        }
+
+        public bool SaveCredentials(int roomnr, string password, int id)
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "update Bruger set VærelseNr = @VærelseNr, KodeHash = @password  where id = @id";
+                    cmd.Parameters.AddWithValue("@roomnr", roomnr);
+                    cmd.Parameters.AddWithValue("@password", PasswordHash.Hash(password));
+                    cmd.Parameters.AddWithValue("@id", id);
+                    var count = cmd.ExecuteNonQuery();
+                    if (count > 0)
+                    {
+                        return true;
+                    }
+
+                }
+            }
+            return false;
+        }
+
+
+        public bool SaveImage(byte[] file, int id)
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "update Bruger set Billede = @image  where id = @id";
+                    cmd.Parameters.AddWithValue("@image", file);
+                    cmd.Parameters.AddWithValue("@id", id);
+                    var count = cmd.ExecuteNonQuery();
+                    if (count > 0)
+                    {
+                        return true;
+                    }
+
+                }
+            }
+            return false;
+        }
+
         private User BindUser(MySqlDataReader dr, bool bindPicture = false)
         {
             var user = new User();

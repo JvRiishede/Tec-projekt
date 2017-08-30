@@ -42,6 +42,37 @@ namespace Backend.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public ActionResult MyPage()
+        {
+
+            var model = new MyPageViewmodel
+            {
+                
+            };
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult MyPage(MyPageViewmodel model, string command)
+        {
+            switch (command)
+            {
+                case "saveProfile":
+                    _userService.SaveProfile(model.Firstname, model.Lastname, model.Email, model.Id);
+                    break;
+                case "saveLogin":
+                    _userService.SaveCredentials(model.RoomNr, model.Password, model.Id);
+                    break;
+                case "saveImage":
+                    var file = new byte[model.Image.ContentLength];
+                    model.Image.InputStream.Read(file, 0, model.Image.ContentLength);
+                    _userService.SaveImage(file, model.Id);
+                    break;
+            }
+            return View();
+        }
+
         [HttpPost]
         public ActionResult LogOff()
         {
