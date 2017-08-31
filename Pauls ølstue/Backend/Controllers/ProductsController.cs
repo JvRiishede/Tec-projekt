@@ -6,9 +6,9 @@ using System.Web.Mvc;
 
 namespace Backend.Controllers
 {
-    public class DashboardController : BaseController
+    public class ProductsController : Controller
     {
-        // GET: Dashboard
+        // GET: Products
         public ActionResult Index()
         {
             return View();

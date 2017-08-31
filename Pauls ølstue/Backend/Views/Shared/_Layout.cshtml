@@ -21,29 +21,34 @@
 </div>
 
 <!-- Sidebar/menu -->
-<nav class="w3-sidebar w3-collapse w3-white w3-animate-left" style="z-index:3;width:300px; top:43px" id="mySidebar"><br>
+<nav class="w3-sidebar w3-collapse w3-white w3-card" style="z-index:3;width:300px; top:43px" id="mySidebar"><br>
     <div class="w3-container w3-row">
-        <div class="w3-col s4">
-            <img src="/w3images/avatar2.png" class="w3-circle w3-margin-right" style="width:46px">
-        </div>
-        <div class="w3-col s8 w3-bar">
-            <span>Welcome, <strong>Mike</strong></span><br>
-            <a href="#" class="w3-bar-item w3-button"><i class="fa fa-user"></i></a>
-            <a href="#" class="w3-bar-item w3-button"><i class="fa fa-cog"></i></a>
-            @if (Request.IsAuthenticated)
-            {
-                using (Html.BeginForm("LogOff", "Account", FormMethod.Post))
+        
+        <div class="w3-col s12 w3-bar w3-center">
+            <span>Velkommen, <br /> <strong>@Session["Fullname"]</strong></span><br>
+            <div class="w3-col s2">
+                &nbsp;
+            </div>
+            <div class="w3-col s9">
+                <a href="/Account/MyPage" class="w3-bar-item w3-button"><i class="fa fa-user"></i></a>
+                <a href="#" class="w3-bar-item w3-button"><i class="fa fa-cog"></i></a>
+                @if (Request.IsAuthenticated)
                 {
-                    <button class="w3-bar-item w3-button"><i class="fa fa-sign-out"></i> Log af</button>
-                }
+                    using (Html.BeginForm("LogOff", "Account", FormMethod.Post))
+                    {
+                        <button class="w3-bar-item w3-button"><i class="fa fa-sign-out"></i> Log af</button>
+                    }
                 
-            }
+                }
+            </div>
         </div>
     </div>
     <hr>
-    <div class="w3-bar-block">
+    <div class="w3-bar-block" id="menuContainer">
         <a href="#" class="w3-bar-item w3-button w3-padding-16 w3-hide-large w3-dark-grey w3-hover-black" onclick="w3_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
-        <a href="#" class="w3-bar-item w3-button w3-padding w3-blue"><i class="fa fa-users fa-fw"></i>  Overview</a>
+        <a href="/Dashboard/Index" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Oversigt</a>
+        <a href="/Users/Index" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Brugere</a>
+        <a href="/Products/Index" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Produkter</a>
         
     </div>
 </nav>
@@ -56,7 +61,8 @@
 <div class="w3-main" style="margin-left:300px;margin-top:43px;">
     @RenderBody()
 </div>
-
+@Scripts.Render("~/bundles/jquery")
+@RenderSection("scripts", required: false)
 <script>
 // Get the Sidebar
     var mySidebar = document.getElementById("mySidebar");
@@ -80,9 +86,19 @@
         mySidebar.style.display = "none";
         overlayBg.style.display = "none";
     }
+
+    $(function() {
+        $('#menuContainer').children().each(function() {
+            var href = $(this).attr('href');
+            var currentUrl = window.location.href;
+            if (currentUrl.indexOf(href) > 0) {
+                $(this).addClass('w3-blue');
+            } else {
+                $(this).removeClass('w3-blue');
+            }
+        });
+    });
 </script>
-@Scripts.Render("~/bundles/jquery")
-@RenderSection("scripts", required: false)
 </body>
 </html>
 

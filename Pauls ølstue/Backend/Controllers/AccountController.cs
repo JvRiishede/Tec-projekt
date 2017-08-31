@@ -9,7 +9,7 @@ using Data.Interface;
 
 namespace Backend.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private readonly IUserService _userService;
         private readonly IFormAuthenticationService _authenticationService;
@@ -37,6 +37,7 @@ namespace Backend.Controllers
             if (user != null)
             {
                 _authenticationService.SetCookie(user, model.RememberMe);
+                Session["Fullname"] = user.Fornavn + " " + user.Efternavn;
                 return Redirect("/Dashboard/Index");
             }
             return View(model);
@@ -48,9 +49,9 @@ namespace Backend.Controllers
 
             var model = new MyPageViewmodel
             {
-                
+                User = _userService.FindById(_userService.UserId)
             };
-            return View();
+            return View(model);
         }
 
         [HttpPost]
@@ -59,15 +60,15 @@ namespace Backend.Controllers
             switch (command)
             {
                 case "saveProfile":
-                    _userService.SaveProfile(model.Firstname, model.Lastname, model.Email, model.Id);
+                    _userService.SaveProfile(model.User.Fornavn, model.User.Efternavn, model.User.Email, _userService.UserId);
                     break;
                 case "saveLogin":
-                    _userService.SaveCredentials(model.RoomNr, model.Password, model.Id);
+                    _userService.SaveCredentials(model.User.VærelseNr, model.Password, _userService.UserId);
                     break;
                 case "saveImage":
                     var file = new byte[model.Image.ContentLength];
                     model.Image.InputStream.Read(file, 0, model.Image.ContentLength);
-                    _userService.SaveImage(file, model.Id);
+                    _userService.SaveImage(file, _userService.UserId);
                     break;
             }
             return View();
