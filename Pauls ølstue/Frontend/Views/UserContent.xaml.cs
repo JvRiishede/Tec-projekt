@@ -27,11 +27,9 @@ namespace Frontend.Views
     /// </summary>
     public sealed partial class UserContent : Page
     {
-        private List<Vare> vare;
-        public List<int> location;
-        public ObservableCollection<Test2> DataList2;
+        private List<Data.Vare> vare;
+        public ObservableCollection<Vare> IndkobListe;
         public UserContentViewModel UCVM { get; set; }
-        public int DataList2Location;
         public UserContent()
         {
             this.InitializeComponent();
@@ -39,14 +37,10 @@ namespace Frontend.Views
             UCVM.Load();
 
             vare = VareManager.Varer();
-            DataList2 = new ObservableCollection<Test2>();
-            location = new List<int>();
-            
-            DataList2Location = 0;
-            location.Add(DataList2Location);
+            IndkobListe = new ObservableCollection<Vare>();
         }
         
-        public class Test2
+        public class Vare
         {
             public string Name { get; set; }
             public int Amount { get; set; }
@@ -54,24 +48,38 @@ namespace Frontend.Views
 
         private void buttonClick(object sender, RoutedEventArgs e)
         {
-            DataList2.Add(new Test2 { Name = ((Button)sender).Content.ToString(), Amount = DataList2Location });
-            DataList2Location++;
-            location.Add(DataList2Location);
+            string name = ((Button)sender).Content.ToString();
+            bool found = false;
+            for (int i = 0; i < IndkobListe.Count; i++)
+            {
+                if (IndkobListe[i].Name == name)
+                {
+                    IndkobListe[i].Amount += 1;
+                    found = true;
+                }
+            }
+            if(found==false)
+                IndkobListe.Add(new Vare { Name = ((Button)sender).Content.ToString(), Amount = 1 });
         }
 
         private void DeleteItem(object sender, RoutedEventArgs e)
         {
-            string name = ((HyperlinkButton)sender).Name.ToString();
-            //DataList2Location--;
-            for (int i = 0; i < DataList2.Count; i++)
+            string name = ((HyperlinkButton)sender).Content.ToString();
+            
+            for (int i = 0; i < IndkobListe.Count; i++)
             {
-                for (int j = 0; j < location.Count; j++)
+                if (IndkobListe[i].Name == name)
                 {
-                    if (DataList2[i].Amount == location[j])
-                        DataList2.RemoveAt(location[j]);
+                    IndkobListe[i].Amount -= 1;
+                    if (IndkobListe[i].Amount == 0)
+                        IndkobListe.RemoveAt(i);
                 }
             }
-            Debug.WriteLine(name+" "+ DataList2Location);
+        }
+        private void Buy(object sender, RoutedEventArgs e)
+        {
+            UCVM.Buy();
+            IndkobListe.Clear();
         }
     }
 }

@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Frontend.Views"
-        xmlns:data="using:Data"
+    xmlns:data="using:Data"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -70,19 +70,18 @@
                     </GridView.ItemTemplate>
                 </GridView>
                     <StackPanel x:Name="Order" Grid.Row="0" Grid.Column="2">
-                        <ListView ItemsSource="{x:Bind DataList2}">
+                        <ListView ItemsSource="{x:Bind IndkobListe}">
                             <ListView.ItemTemplate>
-                                <DataTemplate >
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Name}"></TextBlock>
-                                        <TextBox Text="{Binding Amount}"></TextBox>
-                                        <HyperlinkButton Content="Remove" Click="DeleteItem"></HyperlinkButton>
-                                    </StackPanel>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" >
+                                    <HyperlinkButton Content="{Binding Name}" Click="DeleteItem" ></HyperlinkButton>
+                                    <!--<TextBlock Text="{Binding Name}" ></TextBlock>-->
+                                    <TextBox Text="{Binding Amount}" ></TextBox>
+                                </StackPanel>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
-                        <Button Content="Køb"></Button>
-                        
+                        <Button Content="Køb" Click="Buy"></Button>
                 </StackPanel>
             </Grid>
             </ScrollViewer>    

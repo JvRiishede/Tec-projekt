@@ -20,7 +20,6 @@ namespace ViewModels
         public UserContentViewModel()
         {
             UCM = new UserContentModel();
-            //Load();
         }
         
         public void Load()
@@ -43,7 +42,6 @@ namespace ViewModels
         public void Create()
         {
             var dbconn = DBConnection.Instance();
-            //dbconn.DatabaseName = "PaulsData";
             if(dbconn.IsConnect())
             {
                 string query = "Insert into Bruger (Fornavn) values ('Smiley')";
@@ -52,10 +50,10 @@ namespace ViewModels
                 dbconn.Close();
             }            
         }
-        public void Farve()
+
+        public void Buy()
         {
-            UCM.Farve();
-            Debug.WriteLine("Hello UCVM");
+
         }
     }
 }
