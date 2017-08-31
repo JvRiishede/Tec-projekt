@@ -30,7 +30,6 @@ namespace Data
                 while (reader.Read())
                 {
                     varer.Add(new Vare { VareId = reader.GetInt32(0), VareNavn = reader.GetString(1), VarePris = reader.GetInt32(2),Tidsstempel=reader.GetDateTime(3)});
-                    Debug.WriteLine("" + reader.GetInt32(0) + "," + reader.GetString(1) + "," + reader.GetInt32(2));
                 }
                 dbConn.Close();
             }

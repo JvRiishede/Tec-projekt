@@ -15,10 +15,5 @@ namespace Models
         {
             
         }
-        public void Farve()
-        {
-            Debug.WriteLine("Hello UCM");
-        }
-        
     }
 }
