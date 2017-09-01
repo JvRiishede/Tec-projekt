@@ -11,7 +11,7 @@ namespace Backend.Controllers
 {
     public class HomeController : Controller
     {
-        [AuthorizeRoles(Role.Administrator, Role.Bartender)]
+        [AuthorizeRoles(Privileges.Administrator, Privileges.Bartender)]
         public ActionResult Index()
         {
             

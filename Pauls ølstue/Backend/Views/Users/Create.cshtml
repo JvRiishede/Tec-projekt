@@ -1,0 +1,31 @@
+﻿@model Backend.Viewmodels.EditUserViewmodel
+<div class="w3-container">
+    @using (Html.BeginForm("Create", "Users", FormMethod.Post, new { @class = "w3-padding w3-third w3-card w3-margin-top", enctype = "multipart/form-data" }))
+    {
+        <label>Værelse nr / brugernavn</label>
+        @Html.TextBoxFor(a => a.User.VærelseNr, new { @class = "w3-input w3-border" })
+        <br/>
+        <label>Adgangskode</label>
+        @Html.TextBoxFor(a => a.Password, new { @class = "w3-input w3-border" })
+        <br />
+        <label>Bekræft adgangskode</label>
+        @Html.TextBoxFor(a => a.ConfirmPassword, new { @class = "w3-input w3-border" })
+        <br />
+        <label>Fornavn</label>
+        @Html.TextBoxFor(a => a.User.Fornavn, new { @class = "w3-input w3-border"})
+        <br />
+        <label>Efternavn</label>
+        @Html.TextBoxFor(a => a.User.Efternavn, new { @class = "w3-input w3-border" })
+        <br />
+        <label>Email</label>
+        @Html.TextBoxFor(a => a.User.Email, new { @class = "w3-input w3-border" })
+        <br />
+        <label>Bruger type</label>
+        @Html.DropDownListFor(a => a.User.Role.Id, Model.Roles, new { @class = "w3-input w3-border" })
+        <br />
+        <label>Billede</label>
+        @Html.TextBoxFor(a => a.Image, new { @class = "w3-input w3-border", type = "file" })
+        <br/>
+        <input type="submit" value="Opret" class="w3-button w3-blue w3-right"/>
+    }
+</div>

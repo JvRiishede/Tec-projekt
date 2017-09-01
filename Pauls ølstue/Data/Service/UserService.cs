@@ -50,7 +50,7 @@ namespace Data.Service
                 con.Open();
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "select Id, Fornavn, Efternavn, VærelseNr, Email, KodeHash, Billede, Type from Bruger where VærelseNr = @roomnr";
+                    cmd.CommandText = "select Id, Fornavn, Efternavn, VærelseNr, Email, KodeHash, Billede, Type, (select Type from BrugerType where id = Bruger.Type) as TypeName from Bruger where VærelseNr = @roomnr";
                     cmd.Parameters.AddWithValue("@roomnr", roomnr);
                     using (var dr = cmd.ExecuteReader())
                     {
@@ -68,17 +68,18 @@ namespace Data.Service
             return null;
         }
 
-        public bool SaveProfile(string firstname, string lastname, string email, int id)
+        public bool SaveProfile(int id, string firstname, string lastname, string email, int roleId)
         {
             using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
             {
                 con.Open();
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "update Bruger set Fornavn = @firstname, Efternavn = @lastname, Email = @email where id = @id";
+                    cmd.CommandText = "update Bruger set Fornavn = @firstname, Efternavn = @lastname, Email = @email, Type = @roleId where id = @id";
                     cmd.Parameters.AddWithValue("@firstname", firstname);
                     cmd.Parameters.AddWithValue("@lastname", lastname);
                     cmd.Parameters.AddWithValue("@email", email);
+                    cmd.Parameters.AddWithValue("@roleId", roleId);
                     cmd.Parameters.AddWithValue("@id", id);
                     var count = cmd.ExecuteNonQuery();
                     if (count > 0)
@@ -142,7 +143,7 @@ namespace Data.Service
                 con.Open();
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "select Id, Fornavn, Efternavn, VærelseNr, Email, KodeHash, Billede, Type from Bruger where Id = @id";
+                    cmd.CommandText = "select Id, Fornavn, Efternavn, VærelseNr, Email, KodeHash, Billede, Type, (select Type from BrugerType where id = Bruger.Type) as TypeName from Bruger where Id = @id";
                     cmd.Parameters.AddWithValue("@id", id);
                     using (var dr = cmd.ExecuteReader())
                     {
@@ -165,7 +166,7 @@ namespace Data.Service
                 con.Open();
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "select Id, Fornavn, Efternavn, VærelseNr, Email, KodeHash, Billede, Type from Bruger";
+                    cmd.CommandText = "select Id, Fornavn, Efternavn, VærelseNr, Email, KodeHash, Billede, Type, (select Type from BrugerType where id = Bruger.Type) as TypeName from Bruger";
                     using (var dr = cmd.ExecuteReader())
                     {
                         while (dr.Read())
@@ -177,6 +178,58 @@ namespace Data.Service
                 }
             }
             return result;
+        }
+
+        public IEnumerable<Role> GetRoles()
+        {
+            var result = new List<Role>();
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "select Id, Type from BrugerType";
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            result.Add(new Role
+                            {
+                                Id = (int)dr["Id"],
+                                Name = (string)dr["Type"]
+                            });
+                        }
+                    }
+
+                }
+            }
+            return result;
+        }
+
+        public bool CreateUser(User user, string password)
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "insert into Bruger (Fornavn, Efternavn, Email, VærelseNr, KodeHash, Billede, Type) values(@Fornavn, @Efternavn, @Email, @VærelseNr, @KodeHash, @Billede, @Type)";
+                    cmd.Parameters.AddWithValue("@Fornavn", user.Fornavn);
+                    cmd.Parameters.AddWithValue("@Efternavn", user.Efternavn);
+                    cmd.Parameters.AddWithValue("@Email", user.Email);
+                    cmd.Parameters.AddWithValue("@VærelseNr", user.VærelseNr);
+                    cmd.Parameters.AddWithValue("@KodeHash", PasswordHash.Hash(password));
+                    cmd.Parameters.AddWithValue("@Billede", user.Billede);
+                    cmd.Parameters.AddWithValue("@Type", user.Role.Id);
+                    var count = cmd.ExecuteNonQuery();
+                    if (count > 0)
+                    {
+                        return true;
+                    }
+
+                }
+            }
+            return false;
         }
 
         public byte[] GetUserImage(int userid)
@@ -215,7 +268,7 @@ namespace Data.Service
                 {
                     user.Billede = (byte[]) dr["Billede"];
                 }
-                user.Role = dr["Type"] == DBNull.Value ? Role.Bartender : (Role)dr["Type"];
+                user.Role = new Role {Id = (int) dr["Type"], Name = (string) dr["TypeName"] ?? ""};
             }
             return user;
         }
