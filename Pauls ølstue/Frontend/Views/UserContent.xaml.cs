@@ -46,7 +46,7 @@ namespace Frontend.Views
             public int Amount { get; set; }
         }
 
-        private void buttonClick(object sender, RoutedEventArgs e)
+        private void ButtonClick(object sender, RoutedEventArgs e)
         {
             string name = ((Button)sender).Content.ToString();
             bool found = false;
