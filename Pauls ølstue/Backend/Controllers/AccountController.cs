@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using Backend.Interfaces;
 using Backend.Viewmodels;
 using Data.Interface;
+using Model;
+using System.Reflection;
 
 namespace Backend.Controllers
 {
@@ -47,31 +49,17 @@ namespace Backend.Controllers
         public ActionResult MyPage()
         {
 
-            var model = new MyPageViewmodel
+            var model = new EditUserViewmodel()
             {
-                User = _userService.FindById(_userService.UserId)
+                User = _userService.FindById(_userService.UserId),
+                Roles = _userService.GetRoles().Select(a => new SelectListItem
+                {
+                    Value = a.Id.ToString(),
+                    Text = a.Name
+                })
             };
-            return View(model);
-        }
 
-        [HttpPost]
-        public ActionResult MyPage(MyPageViewmodel model, string command)
-        {
-            switch (command)
-            {
-                case "saveProfile":
-                    _userService.SaveProfile(model.User.Fornavn, model.User.Efternavn, model.User.Email, _userService.UserId);
-                    break;
-                case "saveLogin":
-                    _userService.SaveCredentials(model.User.VærelseNr, model.Password, _userService.UserId);
-                    break;
-                case "saveImage":
-                    var file = new byte[model.Image.ContentLength];
-                    model.Image.InputStream.Read(file, 0, model.Image.ContentLength);
-                    _userService.SaveImage(file, _userService.UserId);
-                    break;
-            }
-            return View();
+            return View("_EditUser", model);
         }
 
         [HttpPost]

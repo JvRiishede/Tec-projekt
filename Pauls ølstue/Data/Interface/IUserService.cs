@@ -10,11 +10,13 @@ namespace Data.Interface
     {
         int UserId { get; }
         User FindByRoomAndPassword(int roomnr, string password);
-        bool SaveProfile(string firstname, string lastname, string email, int id);
+        bool SaveProfile(int id, string firstname, string lastname, string email, int roleId);
         bool SaveCredentials(int roomnr, string password, int id);
         bool SaveImage(byte[] file, int id);
         byte[] GetUserImage(int userid);
         User FindById(int id, bool bindPicture = false);
         IEnumerable<User> GetUsers();
+        IEnumerable<Role> GetRoles();
+        bool CreateUser(User user, string password);
     }
 }

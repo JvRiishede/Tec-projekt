@@ -8,6 +8,14 @@
     }
 </style>
 <div class="w3-container">
+    <div class="w3-row w3-margin-top w3-card w3-padding">
+        <div class="w3-col m10">
+            <input placeholder="Søg" class="w3-input w3-border"/>
+        </div>
+        <div class="w3-col m2">
+            <a href="/users/create" class="w3-button w3-blue w3-right">Opret bruger</a>
+        </div>
+    </div>
     <div class="w3-row w3-margin-top">
         <div class="w3-col m12">
             <table class="w3-table-all w3-card w3-hoverable">
@@ -28,7 +36,7 @@
                         <td>@user.Fornavn</td>
                         <td>@user.Efternavn</td>
                         <td>@user.Email</td>
-                        <td>@user.Role.ToString()</td>
+                        <td>@user.Role.Name</td>
                     </tr>
                 }
                 </tbody>
@@ -39,8 +47,16 @@
         <div class="w3-col m12">
             <div class="w3-card w3-padding">
                 <div class="w3-row">
-                    <div class="w3-col m6">
-                        <img src="" style="width: inherit; height: inherit;" />
+                    <div class="w3-col m3">
+                        <img src="" style="max-width: 200px; max-height: 200px;"/>
+                    </div>
+                    <div class="w3-col m8">.
+                        <label data-name="fullname"></label>
+                        <label data-name="email"></label>
+                        <label data-name="role"></label>
+                    </div>
+                    <div class="w3-col m1">
+                        <a href="" class="w3-button w3-blue w3-right">Rediger</a>
                     </div>
                 </div>
             </div>
@@ -54,7 +70,8 @@
             $(this).parent().children('.w3-blue').removeClass('w3-blue');
             $(this).addClass('w3-blue');
             var userid = $(this).data('id');
-            $('#userEdit div div img').attr('src', '/Image/UserImage/'+userid);
+            $('#userEdit div div img').attr('src', '/Image/UserImage/' + userid);
+            $('#userEdit div div:nth-child(3) a').attr('href', '/Users/Rediger/' + userid);
             $('#userEdit').css('display', 'block');
         });
     });

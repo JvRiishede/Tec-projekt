@@ -9,9 +9,9 @@ namespace Backend.HelperClasses
 {
     public class AuthorizeRoles : AuthorizeAttribute
     {
-        public AuthorizeRoles(params Role[] roles)
+        public AuthorizeRoles(params Privileges[] roles)
         {
-            var allowedRoles = roles.Select(a => Enum.GetName(typeof(Role), a));
+            var allowedRoles = roles.Select(a => Enum.GetName(typeof(Privileges), a));
             Roles = string.Join(",", allowedRoles);
         }
     }
