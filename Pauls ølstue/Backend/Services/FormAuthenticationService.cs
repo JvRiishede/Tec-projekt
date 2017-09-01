@@ -13,7 +13,7 @@ namespace Backend.Services
     {
         public void SetCookie(User user, bool isPersistent)
         {
-            var ticket = new FormsAuthenticationTicket(1, user.VærelseNr.ToString(), DateTime.Now, DateTime.Now.AddYears(1), isPersistent, user.Role.ToString());
+            var ticket = new FormsAuthenticationTicket(1, user.Id.ToString(), DateTime.Now, DateTime.Now.AddYears(1), isPersistent,string.Format("{0}:{1}", user.Id, user.Role));
 
             var encryptedTicket = FormsAuthentication.Encrypt(ticket);
             var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, encryptedTicket)

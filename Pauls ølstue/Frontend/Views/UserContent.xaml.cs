@@ -27,59 +27,86 @@ namespace Frontend.Views
     /// </summary>
     public sealed partial class UserContent : Page
     {
-        private List<Data.Vare> vare;
-        public ObservableCollection<Vare> IndkobListe;
+        
+        
         public UserContentViewModel UCVM { get; set; }
         public UserContent()
         {
             this.InitializeComponent();
             UCVM = new UserContentViewModel();
             UCVM.Load();
-
-            vare = VareManager.Varer();
-            IndkobListe = new ObservableCollection<Vare>();
+            
+            UCVM.vare = VareManager.Varer();
+            UCVM.IndkobListe.Add(new UserContentViewModel.VareForList { });
+            UCVM.IndkobListe.Add(new UserContentViewModel.VareForList { });// skal have fundet en løsning på det her!!!!
         }
-        
-        public class Vare
+
+        private void UpdateList()
         {
-            public string Name { get; set; }
-            public int Amount { get; set; }
+            UCVM.TempList = UCVM.IndkobListe.ToList();
+            UCVM.IndkobListe.Clear();
+            for (int i = 0; i < UCVM.TempList.Count; i++)
+            {
+                UCVM.IndkobListe.Add(UCVM.TempList[i]);
+            }
+            UCVM.TempList.Clear();
         }
-
-        private void buttonClick(object sender, RoutedEventArgs e)
+        private void AddItem(object sender, RoutedEventArgs e)
         {
             string name = ((Button)sender).Content.ToString();
             bool found = false;
-            for (int i = 0; i < IndkobListe.Count; i++)
+            for (int i = 0; i < UCVM.IndkobListe.Count; i++)
             {
-                if (IndkobListe[i].Name == name)
+                if (UCVM.IndkobListe[i].Name == name)
                 {
-                    IndkobListe[i].Amount += 1;
+                    UCVM.IndkobListe[i].Amount += 1;
+                    UCVM.IndkobListe[i].Combine();
                     found = true;
                 }
             }
-            if(found==false)
-                IndkobListe.Add(new Vare { Name = ((Button)sender).Content.ToString(), Amount = 1 });
+            if (found == false)
+                UCVM.IndkobListe.Add(new UserContentViewModel.VareForList
+                {
+                    Name = ((Button)sender).Content.ToString(), Amount = 1, Id = Convert.ToInt32(((Button)sender).Name.ToString())
+                });
+            UpdateList();
         }
 
         private void DeleteItem(object sender, RoutedEventArgs e)
         {
-            string name = ((HyperlinkButton)sender).Content.ToString();
-            
-            for (int i = 0; i < IndkobListe.Count; i++)
+            string name="";
+            try
             {
-                if (IndkobListe[i].Name == name)
+                name = ((HyperlinkButton)sender).Content.ToString();
+            }
+            catch { }
+            
+            try
+            {
+                name = ((TextBlock)sender).Text.ToString();
+                name = name.Split(',')[0];
+            }
+            catch { }
+            
+            for (int i = 0; i < UCVM.IndkobListe.Count; i++)
+            {
+                if (UCVM.IndkobListe[i].Name == name)
                 {
-                    IndkobListe[i].Amount -= 1;
-                    if (IndkobListe[i].Amount == 0)
-                        IndkobListe.RemoveAt(i);
+                    UCVM.IndkobListe[i].Amount -= 1;
+                    UCVM.IndkobListe[i].Combine();
+                    if (UCVM.IndkobListe[i].Amount == 0)
+                        UCVM.IndkobListe.RemoveAt(i);
                 }
             }
+            UpdateList();
         }
+
         private void Buy(object sender, RoutedEventArgs e)
         {
             UCVM.Buy();
-            IndkobListe.Clear();
+            UCVM.IndkobListe.Clear();
+            UCVM.IndkobListe.Add(new UserContentViewModel.VareForList { });
+            UCVM.IndkobListe.Add(new UserContentViewModel.VareForList { });// skal have fundet en løsning på det her!!!!
         }
     }
 }

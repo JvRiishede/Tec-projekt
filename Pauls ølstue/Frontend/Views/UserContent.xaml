@@ -7,9 +7,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    
-    
-        <Grid x:Name="Root" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
+
+
+    <Grid x:Name="Root" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="screenStates">
                 <VisualState x:Name="Narrow">
@@ -32,59 +32,60 @@
                         <AdaptiveTrigger MinWindowWidth="720" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <ScrollViewer>
-            <Grid x:Name="MainGrid">
+        <ScrollViewer Padding="5">
+            <Grid Padding="5" x:Name="MainGrid">
                 <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1.0000001*" MinWidth="150"></ColumnDefinition>
-                        <ColumnDefinition Width="2*"></ColumnDefinition>
-                        <ColumnDefinition Width="1.0000001*" MinWidth="200"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="0"></RowDefinition>
-                        <RowDefinition Height="0"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                        <Button Content="Find bruger"></Button>
-                        <ComboBox x:Name="Find_bruger" Header="Bruger" ItemsSource="{x:Bind UCVM.brugere}" DisplayMemberPath="Source"></ComboBox>
-                        <TextBlock Text="Nr"></TextBlock>
-                        <TextBlock Text="Navn"></TextBlock>
-                        <Image>
-                            <Image.Source>
-                                <BitmapImage UriSource="https://s-media-cache-ak0.pinimg.com/originals/81/f6/d7/81f6d7a808cf0990d7099d003f7582a6.jpg"></BitmapImage>
-                            </Image.Source>
-                        </Image>
-                    </StackPanel>
-                <GridView x:Name="Products"  Grid.Row="0" Grid.Column="1" IsItemClickEnabled="True" ItemsSource="{x:Bind vare}">
+                    <ColumnDefinition Width="1*" MinWidth="400"></ColumnDefinition>
+                    <ColumnDefinition Width="1.5*"></ColumnDefinition>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="0"></RowDefinition>
+                    <RowDefinition Height="0"></RowDefinition>
+                </Grid.RowDefinitions>
+                <StackPanel Padding="5">
+                    <ComboBox HorizontalAlignment="Center" Padding="5" PlaceholderText="Vælg Værelsesnummer"></ComboBox>
+                    <TextBlock Padding="5" HorizontalAlignment="Center" Text="eller"></TextBlock>
+                    <ComboBox HorizontalAlignment="Center" Padding="5" x:Name="Find_bruger" PlaceholderText="Vælg Bartender" ItemsSource="{x:Bind UCVM.brugere}" DisplayMemberPath="Source"></ComboBox>
+                    <TextBlock HorizontalAlignment="Center" Padding="5" Text=""></TextBlock>
+                    <TextBlock HorizontalAlignment="Center"  Padding="5" Text=""></TextBlock>
+
+                    <Image>
+                        <Image.Source>
+                            <BitmapImage UriSource="https://s-media-cache-ak0.pinimg.com/originals/81/f6/d7/81f6d7a808cf0990d7099d003f7582a6.jpg"></BitmapImage>
+                        </Image.Source>
+                    </Image>
+                </StackPanel>
+
+                <GridView x:Name="Products"  Grid.Row="0" Grid.Column="1" IsItemClickEnabled="True" ItemsSource="{x:Bind UCVM.vare}">
                     <GridView.ItemTemplate>
                         <DataTemplate x:DataType="data:Vare">
                             <Grid>
-                                <Button Name="{x:Bind VareId}" Content="{x:Bind VareNavn}" Click="buttonClick" Height="200" Width="200" Background="LightGray" Foreground="Green" FontSize="35"></Button>
+                                <Button BorderBrush="LightSteelBlue" BorderThickness="3" Name="{x:Bind VareId}" Content="{x:Bind VareNavn}"  Click="AddItem" Height="200" Width="200" Background="LightGray" Foreground="Green" FontSize="35"></Button>
                             </Grid>
                         </DataTemplate>
                     </GridView.ItemTemplate>
                 </GridView>
-                    <StackPanel x:Name="Order" Grid.Row="0" Grid.Column="2">
-                        <ListView ItemsSource="{x:Bind IndkobListe}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" >
-                                    <HyperlinkButton Content="{Binding Name}" Click="DeleteItem" ></HyperlinkButton>
-                                    <!--<TextBlock Text="{Binding Name}" ></TextBlock>-->
-                                    <TextBox Text="{Binding Amount}" ></TextBox>
+                <StackPanel x:Name="Order" Grid.Row="0" Grid.Column="2">
+                    <ListView ItemsSource="{x:Bind UCVM.IndkobListe, Mode=OneWay}" IsItemClickEnabled="True">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" >
+                                    <HyperlinkButton Content="{Binding Name}" Click="DeleteItem" MinWidth="50" Width="115"></HyperlinkButton>
+                                    <TextBox Text="{Binding Amount}" BorderThickness="0" ></TextBox>
+                                    <TextBlock Text="{Binding Full}" Tapped="DeleteItem"></TextBlock>
                                 </StackPanel>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                        <Button Content="Køb" Click="Buy"></Button>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Button Content="Køb" Click="Buy"></Button>
                 </StackPanel>
             </Grid>
-            </ScrollViewer>    
-        </Grid>
-
+        </ScrollViewer>
+    </Grid>
 </Page>

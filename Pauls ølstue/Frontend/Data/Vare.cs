@@ -13,6 +13,7 @@ namespace Data
         public int VareId { get; set; }
         public string VareNavn { get; set; }
         public int VarePris { get; set;}
+        public bool ErDrink { get; set; }
         public DateTime Tidsstempel { get; set; }
     }
 
@@ -29,7 +30,17 @@ namespace Data
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    varer.Add(new Vare { VareId = reader.GetInt32(0), VareNavn = reader.GetString(1), VarePris = reader.GetInt32(2),Tidsstempel=reader.GetDateTime(3)});
+                    varer.Add(new Vare { VareId = reader.GetInt32(0), VareNavn = reader.GetString(1), VarePris = reader.GetInt32(2), Tidsstempel = reader.GetDateTime(3), ErDrink=false });
+                }
+                reader.Close();
+
+
+                query = "Select Id, Navn, Tidsstempel FROM Drink";
+                cmd = new MySqlCommand(query, dbConn.Connection);
+                var reader2 = cmd.ExecuteReader();
+                while (reader2.Read())
+                {
+                    varer.Add(new Vare { VareId = reader2.GetInt32(0), VareNavn = reader2.GetString(1), Tidsstempel = reader2.GetDateTime(2), ErDrink=true });
                 }
                 dbConn.Close();
             }

@@ -1,0 +1,63 @@
+﻿@model Backend.Viewmodels.UsersViewmodel
+@{
+    ViewBag.Title = "Index";
+}
+<style>
+    table tbody tr {
+        cursor: pointer;
+    }
+</style>
+<div class="w3-container">
+    <div class="w3-row w3-margin-top">
+        <div class="w3-col m12">
+            <table class="w3-table-all w3-card w3-hoverable">
+                <thead>
+                <tr>
+                    <td>Værelse nr</td>
+                    <td>Fornavn</td>
+                    <td>Efternavn</td>
+                    <td>Email</td>
+                    <td>Type</td>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    <tr data-id="@user.Id">
+                        <td>@user.VærelseNr</td>
+                        <td>@user.Fornavn</td>
+                        <td>@user.Efternavn</td>
+                        <td>@user.Email</td>
+                        <td>@user.Role.ToString()</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="userEdit" class="w3-row w3-margin-top w3-animate-zoom" style="display: none">
+        <div class="w3-col m12">
+            <div class="w3-card w3-padding">
+                <div class="w3-row">
+                    <div class="w3-col m6">
+                        <img src="" style="width: inherit; height: inherit;" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+<script>
+    $(function() {
+        $('table tbody tr').on('click', function () {
+            $(this).parent().children('.w3-blue').removeClass('w3-blue');
+            $(this).addClass('w3-blue');
+            var userid = $(this).data('id');
+            $('#userEdit div div img').attr('src', '/Image/UserImage/'+userid);
+            $('#userEdit').css('display', 'block');
+        });
+    });
+</script>
+
+}

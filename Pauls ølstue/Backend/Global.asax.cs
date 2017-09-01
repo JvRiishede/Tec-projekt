@@ -36,7 +36,7 @@ namespace Backend
                         return;
                     }
 
-                    var roles = authTicket.UserData.Split(';');
+                    var roles = authTicket.UserData.Split(':')[1].Split(';');
                     var user = new GenericPrincipal(context.User.Identity, roles);
                     context.User = Thread.CurrentPrincipal = user;
                 }
