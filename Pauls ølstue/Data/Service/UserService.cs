@@ -232,6 +232,89 @@ namespace Data.Service
             return false;
         }
 
+        public bool DeleteUser(int id)
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "delete from Bruger where id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+                    var count = cmd.ExecuteNonQuery();
+                    if (count > 0)
+                    {
+                        return true;
+                    }
+
+                }
+            }
+            return false;
+        }
+
+        public IEnumerable<User> SearchUsers(string searchText, UserSort sort)
+        {
+            var sql = "select Id, Fornavn, Efternavn, VærelseNr, Email, KodeHash, Billede, Type, (select Type from BrugerType where id = Bruger.Type) as TypeName from Bruger [SEARCHTEXT] and [SORTNAME]";
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                sql += "where";
+                if (searchText.StartsWith("VærelseNr:"))
+                {
+                    sql = sql.Replace("[SEARCHTEXT]", string.Format("VærelseNr = '%{0}%", searchText));
+                }
+                if (searchText.StartsWith("Fornavn:"))
+                {
+                    sql = sql.Replace("[SEARCHTEXT]", string.Format("Fornavn = '%{0}%", searchText));
+                }
+                if (searchText.StartsWith("Efternavn:"))
+                {
+                    sql = sql.Replace("[SEARCHTEXT]", string.Format("Efternavn = '%{0}%", searchText));
+                }
+                if (searchText.StartsWith("Email:"))
+                {
+                    sql = sql.Replace("[SEARCHTEXT]", string.Format("Email = '%{0}%", searchText));
+                }
+            }
+
+            switch (sort)
+            {
+                case UserSort.RoomNr:
+                    sql = sql.Replace("[SORTNAME]", "orderby VæresleNr");
+                    break;
+                case UserSort.Firstname:
+                    sql = sql.Replace("[SORTNAME]", "orderby Fornavn");
+                    break;
+                case UserSort.Lastname:
+                    sql = sql.Replace("[SORTNAME]", "orderby Efternavn");
+                    break;
+                case UserSort.Email:
+                    sql = sql.Replace("[SORTNAME]", "orderby Email");
+                    break;
+                case UserSort.Type:
+                    sql = sql.Replace("[SORTNAME]", "orderby Type");
+                    break;
+            }
+
+            var result = new List<User>();
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            result.Add(BindUser(dr));
+                        }
+                    }
+
+                }
+            }
+            return result;
+        }
+
         public byte[] GetUserImage(int userid)
         {
             using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))

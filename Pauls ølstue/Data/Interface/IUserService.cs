@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Data.Classes;
 using Model;
 namespace Data.Interface
 {
@@ -18,5 +19,9 @@ namespace Data.Interface
         IEnumerable<User> GetUsers();
         IEnumerable<Role> GetRoles();
         bool CreateUser(User user, string password);
+        bool DeleteUser(int id);
+
+        IEnumerable<User> SearchUsers(string searchText, UserSort sort);
+
     }
 }

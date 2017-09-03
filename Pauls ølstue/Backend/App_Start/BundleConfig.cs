@@ -14,6 +14,10 @@ namespace Backend
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
 
+            bundles.Add(new ScriptBundle("~/Scripts").Include(
+                "~/Scripts/Sweetalert2/sweetalert2.min.js",
+                "~/Scripts/Polyfill/core.js"));
+
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at https://modernizr.com to pick only the tests you need.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
@@ -24,7 +28,8 @@ namespace Backend
             //          "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/w3.css"));
+                      "~/Content/w3.css",
+                      "~/Content/Sweetalert2/sweetalert2.min.css"));
         }
     }
 }
