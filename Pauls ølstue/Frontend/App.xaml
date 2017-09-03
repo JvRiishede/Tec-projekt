@@ -4,5 +4,35 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Frontend"
     RequestedTheme="Light">
+    <Application.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Grid">
+                <!--<Setter Property="Background" Value="#ffbcbcbc"/> NR 05 eller 14, måske 3-->
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="Foreground" Value="#FF2a3132"/>
+                <Setter Property="Background" Value="#ff66a5ba"/>
+                <Setter Property="BorderBrush" Value="Black"/>
+                <Setter Property="BorderThickness" Value="1"/>
+            </Style>
+            <Style TargetType="ListView">
+                <Setter Property="Background" Value="#FFcccccc"/>
+            </Style>
+            <Style TargetType="TextBlock">
+                <Setter Property="Width" Value="*"/>
+            </Style>
+            <Style TargetType="ComboBox">
 
+            </Style>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="#ffbcbcbc" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="#ffbcbabe" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+        
+    </Application.Resources>
 </Application>
