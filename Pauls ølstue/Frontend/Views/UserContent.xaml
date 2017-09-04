@@ -71,8 +71,8 @@
                         </DataTemplate>
                     </GridView.ItemTemplate>
                 </GridView>
-                <StackPanel x:Name="Order" Grid.Row="0" Grid.Column="2">
-                    <ListView ItemsSource="{x:Bind UCVM.IndkobListe, Mode=OneWay}" IsItemClickEnabled="True">
+                <!--<StackPanel x:Name="Order" Grid.Row="0" Grid.Column="2">-->
+                    <!--<ListView ItemsSource="{x:Bind UCVM.IndkobListe, Mode=OneWay}" IsItemClickEnabled="True">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" >
@@ -83,24 +83,25 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-                    <Button Content="Køb" Click="Buy"></Button>
-                    <GridView HorizontalAlignment="Center" Padding="5" x:Name="Products"  Grid.Row="0" Grid.Column="1" IsItemClickEnabled="True" ItemsSource="{x:Bind vare}">
+                    <Button Content="Køb" Click="Buy"></Button>-->
+                    <!--<GridView HorizontalAlignment="Center" Padding="5"   Grid.Row="0" Grid.Column="1" IsItemClickEnabled="True" ItemsSource="{x:Bind UCVM.vare}">
+                        --><!--x:Name="Products"--><!--
                     <GridView.ItemTemplate>
                         <DataTemplate x:DataType="data:Vare">
                             <StackPanel Padding="5">
-                            <Button Name="{x:Bind VareId}" Content="{x:Bind VareNavn}" Click="ButtonClick" Height="150" Width="150" Background="LightGray" Foreground="Green"></Button>
+                            <Button Name="{x:Bind VareId}" Content="{x:Bind VareNavn}" Click="AddItem" Height="150" Width="150" Background="LightGray" Foreground="Green"></Button>
                             </StackPanel>
                         </DataTemplate>
-                    </GridView.ItemTemplate>
-                </GridView>
-                    <StackPanel Padding="5" x:Name="Order" Grid.Row="0" Grid.Column="2">
+                    </GridView.ItemTemplate>-->
+                <!--</GridView>-->
+                    <StackPanel x:Name="Order" Padding="5"  Grid.Row="0" Grid.Column="2"><!---->
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1*"></ColumnDefinition>
                                 <ColumnDefinition Width="1*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0">
-                                <ListView Padding="5" HorizontalAlignment="Center" ItemsSource="{x:Bind IndkobListe}">
+                                <ListView Padding="5" HorizontalAlignment="Center" ItemsSource="{x:Bind UCVM.IndkobListe}">
                                     <ListView.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Padding="5">
@@ -111,7 +112,7 @@
                                 </ListView>
                             </StackPanel>
                             <StackPanel Padding="5" Grid.Column="1">
-                                <ListView Padding="5" HorizontalAlignment="Center" ItemsSource="{x:Bind IndkobListe}">
+                                <ListView Padding="5" HorizontalAlignment="Center" ItemsSource="{x:Bind UCVM.IndkobListe}">
                                     <ListView.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Padding="5">
@@ -124,7 +125,7 @@
                         </Grid>
                         <Button HorizontalAlignment="Center" Content="KØB" Click="Buy" ></Button>
                     </StackPanel>
-                </StackPanel>
+                
             </Grid>
         </ScrollViewer>
     </Grid>
