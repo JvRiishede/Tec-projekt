@@ -1,0 +1,32 @@
+﻿<ContentDialog
+    x:Class="Frontend.Assets.Login"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Frontend.Assets"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Velkommen"
+    PrimaryButtonText="Login"
+    SecondaryButtonText="Cancel"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Column="0">
+        <TextBlock Text="Brugernavn"/>
+        <TextBox Name="Brugernavn"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1">
+            <TextBlock Text="Password"/>
+            <TextBox Name="Password"/>
+        </StackPanel>
+    </Grid>
+</ContentDialog>

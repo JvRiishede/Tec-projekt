@@ -27,8 +27,6 @@ namespace Frontend.Views
     /// </summary>
     public sealed partial class UserContent : Page
     {
-        
-        
         public UserContentViewModel UCVM { get; set; }
         public UserContent()
         {
@@ -37,8 +35,13 @@ namespace Frontend.Views
             UCVM.Load();
             
             UCVM.vare = VareManager.Varer();
-            UCVM.IndkobListe.Add(new UserContentViewModel.VareForList { });
-            UCVM.IndkobListe.Add(new UserContentViewModel.VareForList { });// skal have fundet en løsning på det her!!!!
+            StartList();
+            Products.IsEnabled = false;
+        }
+
+        private void EnableProducts(object sender, RoutedEventArgs e)
+        {
+            Products.IsEnabled = true;
         }
 
         private void UpdateList()
@@ -49,7 +52,6 @@ namespace Frontend.Views
             {
                 UCVM.IndkobListe.Add(UCVM.TempList[i]);
             }
-            UCVM.TempList.Clear();
         }
         private void AddItem(object sender, RoutedEventArgs e)
         {
@@ -62,13 +64,19 @@ namespace Frontend.Views
                     UCVM.IndkobListe[i].Amount += 1;
                     UCVM.IndkobListe[i].Combine();
                     found = true;
+                    break;
                 }
             }
             if (found == false)
+            {
                 UCVM.IndkobListe.Add(new UserContentViewModel.VareForList
                 {
-                    Name = ((Button)sender).Content.ToString(), Amount = 1, Id = Convert.ToInt32(((Button)sender).Name.ToString())
+                    Name = name,
+                    Amount = 1,
+                    Id = Convert.ToInt32(((Button)sender).Name.ToString())
                 });
+                UCVM.IndkobListe[UCVM.IndkobListe.Count - 1].Combine();
+            }
             UpdateList();
         }
 
@@ -105,8 +113,31 @@ namespace Frontend.Views
         {
             UCVM.Buy();
             UCVM.IndkobListe.Clear();
-            UCVM.IndkobListe.Add(new UserContentViewModel.VareForList { });
-            UCVM.IndkobListe.Add(new UserContentViewModel.VareForList { });// skal have fundet en løsning på det her!!!!
+            StartList();
+        }
+
+        private void Clear(object sender, RoutedEventArgs e)
+        {
+            UCVM.IndkobListe.Clear();
+            StartList();
+        }
+            
+        private void StartList()
+        {
+            //UCVM.IndkobListe.Add(new UserContentViewModel.VareForList { });
+            //UCVM.IndkobListe.Add(new UserContentViewModel.VareForList { });// skal have fundet en løsning på det her!!!!
+        }
+        private void clearList(object sender, RoutedEventArgs e)
+        {
+            UCVM.TempList = UCVM.IndkobListe.ToList();
+            UCVM.IndkobListe.Clear();
+        }
+        private void fillList(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < UCVM.TempList.Count; i++)
+            {
+                UCVM.IndkobListe.Add(UCVM.TempList[i]);
+            }
         }
     }
 }

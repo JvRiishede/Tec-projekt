@@ -50,12 +50,13 @@
                     <div class="w3-col m3">
                         <img src="" style="max-width: 200px; max-height: 200px;"/>
                     </div>
-                    <div class="w3-col m8">.
+                    <div class="w3-col m7">.
                         <label data-name="fullname"></label>
                         <label data-name="email"></label>
                         <label data-name="role"></label>
                     </div>
-                    <div class="w3-col m1">
+                    <div class="w3-col m2">
+                        <button id="deleteUser" class="w3-button w3-red w3-right w3-margin-left">Slet</button>
                         <a href="" class="w3-button w3-blue w3-right">Rediger</a>
                     </div>
                 </div>
@@ -73,6 +74,26 @@
             $('#userEdit div div img').attr('src', '/Image/UserImage/' + userid);
             $('#userEdit div div:nth-child(3) a').attr('href', '/Users/Rediger/' + userid);
             $('#userEdit').css('display', 'block');
+        });
+
+        $('#deleteUser').on('click', function () {
+            var row = $('table tbody tr.w3-blue');
+            var userid = row.data('id');
+            $.ajax({
+                url: '/Users/Delete?userid=' + userid,
+                type: 'post',
+                success: function(check) {
+                    if (check) {
+                        row.remove();
+                        $('#userEdit').css('display', 'none');
+                        swal({
+                            title: 'Succes',
+                            text: 'Bruger er blevet slettet',
+                            type: 'success'
+                        });
+                    }
+                }
+            });
         });
     });
 </script>

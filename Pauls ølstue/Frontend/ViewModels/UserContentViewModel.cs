@@ -50,7 +50,8 @@ namespace ViewModels
                 var reader = cmd.ExecuteReader();
                 while(reader.Read())
                 {
-                    brugere.Add(reader.GetInt32(2).ToString() + ", " + reader.GetString(0) + " " + reader.GetString(1));
+                    brugere.Add(reader.GetString(0));
+                    //brugere.Add(reader.GetInt32(2).ToString() + ", " + reader.GetString(0) + " " + reader.GetString(1));
                 }
                 dbConn.Close();
             }

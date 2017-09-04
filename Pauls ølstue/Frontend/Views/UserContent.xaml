@@ -39,9 +39,9 @@
         <ScrollViewer Padding="5">
             <Grid Padding="5" x:Name="MainGrid">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" MinWidth="400"></ColumnDefinition>
+                    <ColumnDefinition Width="0.5*" MinWidth="400"></ColumnDefinition>
                     <ColumnDefinition Width="1.5*"></ColumnDefinition>
-                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="0.7*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
@@ -51,10 +51,10 @@
                 <StackPanel Padding="5">
                     <ComboBox HorizontalAlignment="Center" Padding="5" PlaceholderText="Vælg Værelsesnummer"></ComboBox>
                     <TextBlock Padding="5" HorizontalAlignment="Center" Text="eller"></TextBlock>
-                    <ComboBox HorizontalAlignment="Center" Padding="5" x:Name="Find_bruger" PlaceholderText="Vælg Bartender" ItemsSource="{x:Bind UCVM.brugere}" DisplayMemberPath="Source"></ComboBox>
+                    <ComboBox HorizontalAlignment="Center" Padding="5" x:Name="Find_bruger" PlaceholderText="Vælg Bartender" ItemsSource="{x:Bind UCVM.brugere, Mode=OneWay}" DisplayMemberPath="Source"></ComboBox>
                     <TextBlock HorizontalAlignment="Center" Padding="5" Text=""></TextBlock>
-                    <TextBlock HorizontalAlignment="Center"  Padding="5" Text=""></TextBlock>
-
+                    <TextBlock HorizontalAlignment="Center" Padding="5" Text=""></TextBlock>
+                    <Button Content="Enable" Click="EnableProducts"/>
                     <Image>
                         <Image.Source>
                             <BitmapImage UriSource="https://s-media-cache-ak0.pinimg.com/originals/81/f6/d7/81f6d7a808cf0990d7099d003f7582a6.jpg"></BitmapImage>
@@ -62,70 +62,40 @@
                     </Image>
                 </StackPanel>
 
-                <GridView x:Name="Products"  Grid.Row="0" Grid.Column="1" IsItemClickEnabled="True" ItemsSource="{x:Bind UCVM.vare}">
+                <GridView x:Name="Products"  Grid.Row="0" Grid.Column="1" IsItemClickEnabled="True" ItemsSource="{x:Bind UCVM.vare, Mode=OneWay}">
                     <GridView.ItemTemplate>
                         <DataTemplate x:DataType="data:Vare">
                             <Grid>
-                                <Button BorderBrush="LightSteelBlue" BorderThickness="3" Name="{x:Bind VareId}" Content="{x:Bind VareNavn}"  Click="AddItem" Height="200" Width="200" Background="LightGray" Foreground="Green" FontSize="35"></Button>
+                                <Button Name="{x:Bind VareId, Mode=OneWay}" Content="{x:Bind VareNavn, Mode=OneWay}"  Click="AddItem" Height="200" Width="200" FontSize="35"></Button>
                             </Grid>
                         </DataTemplate>
                     </GridView.ItemTemplate>
                 </GridView>
-                <!--<StackPanel x:Name="Order" Grid.Row="0" Grid.Column="2">-->
-                    <!--<ListView ItemsSource="{x:Bind UCVM.IndkobListe, Mode=OneWay}" IsItemClickEnabled="True">
+                <StackPanel x:Name="Order" Grid.Row="0" Grid.Column="2" Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Width="auto">
+                        <Button Content="Køb" Click="Buy" HorizontalAlignment="Left"/>
+                        <Button Content="Cancel" Click="Clear" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                    <ListView ItemsSource="{x:Bind UCVM.IndkobListe, Mode=OneWay}" IsItemClickEnabled="True" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Stretch">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal" >
-                                    <HyperlinkButton Content="{Binding Name}" Click="DeleteItem" MinWidth="50" Width="115"></HyperlinkButton>
-                                    <TextBox Text="{Binding Amount}" BorderThickness="0" ></TextBox>
-                                    <TextBlock Text="{Binding Full}" Tapped="DeleteItem"></TextBlock>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                    <!--<HyperlinkButton Content="{Binding Name}" Click="DeleteItem" MinWidth="50" Width="115"></HyperlinkButton>-->
+                                    <!--<TextBox Text="{Binding Amount}" BorderThickness="0" ></TextBox>-->
+                                    <Button Content="{Binding Full}" Width="auto" Click="DeleteItem" HorizontalContentAlignment="Stretch"/>
+                                    <!--<Border BorderThickness="1" BorderBrush="Black" Height="35" HorizontalAlignment="Center" Width="auto">
+                                    <TextBlock Text="{Binding Full}" Tapped="DeleteItem" HorizontalAlignment="Center" Width="auto"></TextBlock>
+                                    </Border>-->
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-                    <Button Content="Køb" Click="Buy"></Button>-->
-                    <!--<GridView HorizontalAlignment="Center" Padding="5"   Grid.Row="0" Grid.Column="1" IsItemClickEnabled="True" ItemsSource="{x:Bind UCVM.vare}">
-                        --><!--x:Name="Products"--><!--
-                    <GridView.ItemTemplate>
-                        <DataTemplate x:DataType="data:Vare">
-                            <StackPanel Padding="5">
-                            <Button Name="{x:Bind VareId}" Content="{x:Bind VareNavn}" Click="AddItem" Height="150" Width="150" Background="LightGray" Foreground="Green"></Button>
-                            </StackPanel>
-                        </DataTemplate>
-                    </GridView.ItemTemplate>-->
-                <!--</GridView>-->
-                    <StackPanel x:Name="Order" Padding="5"  Grid.Row="0" Grid.Column="2"><!---->
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*"></ColumnDefinition>
-                                <ColumnDefinition Width="1*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0">
-                                <ListView Padding="5" HorizontalAlignment="Center" ItemsSource="{x:Bind UCVM.IndkobListe}">
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Padding="5">
-                                                <HyperlinkButton Content="{Binding Name}" Click="DeleteItem" ></HyperlinkButton>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
-                            </StackPanel>
-                            <StackPanel Padding="5" Grid.Column="1">
-                                <ListView Padding="5" HorizontalAlignment="Center" ItemsSource="{x:Bind UCVM.IndkobListe}">
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Padding="5">
-                                                <TextBox Text="{Binding Amount}"></TextBox>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
-                            </StackPanel>
-                        </Grid>
-                        <Button HorizontalAlignment="Center" Content="KØB" Click="Buy" ></Button>
-                    </StackPanel>
-                
+                </StackPanel>
             </Grid>
         </ScrollViewer>
     </Grid>

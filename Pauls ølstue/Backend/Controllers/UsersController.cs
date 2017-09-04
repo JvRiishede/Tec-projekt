@@ -96,5 +96,11 @@ namespace Backend.Controllers
             _userService.CreateUser(model.User, model.Password);
             return RedirectToAction("Index", "Users");
         }
+
+        [HttpPost]
+        public bool Delete(int userid)
+        {
+            return _userService.DeleteUser(userid);
+        }
     }
 }

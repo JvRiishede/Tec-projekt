@@ -68,6 +68,7 @@
                 var data = {};
                 var processData = true;
                 var contentType = 'application/x-www-form-urlencoded; charset=UTF-8';
+                var text = "";
                 switch (command) {
                 case 'saveProfile':
                     data = {
@@ -75,7 +76,9 @@
                         'User.Efternavn': $('#User_Efternavn').val(),
                         'User.Email': $('#User_Email').val(),
                         'User.Role.Id': $('#User_Role_Id').val()
-                    }
+                        
+                        }
+                    text = "Profil er opdateret";
                     break;
 
                 case 'saveLogin':
@@ -83,7 +86,8 @@
                         'User.VærelseNr': $('#User_V_relseNr').val(),
                         Password: $('#Password').val(),
                         ConfirmPassword: $('#ConfirmPassword').val()
-                    }
+                        }
+                    text = "Login information er opdateret";
                     break;
 
                 case 'saveImage':
@@ -93,6 +97,7 @@
                     processData = false;
                     contentType = false;
                     data = formdata;
+                    text = "Det nye billede er nu gemt";
                     break;
                     
                 default:
@@ -106,44 +111,54 @@
                     processData: processData,
                     success: function(data) {
                         if (data) {
-                            renderModal();
+                            swal({
+                                title: 'Succes',
+                                text: text,
+                                type: 'success'
+                            });
+                        } else {
+                            swal({
+                                title: 'Fejl',
+                                text: 'Der gik desvære noget galt i forsøget på at gemme data, prøv igen',
+                                type: 'warning'
+                            });
                         }
                     }
                 });
             });
         })
 
-        function renderModal() {
-            var div = createElement('div', { id: "successModal", className: "w3-modal" });
-            var contentContainer = createElement('div', { className: "w3-modal-content w3-animate-zoom" });
-            var content = createElement('div', { className: "w3-container", innerHTML: "<p>Succes! Data er blevet opdateret</p>" });
-            var footer = createElement('footer', { className: "w3-container w3-padding"});
-            var okButton = createElement('button', { className: "w3-button w3-blue w3-right", innerHTML: "Ok" });
+        //function renderModal() {
+        //    var div = createElement('div', { id: "successModal", className: "w3-modal" });
+        //    var contentContainer = createElement('div', { className: "w3-modal-content w3-animate-zoom" });
+        //    var content = createElement('div', { className: "w3-container", innerHTML: "<p>Succes! Data er blevet opdateret</p>" });
+        //    var footer = createElement('footer', { className: "w3-container w3-padding"});
+        //    var okButton = createElement('button', { className: "w3-button w3-blue w3-right", innerHTML: "Ok" });
 
-            okButton.addEventListener('click', function() {
-                document.getElementById('successModal').remove();
-                //document.body.removeChild(document.getElementById('successModal'));
-                //$('#successModal').remove();
-            });
+        //    okButton.addEventListener('click', function() {
+        //        document.getElementById('successModal').remove();
+        //        //document.body.removeChild(document.getElementById('successModal'));
+        //        //$('#successModal').remove();
+        //    });
             
-            contentContainer.appendChild(content);
-            footer.appendChild(okButton);
-            contentContainer.appendChild(footer);
-            div.appendChild(contentContainer);
-            document.body.appendChild(div);
-            div.style.display = "block";
-        }
+        //    contentContainer.appendChild(content);
+        //    footer.appendChild(okButton);
+        //    contentContainer.appendChild(footer);
+        //    div.appendChild(contentContainer);
+        //    document.body.appendChild(div);
+        //    div.style.display = "block";
+        //}
 
-        function createElement(tagname, options) {
-            var element = document.createElement(tagname);
-            if (typeof options === "object") {
-                for (var property in options) {
-                    if (options.hasOwnProperty(property)) {
-                        element[property] = options[property];
-                    }
-                }
-            }
-            return element;
-        }
+        //function createElement(tagname, options) {
+        //    var element = document.createElement(tagname);
+        //    if (typeof options === "object") {
+        //        for (var property in options) {
+        //            if (options.hasOwnProperty(property)) {
+        //                element[property] = options[property];
+        //            }
+        //        }
+        //    }
+        //    return element;
+        //}
     </script>
 }
