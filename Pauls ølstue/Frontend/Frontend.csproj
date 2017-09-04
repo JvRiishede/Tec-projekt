@@ -98,8 +98,9 @@
     <Compile Include="Assets\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Data\DBConnection.cs" />
-    <Compile Include="Data\Vare.cs" />
+    <Compile Include="DataFrontend\DBConnection.cs" />
+    <Compile Include="DataFrontend\PasswordHash.cs" />
+    <Compile Include="DataFrontend\Vare.cs" />
     <Compile Include="Models\Test.cs" />
     <Compile Include="Models\UserContentModel.cs" />
     <Compile Include="ViewModels\BaseViewmodel.cs" />

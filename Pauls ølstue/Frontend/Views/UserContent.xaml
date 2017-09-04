@@ -61,7 +61,6 @@
                         </Image.Source>
                     </Image>
                 </StackPanel>
-
                 <GridView x:Name="Products"  Grid.Row="0" Grid.Column="1" IsItemClickEnabled="True" ItemsSource="{x:Bind UCVM.vare, Mode=OneWay}">
                     <GridView.ItemTemplate>
                         <DataTemplate x:DataType="data:Vare">
@@ -76,7 +75,7 @@
                         <Button Content="Køb" Click="Buy" HorizontalAlignment="Left"/>
                         <Button Content="Cancel" Click="Clear" HorizontalAlignment="Center"/>
                     </StackPanel>
-                    <ListView ItemsSource="{x:Bind UCVM.IndkobListe, Mode=OneWay}" IsItemClickEnabled="True" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Stretch">
+                    <ListView ItemsSource="{x:Bind UCVM.IndkobListe}" IsItemClickEnabled="True" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Stretch">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -89,7 +88,7 @@
                                     <!--<TextBox Text="{Binding Amount}" BorderThickness="0" ></TextBox>-->
                                     <Button Content="{Binding Full}" Width="auto" Click="DeleteItem" HorizontalContentAlignment="Stretch"/>
                                     <!--<Border BorderThickness="1" BorderBrush="Black" Height="35" HorizontalAlignment="Center" Width="auto">
-                                    <TextBlock Text="{Binding Full}" Tapped="DeleteItem" HorizontalAlignment="Center" Width="auto"></TextBlock>
+                                        <TextBlock Text="{Binding Full}" Tapped="DeleteItem" HorizontalAlignment="Center" Width="auto"></TextBlock>
                                     </Border>-->
                                 </StackPanel>
                             </DataTemplate>
