@@ -1,0 +1,25 @@
+﻿@using Backend.Viewmodels
+@model UsersViewmodel
+<table class="w3-table-all w3-card w3-hoverable">
+    <thead>
+    <tr>
+        <td>@Html.Raw(UsersViewmodel.Sortable(Model.Sort, "RoomNr"))</td>
+        <td>@Html.Raw(UsersViewmodel.Sortable(Model.Sort, "Firstname"))</td>
+        <td>@Html.Raw(UsersViewmodel.Sortable(Model.Sort, "Lastname"))</td>
+        <td>@Html.Raw(UsersViewmodel.Sortable(Model.Sort, "Email"))</td>
+        <td>@Html.Raw(UsersViewmodel.Sortable(Model.Sort, "Type"))</td>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model.Users)
+    {
+        <tr data-id="@user.Id">
+            <td>@user.VærelseNr</td>
+            <td>@user.Fornavn</td>
+            <td>@user.Efternavn</td>
+            <td>@user.Email</td>
+            <td>@user.Role.Name</td>
+        </tr>
+    }
+    </tbody>
+</table>

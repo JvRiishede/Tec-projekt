@@ -10,37 +10,16 @@
 <div class="w3-container">
     <div class="w3-row w3-margin-top w3-card w3-padding">
         <div class="w3-col m10">
-            <input placeholder="Søg" class="w3-input w3-border"/>
+            
+            <input placeholder="Søg" id="searchUser" class="w3-input w3-border" />
         </div>
         <div class="w3-col m2">
             <a href="/users/create" class="w3-button w3-blue w3-right">Opret bruger</a>
         </div>
     </div>
     <div class="w3-row w3-margin-top">
-        <div class="w3-col m12">
-            <table class="w3-table-all w3-card w3-hoverable">
-                <thead>
-                <tr>
-                    <td>Værelse nr</td>
-                    <td>Fornavn</td>
-                    <td>Efternavn</td>
-                    <td>Email</td>
-                    <td>Type</td>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var user in Model.Users)
-                {
-                    <tr data-id="@user.Id">
-                        <td>@user.VærelseNr</td>
-                        <td>@user.Fornavn</td>
-                        <td>@user.Efternavn</td>
-                        <td>@user.Email</td>
-                        <td>@user.Role.Name</td>
-                    </tr>
-                }
-                </tbody>
-            </table>
+        <div class="w3-col m12" id="tableContainer">
+            @{ Html.RenderPartial("_UserTable", Model);}
         </div>
     </div>
     <div id="userEdit" class="w3-row w3-margin-top w3-animate-zoom" style="display: none">
@@ -65,37 +44,66 @@
     </div>
 </div>
 @section scripts {
-<script>
-    $(function() {
-        $('table tbody tr').on('click', function () {
-            $(this).parent().children('.w3-blue').removeClass('w3-blue');
-            $(this).addClass('w3-blue');
-            var userid = $(this).data('id');
-            $('#userEdit div div img').attr('src', '/Image/UserImage/' + userid);
-            $('#userEdit div div:nth-child(3) a').attr('href', '/Users/Rediger/' + userid);
-            $('#userEdit').css('display', 'block');
+    <script>
+        $(function() {
+            $('table tbody tr').on('click',
+                function() {
+                    $(this).parent().children('.w3-blue').removeClass('w3-blue');
+                    $(this).addClass('w3-blue');
+                    var userid = $(this).data('id');
+                    $('#userEdit div div img').attr('src', '/Image/UserImage/' + userid);
+                    $('#userEdit div div:nth-child(3) a').attr('href', '/Users/Rediger/' + userid);
+                    $('#userEdit').css('display', 'block');
+                });
+
+            $('#deleteUser').on('click',
+                function() {
+                    var row = $('table tbody tr.w3-blue');
+                    var userid = row.data('id');
+                    $.ajax({
+                        url: '/Users/Delete?userid=' + userid,
+                        type: 'post',
+                        success: function(check) {
+                            if (check) {
+                                row.remove();
+                                $('#userEdit').css('display', 'none');
+                                swal({
+                                    title: 'Succes',
+                                    text: 'Bruger er blevet slettet',
+                                    type: 'success'
+                                });
+                            }
+                        }
+                    });
+                });
+
+            $('#searchUser').on('keydown',
+                function(e) {
+                    console.log(e);
+                });
+
+            $('a[data-action]').on('click', SortAble);
+
         });
 
-        $('#deleteUser').on('click', function () {
-            var row = $('table tbody tr.w3-blue');
-            var userid = row.data('id');
+        function SortAble(e) {
+            e.preventDefault();
+            var action = $(this).data('action');
             $.ajax({
-                url: '/Users/Delete?userid=' + userid,
+                url: '/Users/Index',
                 type: 'post',
-                success: function(check) {
-                    if (check) {
-                        row.remove();
-                        $('#userEdit').css('display', 'none');
-                        swal({
-                            title: 'Succes',
-                            text: 'Bruger er blevet slettet',
-                            type: 'success'
-                        });
-                    }
+                data: {
+                    searchText: '',
+                    sort: action,
+                    pageSize: 5,
+                    offSet: 0
+                },
+                success: function(data) {
+                    $('#tableContainer').html(data);
+                    $('a[data-action]').on('click', SortAble);
                 }
             });
-        });
-    });
-</script>
+        }
+    </script>
 
 }

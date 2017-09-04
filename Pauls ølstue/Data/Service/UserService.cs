@@ -252,48 +252,69 @@ namespace Data.Service
             return false;
         }
 
-        public IEnumerable<User> SearchUsers(string searchText, UserSort sort)
+        public IEnumerable<User> SearchUsers(string searchText, UserSort sort, int pageSize, int offSet)
         {
-            var sql = "select Id, Fornavn, Efternavn, VærelseNr, Email, KodeHash, Billede, Type, (select Type from BrugerType where id = Bruger.Type) as TypeName from Bruger [SEARCHTEXT] and [SORTNAME]";
+            var sql = "select Id, Fornavn, Efternavn, VærelseNr, Email, KodeHash, Billede, Type, (select Type from BrugerType where id = Bruger.Type) as TypeName from Bruger [SEARCHTEXT] [SORTNAME] limit [Offset],[PageSize]";
             if (!string.IsNullOrEmpty(searchText))
             {
-                sql += "where";
+
                 if (searchText.StartsWith("VærelseNr:"))
                 {
-                    sql = sql.Replace("[SEARCHTEXT]", string.Format("VærelseNr = '%{0}%", searchText));
+                    sql = sql.Replace("[SEARCHTEXT]", string.Format("where VærelseNr = '%{0}%", searchText));
                 }
                 if (searchText.StartsWith("Fornavn:"))
                 {
-                    sql = sql.Replace("[SEARCHTEXT]", string.Format("Fornavn = '%{0}%", searchText));
+                    sql = sql.Replace("[SEARCHTEXT]", string.Format("where Fornavn = '%{0}%", searchText));
                 }
                 if (searchText.StartsWith("Efternavn:"))
                 {
-                    sql = sql.Replace("[SEARCHTEXT]", string.Format("Efternavn = '%{0}%", searchText));
+                    sql = sql.Replace("[SEARCHTEXT]", string.Format("where Efternavn = '%{0}%", searchText));
                 }
                 if (searchText.StartsWith("Email:"))
                 {
-                    sql = sql.Replace("[SEARCHTEXT]", string.Format("Email = '%{0}%", searchText));
+                    sql = sql.Replace("[SEARCHTEXT]", string.Format("where Email = '%{0}%", searchText));
                 }
+            }
+            else
+            {
+                sql = sql.Replace("[SEARCHTEXT]", "");
             }
 
             switch (sort)
             {
-                case UserSort.RoomNr:
-                    sql = sql.Replace("[SORTNAME]", "orderby VæresleNr");
+                case UserSort.RoomNrAsc:
+                    sql = sql.Replace("[SORTNAME]", "order by VærelseNr asc");
                     break;
-                case UserSort.Firstname:
-                    sql = sql.Replace("[SORTNAME]", "orderby Fornavn");
+                case UserSort.RoomNrDesc:
+                    sql = sql.Replace("[SORTNAME]", "order by VærelseNr desc");
                     break;
-                case UserSort.Lastname:
-                    sql = sql.Replace("[SORTNAME]", "orderby Efternavn");
+                case UserSort.FirstnameAsc:
+                    sql = sql.Replace("[SORTNAME]", "order by Fornavn asc");
                     break;
-                case UserSort.Email:
-                    sql = sql.Replace("[SORTNAME]", "orderby Email");
+                case UserSort.FirstnameDesc:
+                    sql = sql.Replace("[SORTNAME]", "order by Fornavn desc");
                     break;
-                case UserSort.Type:
-                    sql = sql.Replace("[SORTNAME]", "orderby Type");
+                case UserSort.LastnameAsc:
+                    sql = sql.Replace("[SORTNAME]", "order by Efternavn asc");
+                    break;
+                case UserSort.LastnameDesc:
+                    sql = sql.Replace("[SORTNAME]", "order by Efternavn desc");
+                    break;
+                case UserSort.EmailAsc:
+                    sql = sql.Replace("[SORTNAME]", "order by Email asc");
+                    break;
+                case UserSort.EmailDesc:
+                    sql = sql.Replace("[SORTNAME]", "order by Email desc");
+                    break;
+                case UserSort.TypeAsc:
+                    sql = sql.Replace("[SORTNAME]", "order by Type asc");
+                    break;
+                case UserSort.TypeDesc:
+                    sql = sql.Replace("[SORTNAME]", "order by Type desc");
                     break;
             }
+
+            sql = sql.Replace("[Offset]", offSet.ToString()).Replace("[PageSize]", pageSize.ToString());
 
             var result = new List<User>();
             using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
@@ -313,6 +334,21 @@ namespace Data.Service
                 }
             }
             return result;
+        }
+
+        public int UserCount()
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "select count(Id) as Total from Bruger";
+
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+
+                }
+            }
         }
 
         public byte[] GetUserImage(int userid)

@@ -8,10 +8,15 @@ namespace Data.Classes
 {
     public enum UserSort
     {
-        RoomNr,
-        Firstname,
-        Lastname,
-        Email,
-        Type
+        RoomNrAsc,
+        RoomNrDesc,
+        FirstnameAsc,
+        FirstnameDesc,
+        LastnameAsc,
+        LastnameDesc,
+        EmailAsc,
+        EmailDesc,
+        TypeAsc,
+        TypeDesc
     }
 }
