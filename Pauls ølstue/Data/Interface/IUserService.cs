@@ -21,7 +21,8 @@ namespace Data.Interface
         bool CreateUser(User user, string password);
         bool DeleteUser(int id);
 
-        IEnumerable<User> SearchUsers(string searchText, UserSort sort);
+        IEnumerable<User> SearchUsers(string searchText, UserSort sort, int pageSize, int offSet);
+        int UserCount();
 
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Backend.Viewmodels;
+using Data.Classes;
 using Data.Interface;
 using Model;
 
@@ -18,14 +19,29 @@ namespace Backend.Controllers
             _userService = userService;
         }
 
-        // GET: Users
+        [HttpGet]
         public ActionResult Index()
         {
             var model = new UsersViewmodel
             {
-                Users = _userService.GetUsers().ToList()
+                Users = _userService.SearchUsers("", UserSort.RoomNrAsc, 5, 0).ToList(),
+                Sort = UserSort.RoomNrAsc,
+                UserTotal = _userService.UserCount()
             };
             return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Index(string searchText, UserSort sort, int pageSize, int offSet)
+        {
+
+
+            var model = new UsersViewmodel
+            {
+                Users = _userService.SearchUsers(searchText, sort, pageSize, offSet).ToList(),
+                Sort = sort
+            };
+            return PartialView("_UserTable", model);
         }
 
         [HttpGet]

@@ -243,6 +243,7 @@
     <Content Include="Views\Users\Rediger.cshtml" />
     <Content Include="Views\Shared\_EditUser.cshtml" />
     <Content Include="Views\Users\Create.cshtml" />
+    <Content Include="Views\Users\_UserTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
