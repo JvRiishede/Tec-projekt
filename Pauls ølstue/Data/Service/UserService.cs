@@ -255,30 +255,7 @@ namespace Data.Service
         public IEnumerable<User> SearchUsers(string searchText, UserSort sort, int pageSize, int offSet)
         {
             var sql = "select Id, Fornavn, Efternavn, VærelseNr, Email, KodeHash, Billede, Type, (select Type from BrugerType where id = Bruger.Type) as TypeName from Bruger [SEARCHTEXT] [SORTNAME] limit [Offset],[PageSize]";
-            if (!string.IsNullOrEmpty(searchText))
-            {
-
-                if (searchText.StartsWith("VærelseNr:"))
-                {
-                    sql = sql.Replace("[SEARCHTEXT]", string.Format("where VærelseNr = '%{0}%", searchText));
-                }
-                if (searchText.StartsWith("Fornavn:"))
-                {
-                    sql = sql.Replace("[SEARCHTEXT]", string.Format("where Fornavn = '%{0}%", searchText));
-                }
-                if (searchText.StartsWith("Efternavn:"))
-                {
-                    sql = sql.Replace("[SEARCHTEXT]", string.Format("where Efternavn = '%{0}%", searchText));
-                }
-                if (searchText.StartsWith("Email:"))
-                {
-                    sql = sql.Replace("[SEARCHTEXT]", string.Format("where Email = '%{0}%", searchText));
-                }
-            }
-            else
-            {
-                sql = sql.Replace("[SEARCHTEXT]", "");
-            }
+            
 
             switch (sort)
             {
@@ -322,6 +299,34 @@ namespace Data.Service
                 con.Open();
                 using (var cmd = con.CreateCommand())
                 {
+                    if (!string.IsNullOrEmpty(searchText))
+                    {
+
+                        if (searchText.StartsWith("VærelseNr:"))
+                        {
+                            sql = sql.Replace("[SEARCHTEXT]", "where VærelseNr like @search");
+                            cmd.Parameters.AddWithValue("@search", string.Format("%{0}%", searchText.Replace("VærelseNr:", "")));
+                        }
+                        if (searchText.StartsWith("Fornavn:"))
+                        {
+                            sql = sql.Replace("[SEARCHTEXT]", "where Fornavn like @search");
+                            cmd.Parameters.AddWithValue("@search", string.Format("%{0}%", searchText.Replace("Fornavn:", "")));
+                        }
+                        if (searchText.StartsWith("Efternavn:"))
+                        {
+                            sql = sql.Replace("[SEARCHTEXT]", "where Efternavn like @search");
+                            cmd.Parameters.AddWithValue("@search", string.Format("%{0}%", searchText.Replace("Efternavn:", "")));
+                        }
+                        if (searchText.StartsWith("Email:"))
+                        {
+                            sql = sql.Replace("[SEARCHTEXT]", "where Email like @search");
+                            cmd.Parameters.AddWithValue("@search", string.Format("%{0}%", searchText.Replace("Email:", "")));
+                        }
+                    }
+                    else
+                    {
+                        sql = sql.Replace("[SEARCHTEXT]", "");
+                    }
                     cmd.CommandText = sql;
                     using (var dr = cmd.ExecuteReader())
                     {

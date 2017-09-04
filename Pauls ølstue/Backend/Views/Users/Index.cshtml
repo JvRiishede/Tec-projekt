@@ -3,7 +3,7 @@
     ViewBag.Title = "Index";
 }
 <style>
-    table tbody tr {
+    table tbody tr, table thead tr {
         cursor: pointer;
     }
 </style>
@@ -78,8 +78,26 @@
                 });
 
             $('#searchUser').on('keydown',
-                function(e) {
-                    console.log(e);
+                function (e) {
+                    //Hvis enter er blevet trykket
+                    if (e.keyCode === 13) {
+                        var searchValue = $(this).val();
+                        var tableHeader = $('#tableContainer table thead');
+                        $.ajax({
+                            url: '/Users/Index',
+                            type: 'post',
+                            data: {
+                                searchText: searchValue,
+                                sort: tableHeader.data('sort'),
+                                pageSize: tableHeader.data('pagesize'),
+                                offSet: 0
+                            },
+                            success: function(data) {
+                                $('#tableContainer').html(data);
+                                $('a[data-action]').on('click', SortAble);
+                            }
+                        });
+                    }
                 });
 
             $('a[data-action]').on('click', SortAble);
@@ -89,14 +107,15 @@
         function SortAble(e) {
             e.preventDefault();
             var action = $(this).data('action');
+            var tableHeader = $('#tableContainer table thead');
             $.ajax({
                 url: '/Users/Index',
                 type: 'post',
                 data: {
-                    searchText: '',
+                    searchText: tableHeader.data('search'),
                     sort: action,
-                    pageSize: 5,
-                    offSet: 0
+                    pageSize: tableHeader.data('pagesize'),
+                    offSet: tableHeader.data('offset')
                 },
                 success: function(data) {
                     $('#tableContainer').html(data);

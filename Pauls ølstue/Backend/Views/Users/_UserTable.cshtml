@@ -1,7 +1,7 @@
 ﻿@using Backend.Viewmodels
 @model UsersViewmodel
 <table class="w3-table-all w3-card w3-hoverable">
-    <thead>
+    <thead data-pageSize="@Model.PageSize" data-offset="@Model.Offset" data-sort="@Model.Sort" data-total="@Model.UserTotal" data-search="@Model.SearchText">
     <tr>
         <td>@Html.Raw(UsersViewmodel.Sortable(Model.Sort, "RoomNr"))</td>
         <td>@Html.Raw(UsersViewmodel.Sortable(Model.Sort, "Firstname"))</td>

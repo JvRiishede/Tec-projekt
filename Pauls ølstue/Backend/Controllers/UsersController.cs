@@ -26,7 +26,10 @@ namespace Backend.Controllers
             {
                 Users = _userService.SearchUsers("", UserSort.RoomNrAsc, 5, 0).ToList(),
                 Sort = UserSort.RoomNrAsc,
-                UserTotal = _userService.UserCount()
+                UserTotal = _userService.UserCount(),
+                Offset = 0,
+                PageSize = 5,
+                SearchText = ""
             };
             return View(model);
         }
@@ -39,7 +42,12 @@ namespace Backend.Controllers
             var model = new UsersViewmodel
             {
                 Users = _userService.SearchUsers(searchText, sort, pageSize, offSet).ToList(),
-                Sort = sort
+                Sort = sort,
+                UserTotal = _userService.UserCount(),
+                Offset = offSet,
+                PageSize = pageSize,
+                SearchText = searchText
+
             };
             return PartialView("_UserTable", model);
         }

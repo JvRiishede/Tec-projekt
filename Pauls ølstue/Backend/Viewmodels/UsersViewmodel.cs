@@ -13,6 +13,9 @@ namespace Backend.Viewmodels
         public User User { get; set; }
         public UserSort Sort { get; set; }
         public int UserTotal { get; set; }
+        public int PageSize { get; set; }
+        public int Offset { get; set; }
+        public string SearchText { get; set; }
 
         public static string Sortable(UserSort sort, string field)
         {
