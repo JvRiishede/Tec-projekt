@@ -45,13 +45,13 @@ namespace ViewModels
             var dbConn = DBConnection.Instance();
             if(dbConn.IsConnect())
             {
-                string query = "Select Fornavn, Efternavn, VærelseNr FROM Bruger;";
+                string query = "SELECT Fornavn, Efternavn, VærelseNr FROM Bruger";
                 var cmd = new MySqlCommand(query, dbConn.Connection);
                 var reader = cmd.ExecuteReader();
                 while(reader.Read())
                 {
-                    brugere.Add(reader.GetString(0));
-                    //brugere.Add(reader.GetInt32(2).ToString() + ", " + reader.GetString(0) + " " + reader.GetString(1));
+                    brugere.Add(reader.GetString(0) + " " + reader.GetString(1) + " " + reader.GetInt32(2).ToString());
+                    Debug.WriteLine(reader.GetString(0) + " " + reader.GetString(1) + " " + reader.GetInt32(2).ToString());
                 }
                 dbConn.Close();
             }

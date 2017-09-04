@@ -49,10 +49,7 @@
                     <RowDefinition Height="0"></RowDefinition>
                 </Grid.RowDefinitions>
                 <StackPanel Padding="5">
-                    <ComboBox HorizontalAlignment="Center" Padding="5" PlaceholderText="Vælg Værelsesnummer"></ComboBox>
-                    <TextBlock Padding="5" HorizontalAlignment="Center" Text="eller"></TextBlock>
-                    <ComboBox HorizontalAlignment="Center" Padding="5" x:Name="Find_bruger" PlaceholderText="Vælg Bartender" ItemsSource="{x:Bind UCVM.brugere, Mode=OneWay}" DisplayMemberPath="Source"></ComboBox>
-                    <TextBlock HorizontalAlignment="Center" Padding="5" Text=""></TextBlock>
+                    <ComboBox HorizontalAlignment="Center" Padding="5" x:Name="Find_bruger" PlaceholderText="Vælg Bartender" ItemsSource="{x:Bind UCVM.brugere}"></ComboBox>
                     <TextBlock HorizontalAlignment="Center" Padding="5" Text=""></TextBlock>
                     <Button Content="Enable" Click="EnableProducts"/>
                     <Image>
@@ -72,16 +69,12 @@
                     </GridView.ItemTemplate>
                 </GridView>
                 <StackPanel x:Name="Order" Grid.Row="0" Grid.Column="2" Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal" Width="auto">
-                        <Button Content="Køb" Click="Buy" HorizontalAlignment="Left"/>
-                        <Button Content="Cancel" Click="Clear" HorizontalAlignment="Center"/>
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Width="auto">
+                        <Button Content="Køb" Click="Buy"/>
+                        <Button Content="Slet alle vare" Click="Clear"/>
                     </StackPanel>
                     <ListView ItemsSource="{x:Bind UCVM.IndkobListe, Mode=OneWay}" IsItemClickEnabled="True" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Stretch">
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                            </Style>
-                        </ListView.ItemContainerStyle>
+                        
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
