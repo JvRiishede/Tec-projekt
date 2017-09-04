@@ -14,6 +14,7 @@ namespace ViewModels
 {
     public class UserContentViewModel:BaseViewmodel
     {
+        
         public ObservableCollection<VareForList> IndkobListe;
         public ObservableCollection<string> brugere;
         public List<VareForList> TempList;

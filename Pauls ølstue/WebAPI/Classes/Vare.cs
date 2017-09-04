@@ -1,16 +1,12 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Data;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
+using System.Web;
 
-namespace Data
+namespace WebAPI.Classes
 {
     public class Vare
     {
@@ -20,14 +16,8 @@ namespace Data
         public bool ErDrink { get; set; }
         public DateTime Tidsstempel { get; set; }
     }
-
     public class VareManager
     {
-        string vare;
-        public HttpClient client = new HttpClient();
-
-
-
         public static List<Vare> Varer()
         {
             var varer = new List<Vare>();

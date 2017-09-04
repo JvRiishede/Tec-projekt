@@ -1,34 +1,17 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
+using Data.Interface;
+using Data.Classes;
+using MySql.Data.MySqlClient;
 
-namespace Data
+namespace Data.Service
 {
-    public class Vare
+    class VareService : IVareService
     {
-        public int VareId { get; set; }
-        public string VareNavn { get; set; }
-        public int VarePris { get; set; }
-        public bool ErDrink { get; set; }
-        public DateTime Tidsstempel { get; set; }
-    }
-
-    public class VareManager
-    {
-        string vare;
-        public HttpClient client = new HttpClient();
-
-
-
-        public static List<Vare> Varer()
+        public List<Vare> Varer()
         {
             var varer = new List<Vare>();
             var dbConn = DBConnection.Instance();
