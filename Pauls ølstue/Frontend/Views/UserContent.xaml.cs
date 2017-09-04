@@ -42,6 +42,7 @@ namespace Frontend.Views
         private void EnableProducts(object sender, RoutedEventArgs e)
         {
             Products.IsEnabled = true;
+
         }
 
         private void UpdateList()
@@ -95,7 +96,14 @@ namespace Frontend.Views
                 name = name.Split(',')[0];
             }
             catch { }
-            
+
+            try
+            {
+                name = ((Button)sender).Content.ToString();
+                name = name.Split(',')[0];
+            }
+            catch { }
+
             for (int i = 0; i < UCVM.IndkobListe.Count; i++)
             {
                 if (UCVM.IndkobListe[i].Name == name)
