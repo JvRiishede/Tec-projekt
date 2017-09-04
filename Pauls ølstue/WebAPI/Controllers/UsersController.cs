@@ -21,7 +21,7 @@ namespace WebAPI.Controllers
         }
 
         // GET: api/Users
-        public List<User> Get()
+        public List<User> GetUsers()
         {
             return _userService.GetUsers().ToList();
         }
