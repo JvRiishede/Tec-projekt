@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Classes\DBConnection.cs" />
     <Compile Include="Classes\PasswordHash.cs" />
+    <Compile Include="Classes\UserSort.cs" />
     <Compile Include="Interface\IConnectionInformationService.cs" />
     <Compile Include="Interface\IUserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
