@@ -99,7 +99,6 @@
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataFrontend\DBConnection.cs" />
-    <Compile Include="DataFrontend\PasswordHash.cs" />
     <Compile Include="DataFrontend\Vare.cs" />
     <Compile Include="Models\Test.cs" />
     <Compile Include="Models\UserContentModel.cs" />
