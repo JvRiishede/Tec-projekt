@@ -27,9 +27,10 @@ namespace Data.Service
                 con.Open();
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = @"select Drink.Id DrinkId, Drink.Navn DrinkNavn, Drink.Tidsstempel DrinkStempel, Vare.Id VareId, Vare.Navn VareNavn, Vare.Pris VarePris, Vare.Tidsstempel VareStempel from Drink where Drink.Id = @Id
+                    cmd.CommandText = @"select Drink.Id DrinkId, Drink.Navn DrinkNavn, Drink.Tidsstempel DrinkStempel, Vare.Id VareId, Vare.Navn VareNavn, Vare.Pris VarePris, Vare.Tidsstempel VareStempel from Drink
                     left join Vare_Drink on Drink.Id = Vare_Drink.DrinkId
-                    left join Vare on Vare_Drink.VareId = Vare.Id";
+                    left join Vare on Vare_Drink.VareId = Vare.Id
+                    where Drink.Id = @Id";
                     cmd.Parameters.AddWithValue("@Id", id);
                     using (var dr = cmd.ExecuteReader())
                     {
@@ -39,8 +40,8 @@ namespace Data.Service
                         {
                             if (drink.Id <= 0)
                             {
-                                drink.Id = (int) dr["VareId"];
-                                drink.Navn = (string) dr["VareNavn"];
+                                drink.Id = (int) dr["DrinkId"];
+                                drink.Navn = (string) dr["DrinkNavn"];
                                 drink.Tidsstempel = (DateTime) dr["DrinkStempel"];
                                 drink.Ingrediense.Add(new Vare
                                 {
@@ -61,10 +62,10 @@ namespace Data.Service
                                 });
                             }
                         }
+                        return drink;
                     }
                 }
             }
-            return null;
         }
 
         public List<Drink> GetDrinks()
@@ -84,7 +85,7 @@ namespace Data.Service
                         {
 
                             var drinkId = (int) dr["DrinkId"];
-                            var drinkNavn = (string)dr["VareNavn"];
+                            var drinkNavn = (string)dr["DrinkNavn"];
                             var drinkStempel = (DateTime)dr["DrinkStempel"];
                             var vareId = (int) dr["VareId"];
                             var vareNavn = (string) dr["VareNavn"];
