@@ -40,12 +40,6 @@ namespace Frontend.Views
             Products.IsEnabled = false;
         }
 
-        private void EnableProducts(object sender, RoutedEventArgs e)
-        {
-            Products.IsEnabled = true;
-
-        }
-
         private void UpdateList()
         {
             UCVM.TempList = UCVM.IndkobListe.ToList();
@@ -129,6 +123,8 @@ namespace Frontend.Views
         {
             UCVM.IndkobListe.Clear();
             StartList();
+            Find_bruger.SelectedIndex = -1;
+            Products.IsEnabled = false;
         }
             
         private void StartList()
@@ -147,6 +143,15 @@ namespace Frontend.Views
             {
                 UCVM.IndkobListe.Add(UCVM.TempList[i]);
             }
+        }
+
+        private void Find_bruger_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UCVM.IndkobListe.Clear();//Hvis brugeren bbliver skiftet undervejs nulstilles indkøbslisten.
+            if (Find_bruger == null) return;
+            if (Find_bruger != null) { Products.IsEnabled = true; }
+            var combo = (ComboBox)sender;
+            
         }
     }
 }

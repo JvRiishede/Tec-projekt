@@ -49,32 +49,24 @@
                     <RowDefinition Height="0"></RowDefinition>
                 </Grid.RowDefinitions>
                 <StackPanel Padding="5">
-                    <ComboBox HorizontalAlignment="Center" Padding="5" x:Name="Find_bruger" PlaceholderText="Vælg Bartender" ItemsSource="{x:Bind UCVM.brugere}"></ComboBox>
-                    <TextBlock HorizontalAlignment="Center" Padding="5" Text=""></TextBlock>
-                    <Button Content="Enable" Click="EnableProducts"/>
+                    <ComboBox SelectionChanged="Find_bruger_SelectionChanged" HorizontalAlignment="Center" Padding="5" x:Name="Find_bruger" PlaceholderText="Vælg Bartender" ItemsSource="{x:Bind UCVM.brugere}"></ComboBox>
                     <Image>
                         <Image.Source>
                             <BitmapImage UriSource="https://s-media-cache-ak0.pinimg.com/originals/81/f6/d7/81f6d7a808cf0990d7099d003f7582a6.jpg"></BitmapImage>
                         </Image.Source>
                     </Image>
                 </StackPanel>
-
-                <GridView x:Name="Products"  Grid.Row="0" Grid.Column="1" IsItemClickEnabled="True" ItemsSource="{x:Bind UCVM.vare, Mode=OneWay}">
+                <GridView x:Name="Products"  Grid.Row="0" Grid.Column="1" IsItemClickEnabled="True" ItemsSource="{x:Bind UCVM.vare}">
                     <GridView.ItemTemplate>
                         <DataTemplate x:DataType="data:Vare">
                             <Grid>
-                                <Button Name="{x:Bind VareId, Mode=OneWay}" Content="{x:Bind VareNavn, Mode=OneWay}"  Click="AddItem" Height="200" Width="200" FontSize="35"></Button>
+                                <Button Name="{x:Bind VareId}" Content="{x:Bind VareNavn}"  Click="AddItem" Height="200" Width="200" FontSize="35"></Button>
                             </Grid>
                         </DataTemplate>
                     </GridView.ItemTemplate>
                 </GridView>
                 <StackPanel x:Name="Order" Grid.Row="0" Grid.Column="2" Orientation="Vertical">
-                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Width="auto">
-                        <Button Content="Køb" Click="Buy"/>
-                        <Button Content="Slet alle vare" Click="Clear"/>
-                    </StackPanel>
-                    <ListView ItemsSource="{x:Bind UCVM.IndkobListe, Mode=OneWay}" IsItemClickEnabled="True" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Stretch">
-                        
+                    <ListView ItemsSource="{x:Bind UCVM.IndkobListe}" IsItemClickEnabled="True" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Stretch">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
@@ -88,6 +80,10 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+                    <StackPanel Padding="5" HorizontalAlignment="Center" Orientation="Horizontal" Width="auto">
+                        <Button Content="Køb" Click="Buy"/>
+                        <Button Content="Cancel ordre" Click="Clear"/>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </ScrollViewer>
