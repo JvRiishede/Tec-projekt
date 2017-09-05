@@ -20,12 +20,12 @@ namespace WebAPI.Controllers
 
         public Drink GetProduct(int id)
         {
-            return new Drink();
+            return _drinkService.GetDrink(id);
         }
 
         public List<Drink> GetProducts()
         {
-            return null;
+            return _drinkService.GetDrinks();
         }
     }
 }

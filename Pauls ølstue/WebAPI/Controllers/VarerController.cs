@@ -20,7 +20,7 @@ namespace WebAPI.Controllers
 
         public Vare GetProduct(int id)
         {
-            return new Vare();
+            return _vareService.GetVare(id);
         }
 
         public List<Vare> GetProducts()
