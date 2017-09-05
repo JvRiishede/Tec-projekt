@@ -9,6 +9,9 @@ using Frontend.ViewModels;
 using System.Diagnostics;
 using MySql.Data.MySqlClient;
 using System.Collections.ObjectModel;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Newtonsoft.Json;
 
 namespace ViewModels
 {
@@ -18,7 +21,7 @@ namespace ViewModels
         public ObservableCollection<VareForList> IndkobListe;
         public ObservableCollection<string> brugere;
         public List<VareForList> TempList;
-        public List<Data.Vare> vare;
+        public ObservableCollection<Vare> vare;
         UserContentModel UCM;
 
         public UserContentViewModel()
@@ -26,6 +29,7 @@ namespace ViewModels
             UCM = new UserContentModel();
             IndkobListe = new ObservableCollection<VareForList>();
             brugere = new ObservableCollection<string>();
+            vare = new ObservableCollection<Vare>();
         }
 
         public class VareForList
@@ -37,22 +41,56 @@ namespace ViewModels
             public string Full { get; set; }
             public void Combine()
             {
-                Full = Name + "," + Amount.ToString();
+                Full = Name + "   " + "Antal: " + Amount.ToString();
             }
         }
 
-        public void Load()
+        public async Task LoadVarerAsync()
         {
+            List<Vare> buffer = new List<Vare>();
+            var client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:52856/");
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            HttpResponseMessage response;
+            response = await client.GetAsync("api/varer/getproducts");
+            if (response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var test = await response.Content.ReadAsStringAsync();
+                    var midt = JsonConvert.DeserializeObject<List<Vare>>(test);
+                    foreach (var item in midt)
+                    {
+                        vare.Add(item);
+                    }
+                }
+                catch(Exception e)
+                {
+                    Debug.WriteLine("Frontend");
+                    Debug.WriteLine(e.Message);
+                }
+            };
+        }
+
+        public async Task LoadAsync()
+        {
+            await LoadVarerAsync();
+            //API connection
+
+
+
+            //DB connection
             var dbConn = DBConnection.Instance();
-            if(dbConn.IsConnect())
+            if (dbConn.IsConnect())
             {
                 string query = "SELECT Fornavn, Efternavn, VærelseNr FROM Bruger";
                 var cmd = new MySqlCommand(query, dbConn.Connection);
                 var reader = cmd.ExecuteReader();
-                while(reader.Read())
+                while (reader.Read())
                 {
                     brugere.Add(reader.GetString(0) + " " + reader.GetString(1) + " " + reader.GetInt32(2).ToString());
-                    Debug.WriteLine(reader.GetString(0) + " " + reader.GetString(1) + " " + reader.GetInt32(2).ToString());
                 }
                 dbConn.Close();
             }
@@ -65,14 +103,14 @@ namespace ViewModels
             {
                 for (int j = 0; j < vare.Count; j++)
                 {
-                    if(vare[j].ErDrink && IndkobListe[i].Name==vare[j].VareNavn)
-                    {
-                        IndkobListe[i].ErDrink = true;
-                    }
-                    if(IndkobListe[i].Id==vare[j].VareId)
-                    {
-                        FuldPris += IndkobListe[i].Amount * vare[j].VarePris;
-                    }
+                    //if(vare[j].ErDrink && IndkobListe[i].Name==vare[j].VareNavn)
+                    //{
+                    //    IndkobListe[i].ErDrink = true;
+                    //}
+                    //if(IndkobListe[i].Id==vare[j].VareId)
+                    //{
+                    //    FuldPris += IndkobListe[i].Amount * vare[j].VarePris;
+                    //}
                 }
             }
             var dbconn = DBConnection.Instance();

@@ -83,7 +83,8 @@ namespace Data.Service
                     cmd.CommandText = "insert into Vare(Navn, Pris) values(@Navn, @Pris); select LAST_INSERT_ID()";
                     cmd.Parameters.AddWithValue("@Navn", navn);
                     cmd.Parameters.AddWithValue("@Pris", pris);
-                    return (int)cmd.ExecuteScalar();}
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
             }
         }
 
