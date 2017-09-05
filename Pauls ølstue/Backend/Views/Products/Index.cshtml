@@ -87,7 +87,23 @@
 @section scripts
 {
     <script>
-        $(function() {
+        $(function () {
+            $.ajax({
+                url: 'http://localhost:52856/api/drink/getpagedproducts',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify({
+                    page: 0,
+                    pageSize: 5,
+                    sort: 'AscNavn',
+                    searchText: ''
+                }),
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+
             $('#addProdukt').on('click', function () {
                 $('#produktToAdd').on('change', function() {
                     var value = $(this).val();
