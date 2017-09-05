@@ -16,6 +16,7 @@ using ViewModels;
 using Data;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 
 
@@ -33,11 +34,10 @@ namespace Frontend.Views
         {
             this.InitializeComponent();
             UCVM = new UserContentViewModel();
-            UCVM.Load();
-            
-            UCVM.vare = VareManager.Varer();
+            UCVM.LoadAsync();
             StartList();
             Products.IsEnabled = false;
+           // UCVM.vare.Add(new Vare { Id=100,Navn="Peter",Pris=100,Tidsstempel=DateTime.Now});
         }
 
         private void UpdateList()
@@ -147,9 +147,10 @@ namespace Frontend.Views
 
         private void Find_bruger_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+
             UCVM.IndkobListe.Clear();//Hvis brugeren bbliver skiftet undervejs nulstilles indkøbslisten.
             if (Find_bruger == null) return;
-            if (Find_bruger != null) { Products.IsEnabled = true; }
+            if (Find_bruger != null){Products.IsEnabled = true;}
             var combo = (ComboBox)sender;
             
         }

@@ -7,27 +7,27 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Data
 {
     public class Vare
     {
-        public int VareId { get; set; }
-        public string VareNavn { get; set; }
-        public int VarePris { get; set; }
-        public bool ErDrink { get; set; }
+        public int Id { get; set; }
+        public string Navn { get; set; }
+        public decimal Pris { get; set; }
         public DateTime Tidsstempel { get; set; }
+    }
+
+    public class Drink
+    {
+        public int Id { get; set; }
+        public string Navn { get; set; }
+        public DateTime Tidsstempel { get; set; }
+        public List<Vare> Ingrediense { get; set; }
     }
 
     public class VareManager
     {
-        string vare;
-        public HttpClient client = new HttpClient();
-
-
-
         public static List<Vare> Varer()
         {
             var varer = new List<Vare>();
@@ -39,7 +39,7 @@ namespace Data
                 var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    varer.Add(new Vare { VareId = reader.GetInt32(0), VareNavn = reader.GetString(1), VarePris = reader.GetInt32(2), Tidsstempel = reader.GetDateTime(3), ErDrink = false });
+                    varer.Add(new Vare { Id = reader.GetInt32(0), Navn = reader.GetString(1), Pris = reader.GetInt32(2), Tidsstempel = reader.GetDateTime(3)});
                 }
                 reader.Close();
 
@@ -49,7 +49,7 @@ namespace Data
                 var reader2 = cmd.ExecuteReader();
                 while (reader2.Read())
                 {
-                    varer.Add(new Vare { VareId = reader2.GetInt32(0), VareNavn = reader2.GetString(1), Tidsstempel = reader2.GetDateTime(2), ErDrink = true });
+                    varer.Add(new Vare { Id = reader2.GetInt32(0), Navn = reader2.GetString(1), Tidsstempel = reader2.GetDateTime(2) });
                 }
                 dbConn.Close();
             }

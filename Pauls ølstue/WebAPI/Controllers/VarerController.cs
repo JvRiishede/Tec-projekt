@@ -5,6 +5,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using Model;
+using Newtonsoft.Json;
+using System.Diagnostics;
 using WebAPI.Classes;
 using Vare = Model.Vare;
 
