@@ -70,12 +70,7 @@
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                    <!--<HyperlinkButton Content="{Binding Name}" Click="DeleteItem" MinWidth="50" Width="115"></HyperlinkButton>-->
-                                    <!--<TextBox Text="{Binding Amount}" BorderThickness="0" ></TextBox>-->
                                     <Button Content="{Binding Full}" Width="auto" Click="DeleteItem" HorizontalContentAlignment="Stretch"/>
-                                    <!--<Border BorderThickness="1" BorderBrush="Black" Height="35" HorizontalAlignment="Center" Width="auto">
-                                    <TextBlock Text="{Binding Full}" Tapped="DeleteItem" HorizontalAlignment="Center" Width="auto"></TextBlock>
-                                    </Border>-->
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>

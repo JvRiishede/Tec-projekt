@@ -37,7 +37,7 @@ namespace ViewModels
             public string Full { get; set; }
             public void Combine()
             {
-                Full = Name + "," + Amount.ToString();
+                Full = Name + "   " + "Antal: " + Amount.ToString();
             }
         }
 
