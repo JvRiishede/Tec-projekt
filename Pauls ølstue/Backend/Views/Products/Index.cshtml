@@ -1,7 +1,47 @@
-﻿
+﻿@model Backend.Viewmodels.UsersViewmodel
 @{
     ViewBag.Title = "Index";
 }
+<style>
+    table tbody tr, table thead tr {
+        cursor: pointer;
+    }
+</style>
+<div class="w3-container">
+    <div class="w3-row w3-margin-top w3-card w3-padding">
+        <div class="w3-col m10">
 
-<h2>Index</h2>
+            <input placeholder="Søg" id="searchUser" class="w3-input w3-border" />
+        </div>
+        <div class="w3-col m2">
+            <a href="/users/create" class="w3-button w3-blue w3-right">Opret bruger</a>
+        </div>
+    </div>
+    <div class="w3-row w3-margin-top">
+        <div class="w3-col m12" id="tableContainer">
+            @{ Html.RenderPartial("_DrinkTable", Model);}
+        </div>
+    </div>
+    <div id="userEdit" class="w3-row w3-margin-top w3-animate-zoom" style="display: none">
+        <div class="w3-col m12">
+            <div class="w3-card w3-padding">
+                <div class="w3-row">
+                    <div class="w3-col m3">
+                        <img src="" style="max-width: 200px; max-height: 200px;" />
+                    </div>
+                    <div class="w3-col m7">
+                        .
+                        <label data-name="fullname"></label>
+                        <label data-name="email"></label>
+                        <label data-name="role"></label>
+                    </div>
+                    <div class="w3-col m2">
+                        <button id="deleteUser" class="w3-button w3-red w3-right w3-margin-left">Slet</button>
+                        <a href="" class="w3-button w3-blue w3-right">Rediger</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 

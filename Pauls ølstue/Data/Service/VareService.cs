@@ -5,38 +5,116 @@ using System.Text;
 using System.Threading.Tasks;
 using Data.Interface;
 using Data.Classes;
+using Model;
 using MySql.Data.MySqlClient;
 
 namespace Data.Service
 {
-    class VareService : IVareService
+    public class VareService : IVareService
     {
-        public List<Vare> Varer()
+        private readonly IConnectionInformationService _connectionInformationService;
+
+        public VareService(IConnectionInformationService connectionInformationService)
         {
-            var varer = new List<Vare>();
-            var dbConn = DBConnection.Instance();
-            if (dbConn.IsConnect())
+            _connectionInformationService = connectionInformationService;
+        }
+
+        public List<Vare> GetAllVare()
+        {
+            var result = new List<Vare>();
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
             {
-                string query = "Select Id, Navn, Pris, Tidsstempel FROM Vare;";
-                var cmd = new MySqlCommand(query, dbConn.Connection);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+                con.Open();
+                using (var cmd = con.CreateCommand())
                 {
-                    varer.Add(new Vare { VareId = reader.GetInt32(0), VareNavn = reader.GetString(1), VarePris = reader.GetInt32(2), Tidsstempel = reader.GetDateTime(3), ErDrink = false });
+                    cmd.CommandText = "select Id, Navn, Pris, Tidsstempel from Vare";
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            result.Add(new Vare
+                            {
+                                Id = (int)dr["Id"],
+                                Navn = (string)dr["Navn"],
+                                Pris = (decimal)dr["Pris"],
+                                Tidsstempel = (DateTime)dr["Tidsstempel"]
+                            });
+                        }
+                    }
                 }
-                reader.Close();
-
-
-                query = "Select Id, Navn, Tidsstempel FROM Drink";
-                cmd = new MySqlCommand(query, dbConn.Connection);
-                var reader2 = cmd.ExecuteReader();
-                while (reader2.Read())
-                {
-                    varer.Add(new Vare { VareId = reader2.GetInt32(0), VareNavn = reader2.GetString(1), Tidsstempel = reader2.GetDateTime(2), ErDrink = true });
-                }
-                dbConn.Close();
             }
-            return varer;
+            return result;
+        }
+
+        public Vare GetVare(int id)
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "select Id, Navn, Pris, Tidsstempel from Vare where Id = @Id";
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            return new Vare
+                            {
+                                Id = (int)dr["Id"],
+                                Navn = (string)dr["Navn"],
+                                Pris = (decimal)dr["Pris"],
+                                Tidsstempel = (DateTime)dr["Tidsstempel"]
+                            };
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        public int CreateVare(string navn, decimal pris)
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "insert into Vare(Navn, Pris) values(@Navn, @Pris); select LAST_INSERT_ID()";
+                    cmd.Parameters.AddWithValue("@Navn", navn);
+                    cmd.Parameters.AddWithValue("@Pris", pris);
+                    return (int)cmd.ExecuteScalar();}
+            }
+        }
+
+        public bool UpdateVare(Vare vare)
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "update Vare set Navn = @Navn, Pris = @Pris where Id = @Id";
+                    cmd.Parameters.AddWithValue("@Navn", vare.Navn);
+                    cmd.Parameters.AddWithValue("@Pris", vare.Pris);
+                    cmd.Parameters.AddWithValue("@Id", vare.Id);
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
+        public bool DeleteVare(int id)
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "delete from Vare where Id = @Id";
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
         }
     }
 }

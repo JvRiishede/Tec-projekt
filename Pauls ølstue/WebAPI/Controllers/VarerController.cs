@@ -11,11 +11,21 @@ namespace WebAPI.Controllers
 {
     public class VarerController : ApiController
     {
-        private readonly IUserService _userService;
-        public VarerController(IUserService userService)
+        private readonly IVareService _vareService;
+
+        public VarerController(IVareService vareService)
         {
-            _userService = userService;
+            _vareService = vareService;
         }
 
+        public Vare GetProduct(int id)
+        {
+            return new Vare();
+        }
+
+        public List<Vare> GetProducts()
+        {
+            return null;
+        }
     }
 }

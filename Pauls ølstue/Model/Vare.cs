@@ -1,18 +1,16 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.Classes
+namespace Model
 {
     public class Vare
     {
-        public int VareId { get; set; }
-        public string VareNavn { get; set; }
-        public int VarePris { get; set; }
-        public bool ErDrink { get; set; }
+        public int Id { get; set; }
+        public string Navn { get; set; }
+        public decimal Pris { get; set; }
         public DateTime Tidsstempel { get; set; }
     }
     //public class VareManager

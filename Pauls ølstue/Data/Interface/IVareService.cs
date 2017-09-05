@@ -8,8 +8,13 @@ using Model;
 
 namespace Data.Interface
 {
-    interface IVareService
+    public interface IVareService
     {
-        List<Vare> Varer();
+        List<Vare> GetAllVare();
+        Vare GetVare(int id);
+        int CreateVare(string Navn, decimal pris);
+        bool UpdateVare(Vare vare);
+        bool DeleteVare(int id);
+
     }
 }

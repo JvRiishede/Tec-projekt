@@ -244,6 +244,8 @@
     <Content Include="Views\Shared\_EditUser.cshtml" />
     <Content Include="Views\Users\Create.cshtml" />
     <Content Include="Views\Users\_UserTable.cshtml" />
+    <Content Include="Views\Products\_DrinkTable.cshtml" />
+    <Content Include="Views\Products\_VareTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
