@@ -14,5 +14,7 @@ namespace Data.Interface
         int CreateDrink(string navn);
         bool UpdateDrink(Drink drink);
         bool DeleteDrink(int id);
+        List<Drink> GetPagedDrinks(ProductSearchTerms terms);
+        int GetDrinksTotal();
     }
 }
