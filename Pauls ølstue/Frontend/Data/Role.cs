@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model
+namespace Data
 {
-    public class Vare
+    public class Role
     {
         public int Id { get; set; }
-        public string Navn { get; set; }
-        public decimal Pris { get; set; }
-        public DateTime Tidsstempel { get; set; }
+        public string Name { get; set; }
     }
 }

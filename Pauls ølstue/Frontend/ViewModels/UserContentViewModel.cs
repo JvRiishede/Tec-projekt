@@ -19,17 +19,20 @@ namespace ViewModels
     {
         
         public ObservableCollection<VareForList> IndkobListe;
-        public ObservableCollection<string> brugere;
+        public ObservableCollection<User> brugere;
         public List<VareForList> TempList;
         public ObservableCollection<Vare> vare;
+        public ObservableCollection<string> brugereCombo;
+        public int BrugerId;
         UserContentModel UCM;
 
         public UserContentViewModel()
         {
             UCM = new UserContentModel();
             IndkobListe = new ObservableCollection<VareForList>();
-            brugere = new ObservableCollection<string>();
+            brugere = new ObservableCollection<User>();
             vare = new ObservableCollection<Vare>();
+            brugereCombo = new ObservableCollection<string>();
         }
 
         public class VareForList
@@ -47,7 +50,6 @@ namespace ViewModels
 
         public async Task LoadVarerAsync()
         {
-            List<Vare> buffer = new List<Vare>();
             var client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:52856/");
             client.DefaultRequestHeaders.Accept.Clear();
@@ -57,6 +59,7 @@ namespace ViewModels
             response = await client.GetAsync("api/varer/getproducts");
             if (response.IsSuccessStatusCode)
             {
+                Debug.WriteLine(await response.Content.ReadAsStringAsync());
                 try
                 {
                     var test = await response.Content.ReadAsStringAsync();
@@ -78,22 +81,35 @@ namespace ViewModels
         {
             await LoadVarerAsync();
             //API connection
+            var client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:52856/");
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-
-
-            //DB connection
-            var dbConn = DBConnection.Instance();
-            if (dbConn.IsConnect())
+            HttpResponseMessage response;
+            response = await client.GetAsync("api/users/GetUsers");
+            if (response.IsSuccessStatusCode)
             {
-                string query = "SELECT Fornavn, Efternavn, VærelseNr FROM Bruger";
-                var cmd = new MySqlCommand(query, dbConn.Connection);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
+                Debug.WriteLine(await response.Content.ReadAsStringAsync());
+                try
                 {
-                    brugere.Add(reader.GetString(0) + " " + reader.GetString(1) + " " + reader.GetInt32(2).ToString());
+                    var test = await response.Content.ReadAsStringAsync();
+                    var midt = JsonConvert.DeserializeObject<List<User>>(test);
+                    foreach (var item in midt)
+                    {
+                        brugere.Add(item);
+                    }
+                    for (int i = 0; i < brugere.Count; i++)
+                    {
+                        brugereCombo.Add(brugere[i].VærelseNr.ToString()+" "+brugere[i].Fornavn+" "+brugere[i].Efternavn);
+                    }
                 }
-                dbConn.Close();
-            }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Frontend");
+                    Debug.WriteLine(e.Message);
+                }
+            };
         }
         
         public void Buy()
@@ -116,7 +132,7 @@ namespace ViewModels
             var dbconn = DBConnection.Instance();
             if (dbconn.IsConnect())
             {
-                string query = "Insert into Ordre (BrugerId, Pris) values (4,+"+FuldPris+")";// OBS mangler korrekt brugerId!!!!
+                string query = "Insert into Ordre (BrugerId, Pris) values ("+BrugerId+",+"+FuldPris+")";// OBS mangler korrekt brugerId!!!!
                 var cmd = new MySqlCommand(query, dbconn.Connection);
                 int succeed =cmd.ExecuteNonQuery();
                 if(succeed>0)

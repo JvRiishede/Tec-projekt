@@ -49,7 +49,7 @@
                     <RowDefinition Height="0"></RowDefinition>
                 </Grid.RowDefinitions>
                 <StackPanel Padding="5">
-                    <ComboBox SelectionChanged="Find_bruger_SelectionChanged" HorizontalAlignment="Center" Padding="5" x:Name="Find_bruger" PlaceholderText="Vælg Bartender" ItemsSource="{x:Bind UCVM.brugere}"></ComboBox>
+                    <ComboBox SelectionChanged="Find_bruger_SelectionChanged" HorizontalAlignment="Center" Padding="5" x:Name="Find_bruger" PlaceholderText="Vælg Bartender" ItemsSource="{x:Bind UCVM.brugereCombo}" ></ComboBox>
                     <Image>
                         <Image.Source>
                             <BitmapImage UriSource="https://s-media-cache-ak0.pinimg.com/originals/81/f6/d7/81f6d7a808cf0990d7099d003f7582a6.jpg"></BitmapImage>

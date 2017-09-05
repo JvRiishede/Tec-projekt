@@ -152,6 +152,10 @@ namespace Frontend.Views
             if (Find_bruger == null) return;
             if (Find_bruger != null){Products.IsEnabled = true;}
             var combo = (ComboBox)sender;
+
+            string[] buffer = combo.SelectedItem.ToString().Split(' ');
+            Debug.WriteLine(buffer[0]);
+            UCVM.BrugerId = Convert.ToInt32(buffer[0]);
             
         }
     }
