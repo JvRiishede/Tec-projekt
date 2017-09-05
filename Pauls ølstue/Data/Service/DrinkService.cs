@@ -43,13 +43,16 @@ namespace Data.Service
                                 drink.Id = (int) dr["DrinkId"];
                                 drink.Navn = (string) dr["DrinkNavn"];
                                 drink.Tidsstempel = (DateTime) dr["DrinkStempel"];
-                                drink.Ingrediense.Add(new Vare
+                                if (dr["VareId"] != DBNull.Value)
                                 {
-                                    Id = (int) dr["VareId"],
-                                    Navn = (string) dr["VareNavn"],
-                                    Pris = (decimal) dr["VarePris"],
-                                    Tidsstempel = (DateTime) dr["VareStempel"],
-                                });
+                                    drink.Ingrediense.Add(new Vare
+                                    {
+                                        Id = (int)dr["VareId"],
+                                        Navn = (string)dr["VareNavn"],
+                                        Pris = (decimal)dr["VarePris"],
+                                        Tidsstempel = (DateTime)dr["VareStempel"],
+                                    });
+                                }
                             }
                             else
                             {
@@ -87,10 +90,10 @@ namespace Data.Service
                             var drinkId = (int) dr["DrinkId"];
                             var drinkNavn = (string)dr["DrinkNavn"];
                             var drinkStempel = (DateTime)dr["DrinkStempel"];
-                            var vareId = (int) dr["VareId"];
-                            var vareNavn = (string) dr["VareNavn"];
-                            var varePris = (decimal) dr["VarePris"];
-                            var vareStempel = (DateTime) dr["VareStempel"];
+                            var vareId = dr["VareId"] != DBNull.Value ? (int)dr["VareId"] : 0;
+                            var vareNavn = dr["VareNavn"] != DBNull.Value ? (string)dr["VareNavn"] : "";
+                            var varePris = dr["VarePris"] != DBNull.Value ? (decimal)dr["VarePris"] : 0;
+                            var vareStempel = dr["VareStempel"] != DBNull.Value ? (DateTime)dr["VareStempel"] : DateTime.MinValue;
 
 
                             var drink = result.FirstOrDefault(a => a.Id == drinkId);
@@ -101,7 +104,12 @@ namespace Data.Service
                                 {
                                     Id = drinkId,
                                     Navn = drinkNavn,
-                                    Ingrediense = new List<Vare>
+                                    Tidsstempel = drinkStempel
+
+                                };
+                                if (vareId != 0)
+                                {
+                                    drink.Ingrediense = new List<Vare>
                                     {
                                         new Vare
                                         {
@@ -110,10 +118,8 @@ namespace Data.Service
                                             Pris = varePris,
                                             Tidsstempel = vareStempel
                                         }
-                                    },
-                                    Tidsstempel = drinkStempel
-
-                                };
+                                    };
+                                }
                                 result.Add(drink);
                             }
                             else
@@ -140,9 +146,9 @@ namespace Data.Service
                 con.Open();
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "insert into Vare(Navn) values(@Navn); select LAST_INSERT_ID()";
+                    cmd.CommandText = "insert into Drink(Navn) values(@Navn); select LAST_INSERT_ID()";
                     cmd.Parameters.AddWithValue("@Navn", navn);
-                    return (int)cmd.ExecuteScalar();
+                    return Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
         }

@@ -5,10 +5,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using Model;
+using WebAPI.Classes;
+using Vare = Model.Vare;
 
 namespace WebAPI.Controllers
 {
+    [AllowCrossSiteJson]
     public class VarerController : ApiController
     {
         private readonly IVareService _vareService;
@@ -25,7 +27,14 @@ namespace WebAPI.Controllers
 
         public List<Vare> GetProducts()
         {
-            return null;
+            return _vareService.GetAllVare();
+        }
+
+        [HttpPost]
+        public Vare CreateProduct(string navn, decimal pris)
+        {
+            var id = _vareService.CreateVare(navn, pris);
+            return _vareService.GetVare(id);
         }
     }
 }

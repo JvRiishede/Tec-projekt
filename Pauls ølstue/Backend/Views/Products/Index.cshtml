@@ -1,25 +1,43 @@
-﻿@model Backend.Viewmodels.UsersViewmodel
-@{
+﻿@{
     ViewBag.Title = "Index";
 }
 <style>
-    table tbody tr, table thead tr {
-        cursor: pointer;
-    }
+    table tbody tr, table thead tr { cursor: pointer; }
 </style>
 <div class="w3-container">
     <div class="w3-row w3-margin-top w3-card w3-padding">
         <div class="w3-col m10">
-
-            <input placeholder="Søg" id="searchUser" class="w3-input w3-border" />
+            <input placeholder="Søg" id="searchUser" class="w3-input w3-border"/>
         </div>
         <div class="w3-col m2">
-            <a href="/users/create" class="w3-button w3-blue w3-right">Opret bruger</a>
+            <button id="addProdukt" class="w3-button w3-blue w3-right">Opret produkt</button>
         </div>
     </div>
     <div class="w3-row w3-margin-top">
-        <div class="w3-col m12" id="tableContainer">
-            @{ Html.RenderPartial("_DrinkTable", Model);}
+        <div class="w3-col m6" id="drinkContainer">
+            <table class="w3-table-all w3-card w3-hoverable">
+                <thead>
+                <tr>
+                    <td>Navn</td>
+                    <td>Oprettet</td>
+                    <td>Pris</td>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="w3-col m6" id="vareContainer">
+            <table class="w3-table-all w3-card w3-hoverable">
+                <thead>
+                <tr>
+                    <td>Navn</td>
+                    <td>Oprettet</td>
+                    <td>Pris</td>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
     </div>
     <div id="userEdit" class="w3-row w3-margin-top w3-animate-zoom" style="display: none">
@@ -27,7 +45,7 @@
             <div class="w3-card w3-padding">
                 <div class="w3-row">
                     <div class="w3-col m3">
-                        <img src="" style="max-width: 200px; max-height: 200px;" />
+                        <img src="" style="max-width: 200px; max-height: 200px;"/>
                     </div>
                     <div class="w3-col m7">
                         .
@@ -43,5 +61,176 @@
             </div>
         </div>
     </div>
+    <div id="addProduktModal" class="w3-modal">
+        <div class="w3-modal-content w3-card-4">
+            <header class="w3-container w3-black"> 
+                <span onclick="document.getElementById('addProduktModal').style.display='none'" 
+                      class="w3-button w3-display-topright">&times;</span>
+                <h2>Opret nyt produkt</h2>
+            </header>
+            <div class="w3-container w3-padding">
+                <select id="produktToAdd" class="w3-input w3-border">
+                    <option value="1">Vare</option>
+                    <option value="2">Drink</option>
+                </select>
+                <input class="w3-input w3-border w3-margin-top" placeholder="Navn" id="produktNavn"/>
+                <input class="w3-input w3-border w3-margin-top" placeholder="Pris" id="produktPris" />
+            </div>
+            <footer class="w3-container">
+                <button class="w3-button w3-red w3-right w3-margin-left w3-margin-bottom">Annuller</button>
+                <button class="w3-button w3-blue w3-right w3-margin-bottom">Opret</button>
+            </footer>
+        </div>
+    </div>
 </div>
 
+@section scripts
+{
+    <script>
+        $(function() {
+            $('#addProdukt').on('click', function () {
+                $('#produktToAdd').on('change', function() {
+                    var value = $(this).val();
+                    if (value == 1) {
+                        $('#produktPris').css('display', 'block');
+                    } else {
+                        $('#produktPris').css('display', 'none');
+                    }
+                });
+                $('#produktToAdd').trigger('change');
+
+                $('#addProduktModal footer button:nth-child(2)').on('click', function () {
+                    var data = {};
+                    var url = "";
+                    if ($('#produktToAdd').val() == 1) {
+                        url = "http://localhost:52856/api/varer/createproduct?navn=" + $('#produktNavn').val() + "&pris=" + $('#produktPris').val();
+                    } else {
+                        url = "http://localhost:52856/api/drink/createproduct?navn=" + $('#produktNavn').val();
+                    }
+                    $.ajax({
+                        url: url,
+                        type: 'post',
+                        dataType: 'json',
+                        success: function (data) {
+                            console.log(data);
+                            if (data) {
+                                var tableTarget = "#vareContainer ";
+                                var pris = 0;
+                                if (data.Ingrediense) {
+                                    tableTarget = "#drinkContainer";
+                                    for (var k = 0; k < data.Ingrediense.length; k++) {
+                                        pris += data.Ingrediense[k].Pris;
+                                    }
+                                } else {
+                                    pris = data.Pris;
+                                }
+
+                                var html = "<tr data-id=" +
+                                    data.Id +
+                                    "><td>" +
+                                    data.Navn +
+                                    "</td><td>" +
+                                    data.Tidsstempel +
+                                    "</td><td>" +
+                                    pris +
+                                    "</td></tr>";
+                                $(tableTarget + "table tbody").append(html);
+                                $('#addProduktModal').css('display', 'none');
+                            }
+                        }
+                    });
+                });
+
+                $('#addProduktModal').css('display', 'block');
+            });
+
+            $.ajax({
+                url: 'http://localhost:52856/api/drink/getproducts',
+                type: 'get',
+                dataType: 'json',
+                success: function(data) {
+
+                    var html = "";
+                    for (var i = 0; i < data.length; i++) {
+                        var pris = 0;
+                        if (data[i].Ingrediense) {
+                            for (var k = 0; k < data[i].Ingrediense.length; k++) {
+                                pris += data[i].Ingrediense[k].Pris;
+                            }
+                        }
+                        html += "<tr data-id=" +
+                            data[i].Id +
+                            "><td>" +
+                            data[i].Navn +
+                            "</td><td>" +
+                            data[i].Tidsstempel +
+                            "</td><td>" +
+                            pris +
+                            "</td></tr>";
+
+                    }
+                    $('#drinkContainer table tbody').html(html);
+                    TableEvents();
+                }
+            });
+
+            $.ajax({
+                url: 'http://localhost:52856/api/varer/getproducts',
+                type: 'get',
+                dataType: 'json',
+                success: function(data) {
+
+                    var html = "";
+                    for (var i = 0; i < data.length; i++) {
+                        html += "<tr data-id=" +
+                            data[i].Id +
+                            "><td>" +
+                            data[i].Navn +
+                            "</td><td>" +
+                            data[i].Tidsstempel +
+                            "</td><td>" +
+                            data[i].Pris +
+                            "</td></tr>";
+                    }
+                    $('#vareContainer table tbody').html(html);
+                    TableEvents();
+                }
+            });
+
+
+        });
+
+
+        function TableEvents() {
+            $('table tbody tr').on('click',
+                function() {
+                    $('tbody tr.w3-blue').removeClass('w3-blue');
+                    $(this).addClass('w3-blue');
+                });
+
+            $('#drinkContainer tbody tr').on('click',
+                function() {
+                    $.ajax({
+                        url: 'http://localhost:52856/api/drink/getproduct/' + $(this).data('id'),
+                        type: 'get',
+                        dataType: 'json',
+                        success: function(data) {
+                            $('#userEdit').css('display', 'block');
+                        }
+                    });
+                });
+
+            $('#vareContainer tbody tr').on('click',
+                function() {
+                    $.ajax({
+                        url: 'http://localhost:52856/api/varer/getproduct/' + $(this).data('id'),
+                        type: 'get',
+                        dataType: 'json',
+                        success: function(data) {
+                            $('#userEdit').css('display', 'block');
+                        }
+                    });
+                });
+        }
+    </script>
+}
