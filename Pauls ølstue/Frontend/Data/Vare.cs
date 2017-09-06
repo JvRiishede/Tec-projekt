@@ -25,4 +25,11 @@ namespace Data
         public DateTime Tidsstempel { get; set; }
         public List<Vare> Ingrediense { get; set; }
     }
+
+    public class VareItem
+    {
+        public int Id { get; set; }
+        public string Navn { get; set; }
+        public bool ErDrink { get; set; }
+    }
 }

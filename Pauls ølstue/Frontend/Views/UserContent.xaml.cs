@@ -35,9 +35,9 @@ namespace Frontend.Views
             this.InitializeComponent();
             UCVM = new UserContentViewModel();
             UCVM.LoadAsync();
-            StartList();
+            UCVM.LoadVarerAsync();
+            UCVM.LoadDrinkAsync();
             Products.IsEnabled = false;
-           // UCVM.vare.Add(new Vare { Id=100,Navn="Peter",Pris=100,Tidsstempel=DateTime.Now});
         }
 
         private void UpdateList()
@@ -49,6 +49,7 @@ namespace Frontend.Views
                 UCVM.IndkobListe.Add(UCVM.TempList[i]);
             }
         }
+
         private void AddItem(object sender, RoutedEventArgs e)
         {
             string name = ((Button)sender).Content.ToString();
@@ -65,11 +66,18 @@ namespace Frontend.Views
             }
             if (found == false)
             {
-                UCVM.IndkobListe.Add(new UserContentViewModel.VareForList
+                bool isDrink = false;
+                foreach (var item in UCVM.vareItem)
+                {
+                    if (name == item.Navn)
+                        isDrink = item.ErDrink;
+                }
+                UCVM.IndkobListe.Add(new OrderItem
                 {
                     Name = name,
                     Amount = 1,
-                    Id = Convert.ToInt32(((Button)sender).Name.ToString())
+                    Id = Convert.ToInt32(((Button)sender).Name.ToString()),
+                    ErDrink = isDrink
                 });
                 UCVM.IndkobListe[UCVM.IndkobListe.Count - 1].Combine();
             }
@@ -114,24 +122,18 @@ namespace Frontend.Views
 
         private void Buy(object sender, RoutedEventArgs e)
         {
-            UCVM.Buy();
+            UCVM.BuyAsync();
             UCVM.IndkobListe.Clear();
-            StartList();
+            Find_bruger.SelectedIndex = -1;
         }
 
         private void Clear(object sender, RoutedEventArgs e)
         {
             UCVM.IndkobListe.Clear();
-            StartList();
             Find_bruger.SelectedIndex = -1;
             Products.IsEnabled = false;
         }
-            
-        private void StartList()
-        {
-            //UCVM.IndkobListe.Add(new UserContentViewModel.VareForList { });
-            //UCVM.IndkobListe.Add(new UserContentViewModel.VareForList { });// skal have fundet en løsning på det her!!!!
-        }
+
         private void clearList(object sender, RoutedEventArgs e)
         {
             UCVM.TempList = UCVM.IndkobListe.ToList();
@@ -147,16 +149,25 @@ namespace Frontend.Views
 
         private void Find_bruger_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
             UCVM.IndkobListe.Clear();//Hvis brugeren bbliver skiftet undervejs nulstilles indkøbslisten.
             if (Find_bruger == null) return;
             if (Find_bruger != null){Products.IsEnabled = true;}
             var combo = (ComboBox)sender;
-
-            string[] buffer = combo.SelectedItem.ToString().Split(' ');
-            Debug.WriteLine(buffer[0]);
-            UCVM.BrugerId = Convert.ToInt32(buffer[0]);
-            
+            try
+            {
+                string[] buffer = combo.SelectedItem.ToString().Split(' ');
+                Debug.WriteLine(buffer[0]);
+                foreach(var item in UCVM.brugere)
+                {
+                    if(buffer[0]==item.VærelseNr.ToString())
+                        UCVM.BrugerId = item.Id;
+                }
+                
+            }
+            catch (Exception f)
+            {
+                UCVM.BrugerId = -1;
+            }
         }
     }
 }

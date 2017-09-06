@@ -56,9 +56,9 @@
                         </Image.Source>
                     </Image>
                 </StackPanel>
-                <GridView x:Name="Products"  Grid.Row="0" Grid.Column="1" IsItemClickEnabled="True" ItemsSource="{x:Bind UCVM.vare}">
+                <GridView x:Name="Products"  Grid.Row="0" Grid.Column="1" IsItemClickEnabled="True" ItemsSource="{x:Bind UCVM.vareItem}">
                     <GridView.ItemTemplate>
-                        <DataTemplate x:DataType="data:Vare">
+                        <DataTemplate x:DataType="data:VareItem">
                             <Grid>
                                 <Button Name="{x:Bind Id}" Content="{x:Bind Navn}"  Click="AddItem" Height="200" Width="200" FontSize="35"></Button>
                             </Grid>

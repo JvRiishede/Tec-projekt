@@ -15,13 +15,15 @@ using Newtonsoft.Json;
 
 namespace ViewModels
 {
-    public class UserContentViewModel:BaseViewmodel
+    public class UserContentViewModel : BaseViewmodel
     {
-        
-        public ObservableCollection<VareForList> IndkobListe;
+
+        public ObservableCollection<OrderItem> IndkobListe;
         public ObservableCollection<User> brugere;
-        public List<VareForList> TempList;
+        public List<OrderItem> TempList;
         public ObservableCollection<Vare> vare;
+        public ObservableCollection<Drink> drink;
+        public ObservableCollection<VareItem> vareItem;
         public ObservableCollection<string> brugereCombo;
         public int BrugerId;
         UserContentModel UCM;
@@ -29,25 +31,14 @@ namespace ViewModels
         public UserContentViewModel()
         {
             UCM = new UserContentModel();
-            IndkobListe = new ObservableCollection<VareForList>();
+            IndkobListe = new ObservableCollection<OrderItem>();
             brugere = new ObservableCollection<User>();
             vare = new ObservableCollection<Vare>();
             brugereCombo = new ObservableCollection<string>();
+            drink = new ObservableCollection<Drink>();
+            vareItem = new ObservableCollection<VareItem>();
         }
-
-        public class VareForList
-        {
-            public int Id { get; set; }
-            public string Name { get; set; }
-            public int Amount { get; set; }
-            public bool ErDrink { get; set; }
-            public string Full { get; set; }
-            public void Combine()
-            {
-                Full = Name + "   " + "Antal: " + Amount.ToString();
-            }
-        }
-
+        
         public async Task LoadVarerAsync()
         {
             var client = new HttpClient();
@@ -67,9 +58,39 @@ namespace ViewModels
                     foreach (var item in midt)
                     {
                         vare.Add(item);
+                        vareItem.Add(new VareItem { Id = item.Id, Navn = item.Navn, ErDrink = false });
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Frontend");
+                    Debug.WriteLine(e.Message);
+                }
+            };
+        }
+
+        public async Task LoadDrinkAsync()
+        {
+            var client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:52856/");
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            HttpResponseMessage response;
+            response = await client.GetAsync("api/drink/getproducts");
+            if (response.IsSuccessStatusCode)
+            {
+                try
+                {
+                    var test = await response.Content.ReadAsStringAsync();
+                    var midt = JsonConvert.DeserializeObject<List<Drink>>(test);
+                    foreach (var item in midt)
+                    {
+                        drink.Add(item);
+                        vareItem.Add(new VareItem { Id = item.Id, Navn = item.Navn, ErDrink = true });
+                    }
+                }
+                catch (Exception e)
                 {
                     Debug.WriteLine("Frontend");
                     Debug.WriteLine(e.Message);
@@ -79,7 +100,6 @@ namespace ViewModels
 
         public async Task LoadAsync()
         {
-            await LoadVarerAsync();
             //API connection
             var client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:52856/");
@@ -90,7 +110,6 @@ namespace ViewModels
             response = await client.GetAsync("api/users/GetUsers");
             if (response.IsSuccessStatusCode)
             {
-                Debug.WriteLine(await response.Content.ReadAsStringAsync());
                 try
                 {
                     var test = await response.Content.ReadAsStringAsync();
@@ -101,7 +120,7 @@ namespace ViewModels
                     }
                     for (int i = 0; i < brugere.Count; i++)
                     {
-                        brugereCombo.Add(brugere[i].VærelseNr.ToString()+" "+brugere[i].Fornavn+" "+brugere[i].Efternavn);
+                        brugereCombo.Add(brugere[i].VærelseNr.ToString() + " " + brugere[i].Fornavn + " " + brugere[i].Efternavn);
                     }
                 }
                 catch (Exception e)
@@ -111,60 +130,61 @@ namespace ViewModels
                 }
             };
         }
-        
-        public void Buy()
-        {
-            int FuldPris = 0;
-            for (int i = 0; i < IndkobListe.Count; i++)
-            {
-                for (int j = 0; j < vare.Count; j++)
-                {
-                    //if(vare[j].ErDrink && IndkobListe[i].Name==vare[j].VareNavn)
-                    //{
-                    //    IndkobListe[i].ErDrink = true;
-                    //}
-                    //if(IndkobListe[i].Id==vare[j].VareId)
-                    //{
-                    //    FuldPris += IndkobListe[i].Amount * vare[j].VarePris;
-                    //}
-                }
-            }
-            var dbconn = DBConnection.Instance();
-            if (dbconn.IsConnect())
-            {
-                string query = "Insert into Ordre (BrugerId, Pris) values ("+BrugerId+",+"+FuldPris+")";// OBS mangler korrekt brugerId!!!!
-                var cmd = new MySqlCommand(query, dbconn.Connection);
-                int succeed =cmd.ExecuteNonQuery();
-                if(succeed>0)
-                {
-                    cmd = new MySqlCommand("Select MAX(Id) from Ordre", dbconn.Connection);
-                    var reader = cmd.ExecuteReader();
-                    int OrdreId = 0;
-                    while (reader.Read())
-                    { OrdreId = reader.GetInt32(0); }
-                    reader.Close();
-                    query = "Insert into Ordre_Drink_Vare (OrdreId, DrinkId, VareId) values ";
-                    for (int i = 0; i < IndkobListe.Count; i++)
-                    {
-                        for (int j = 0; j < IndkobListe[i].Amount; j++)
-                        {
-                            int DrinkId = 0, VareId = 0;
-                            if (IndkobListe[i].ErDrink)
-                            {
-                                DrinkId = IndkobListe[i].Id;
-                            }
-                            else
-                                VareId = IndkobListe[i].Id;
 
-                            query += "(" + OrdreId + ", " + DrinkId + ", " + VareId + "), ";
+        public async Task BuyAsync()
+        {
+            decimal FuldPris = 0;
+
+            foreach (var item in IndkobListe)
+            {
+                if (item.ErDrink)
+                {
+                    for (int i = 0; i < drink.Count; i++)
+                    {
+                        if (drink[i].Id == item.Id)
+                        {
+                            for (int j = 0; j < drink[i].Ingrediense.Count; j++)
+                            {
+                                for (int k = 0; k < vare.Count; k++)
+                                {
+                                    if (drink[i].Ingrediense[j].Id == vare[k].Id)
+                                    {
+                                        FuldPris += vare[k].Pris*item.Amount;
+                                        break;
+                                    }
+                                }
+                            }
                         }
                     }
-                    query = query.Substring(0, query.Length - 2);
-                    query += ";";
-                    cmd = new MySqlCommand(query, dbconn.Connection);
-                    cmd.ExecuteNonQuery();
                 }
-                dbconn.Close();
+                else
+                {
+                    for (int i = 0; i < vare.Count; i++)
+                    {
+                        if (vare[i].Id == item.Id)
+                        {
+                            FuldPris += vare[i].Pris*item.Amount;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:52856/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                FullOrder fo = new FullOrder { Brugerid = BrugerId, FuldPris = FuldPris, OrderList = IndkobListe };
+                HttpResponseMessage response = await client.PostAsJsonAsync("api/Order/placeorder", fo);
+                if (response.IsSuccessStatusCode)
+                {
+                    bool result = await response.Content.ReadAsAsync<bool>();
+                    if (result)
+                        Debug.WriteLine("Order Submitted");
+                    else
+                        Debug.WriteLine("An error has occurred");
+                }
             }
         }
     }
