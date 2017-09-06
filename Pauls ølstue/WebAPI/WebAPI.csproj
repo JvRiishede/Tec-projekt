@@ -176,6 +176,7 @@
     <Compile Include="Classes\AllowCrossSiteJsonAttribute.cs" />
     <Compile Include="Classes\Vare.cs" />
     <Compile Include="Controllers\DrinkController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\VarerController.cs" />
     <Compile Include="Global.asax.cs">

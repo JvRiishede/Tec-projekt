@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Drink.cs" />
+    <Compile Include="FullOrder.cs" />
+    <Compile Include="OrderItem.cs" />
     <Compile Include="ProductSearchTerms.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Role.cs" />
