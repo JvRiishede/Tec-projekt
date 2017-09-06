@@ -117,5 +117,70 @@ namespace Data.Service
                 }
             }
         }
+
+        public List<Vare> GetPagedVare(ProductSearchTerms terms)
+        {
+            var result = new List<Vare>();
+            var sql = @"select Id, Navn, Tidsstempel, Pris from Vare where Navn like @search [SORT] limit @offset, @pageSize";
+
+            switch (terms.Sort)
+            {
+                case SortProducts.AscNavn:
+                    sql = sql.Replace("[SORT]", "order by Navn asc");
+                    break;
+                case SortProducts.DescNavn:
+                    sql = sql.Replace("[SORT]", "order by Navn desc");
+                    break;
+                case SortProducts.AscPris:
+                    sql = sql.Replace("[SORT]", "order by Pris asc");
+                    break;
+                case SortProducts.DescPris:
+                    sql = sql.Replace("[SORT]", "order by Pris desc");
+                    break;
+                case SortProducts.AscTime:
+                    sql = sql.Replace("[SORT]", "order by Tidsstempel asc");
+                    break;
+                case SortProducts.DescTime:
+                    sql = sql.Replace("[SORT]", "order by Tidsstempel desc");
+                    break;
+            }
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    cmd.Parameters.AddWithValue("@offset", terms.PageSize * terms.Page);
+                    cmd.Parameters.AddWithValue("@pageSize", terms.PageSize);
+                    cmd.Parameters.AddWithValue("@search", "%" + (terms.SearchText ?? "") + "%");
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            result.Add(new Vare()
+                            {
+                                Id = (int)dr["Id"],
+                                Navn = (string)dr["Navn"],
+                                Pris = (decimal)dr["Pris"],
+                                Tidsstempel = (DateTime)dr["Tidsstempel"]
+                            });
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        public int GetVareTotal()
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "select count(*) as Total from Vare";
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+        }
     }
 }

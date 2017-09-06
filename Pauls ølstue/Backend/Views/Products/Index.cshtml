@@ -23,8 +23,15 @@
                     <td>Pris</td>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody data-total="0" data-page="0" data-pagesize="5" data-sort="AscNavn" data-searchtext="">
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td><button data-command="prev" class="w3-button w3-white w3-border w3-border-gray w3-tiny">Forige</button></td>
+                        <td></td>
+                        <td><button data-command="next" class="w3-button w3-white w3-border w3-border-gray w3-tiny w3-right">Næste</button></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
         <div class="w3-col m6" id="vareContainer">
@@ -36,7 +43,14 @@
                     <td>Pris</td>
                 </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody data-total="0" data-page="0" data-pagesize="5" data-sort="AscNavn" data-searchtext=""></tbody>
+                <tfoot>
+                <tr>
+                    <td><button data-command="prev" class="w3-button w3-white w3-border w3-border-gray w3-tiny">Forige</button></td>
+                    <td></td>
+                    <td><button data-command="next" class="w3-button w3-white w3-border w3-border-gray w3-tiny w3-right">Næste</button></td>
+                </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -63,7 +77,7 @@
     </div>
     <div id="addProduktModal" class="w3-modal">
         <div class="w3-modal-content w3-card-4">
-            <header class="w3-container w3-black"> 
+            <header class="w3-container w3-green"> 
                 <span onclick="document.getElementById('addProduktModal').style.display='none'" 
                       class="w3-button w3-display-topright">&times;</span>
                 <h2>Opret nyt produkt</h2>
@@ -88,21 +102,6 @@
 {
     <script>
         $(function () {
-            $.ajax({
-                url: 'http://localhost:52856/api/drink/getpagedproducts',
-                type: 'post',
-                dataType: 'json',
-                contentType: "application/json;charset=utf-8",
-                data: JSON.stringify({
-                    page: 0,
-                    pageSize: 5,
-                    sort: 'AscNavn',
-                    searchText: ''
-                }),
-                success: function (data) {
-                    console.log(data);
-                }
-            });
 
             $('#addProdukt').on('click', function () {
                 $('#produktToAdd').on('change', function() {
@@ -160,62 +159,143 @@
                 $('#addProduktModal').css('display', 'block');
             });
 
-            $.ajax({
-                url: 'http://localhost:52856/api/drink/getproducts',
-                type: 'get',
-                dataType: 'json',
-                success: function(data) {
+            var drinkTable = $('#drinkContainer table');
+            var drinkTbody = drinkTable.children('tbody');
+            window.drinkPageState = {
+                page: parseInt(drinkTbody.data('page')),
+                pageSize: drinkTbody.data('pagesize'),
+                sort: drinkTbody.data('sort'),
+                searhText: drinkTbody.data('searchtext'),
+                total: 0
+            }
 
+            var vareTable = $('#vareContainer table');
+            var vareTbody = drinkTable.children('tbody');
+            window.varePageState = {
+                page: parseInt(vareTbody.data('page')),
+                pageSize: vareTbody.data('pagesize'),
+                sort: vareTbody.data('sort'),
+                searhText: vareTbody.data('searchtext'),
+                total: 0
+            }
+
+            drinkTable.find('tfoot button').on('click', function () {
+                
+                if ($(this).data('command') == "prev") {
+                    drinkPageState.page -= 1;
+                } else {
+                    drinkPageState.page += 1;
+                }
+                getPagedDrinks(drinkPageState.page, drinkPageState.pageSize, drinkPageState.sort, drinkPageState.searchText, TableEvents);
+            });
+
+            vareTable.find('tfoot button').on('click', function () {
+                if ($(this).data('command') == "prev") {
+                    varePageState.page -= 1;
+                } else {
+                    varePageState.page += 1;
+                }
+                getPagedVare(varePageState.page, varePageState.pageSize, varePageState.sort, varePageState.searchText, TableEvents);
+            });
+
+            startTables();
+
+        });
+
+        function startTables() {
+            getPagedDrinks(drinkPageState.page, drinkPageState.pageSize, drinkPageState.sort, drinkPageState.searchText, TableEvents);
+            getPagedVare(varePageState.page, varePageState.pageSize, varePageState.sort, varePageState.searchText, TableEvents);
+        }
+
+        function getPagedDrinks(page, pageSize, sort, searchText, eventCallBack) {
+            $.ajax({
+                url: 'http://localhost:52856/api/drink/getpagedproducts',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify({
+                    page: page,
+                    pageSize: pageSize,
+                    sort: sort,
+                    searchText: searchText
+                }),
+                success: function (data) {
+                    var drinks = data.Drinks;
+                    drinkPageState.total = data.Total;
                     var html = "";
-                    for (var i = 0; i < data.length; i++) {
+                    for (var i = 0; i < drinks.length; i++) {
                         var pris = 0;
-                        if (data[i].Ingrediense) {
-                            for (var k = 0; k < data[i].Ingrediense.length; k++) {
-                                pris += data[i].Ingrediense[k].Pris;
+                        if (drinks[i].Ingrediense) {
+                            for (var k = 0; k < drinks[i].Ingrediense.length; k++) {
+                                pris += drinks[i].Ingrediense[k].Pris;
                             }
                         }
                         html += "<tr data-id=" +
-                            data[i].Id +
+                            drinks[i].Id +
                             "><td>" +
-                            data[i].Navn +
+                            drinks[i].Navn +
                             "</td><td>" +
-                            data[i].Tidsstempel +
+                            drinks[i].Tidsstempel +
                             "</td><td>" +
                             pris +
                             "</td></tr>";
 
                     }
                     $('#drinkContainer table tbody').html(html);
-                    TableEvents();
+                    eventCallBack();
+                    disableButtons('drinkContainer', drinkPageState.page, drinkPageState.pageSize, drinkPageState.total);
                 }
             });
 
-            $.ajax({
-                url: 'http://localhost:52856/api/varer/getproducts',
-                type: 'get',
-                dataType: 'json',
-                success: function(data) {
+        }
 
+        function disableButtons(id, page, pageSize, total) {
+            if (page == 0) {
+                
+                $('#' + id + ' table tfoot button[data-command=prev]').addClass('w3-disabled');
+            } else {
+                $('#' + id + ' table tfoot button[data-command=prev]').removeClass('w3-disabled');
+            }
+            if (page * pageSize + pageSize >= total) {
+                $('#' + id + ' table tfoot button[data-command=next]').addClass('w3-disabled');
+            } else {
+                $('#' + id + ' table tfoot button[data-command=next]').removeClass('w3-disabled');
+            }
+        }
+
+        function getPagedVare(page, pageSize, sort, searchText, eventCallBack) {
+            $.ajax({
+                url: 'http://localhost:52856/api/varer/getpagedproducts',
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify({
+                    page: page,
+                    pageSize: pageSize,
+                    sort: sort,
+                    searchText: searchText
+                }),
+                success: function (data) {
+                    var varer = data.Varer;
+                    varePageState.total = data.Total;
                     var html = "";
-                    for (var i = 0; i < data.length; i++) {
+                    for (var i = 0; i < varer.length; i++) {
                         html += "<tr data-id=" +
-                            data[i].Id +
+                            varer[i].Id +
                             "><td>" +
-                            data[i].Navn +
+                            varer[i].Navn +
                             "</td><td>" +
-                            data[i].Tidsstempel +
+                            varer[i].Tidsstempel +
                             "</td><td>" +
-                            data[i].Pris +
+                            varer[i].Pris +
                             "</td></tr>";
                     }
                     $('#vareContainer table tbody').html(html);
-                    TableEvents();
+                    eventCallBack();
+                    disableButtons('vareContainer', varePageState.page, varePageState.pageSize, varePageState.total);
                 }
             });
-
-
-        });
-
+        }
 
         function TableEvents() {
             $('table tbody tr').on('click',

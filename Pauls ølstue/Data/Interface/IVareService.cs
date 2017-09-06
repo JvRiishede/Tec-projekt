@@ -15,6 +15,8 @@ namespace Data.Interface
         int CreateVare(string Navn, decimal pris);
         bool UpdateVare(Vare vare);
         bool DeleteVare(int id);
+        List<Vare> GetPagedVare(ProductSearchTerms terms);
+        int GetVareTotal();
 
     }
 }

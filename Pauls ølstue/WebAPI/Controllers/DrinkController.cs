@@ -11,7 +11,7 @@ using WebAPI.Classes;
 
 namespace WebAPI.Controllers
 {
-    [AllowCrossSiteJson]
+    [EnableCors("*", "*", "*")]
     public class DrinkController : ApiController
     {
         private readonly IDrinkService _drinkService;
@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [EnableCors("*", "*", "*")]
+        
         public object GetPagedProducts([FromBody]ProductSearchTerms terms)
         {
 
