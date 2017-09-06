@@ -165,7 +165,7 @@
                 page: parseInt(drinkTbody.data('page')),
                 pageSize: drinkTbody.data('pagesize'),
                 sort: drinkTbody.data('sort'),
-                searhText: drinkTbody.data('searchtext'),
+                searchText: drinkTbody.data('searchtext'),
                 total: 0
             }
 
@@ -175,12 +175,16 @@
                 page: parseInt(vareTbody.data('page')),
                 pageSize: vareTbody.data('pagesize'),
                 sort: vareTbody.data('sort'),
-                searhText: vareTbody.data('searchtext'),
+                searchText: vareTbody.data('searchtext'),
                 total: 0
             }
 
+
+
             drinkTable.find('tfoot button').on('click', function () {
-                
+                if ($(this).hasClass('w3-disabled')) {
+                    return;
+                }
                 if ($(this).data('command') == "prev") {
                     drinkPageState.page -= 1;
                 } else {
@@ -190,6 +194,9 @@
             });
 
             vareTable.find('tfoot button').on('click', function () {
+                if ($(this).hasClass('w3-disabled')) {
+                    return;
+                }
                 if ($(this).data('command') == "prev") {
                     varePageState.page -= 1;
                 } else {
@@ -200,6 +207,24 @@
 
             startTables();
 
+            $('#searchUser').on('keypress', function(e) {
+                if (e.keyCode == 13) {
+                    var value = $(this).val().split(':');
+                    if (value[0] == "drink") {
+                        drinkPageState.page = 0;
+                        drinkPageState.sort = "AscNavn";
+                        drinkPageState.searchText = value[1];
+                        getPagedDrinks(drinkPageState.page, drinkPageState.pageSize, drinkPageState.sort, drinkPageState.searchText, TableEvents);
+                    }
+                    if (value[0] == "vare") {
+                        varePageState.page = 0;
+                        varePageState.sort = "AscNavn";
+                        varePageState.searchText = value[1];
+                        getPagedVare(varePageState.page, varePageState.pageSize, varePageState.sort, varePageState.searchText, TableEvents);
+                    }
+                }
+            });
+
         });
 
         function startTables() {
@@ -208,6 +233,7 @@
         }
 
         function getPagedDrinks(page, pageSize, sort, searchText, eventCallBack) {
+            console.log(searchText);
             $.ajax({
                 url: 'http://localhost:52856/api/drink/getpagedproducts',
                 type: 'post',

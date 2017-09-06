@@ -38,7 +38,7 @@ namespace WebAPI.Controllers
 
             return new
             {
-                Total = _drinkService.GetDrinksTotal(),
+                Total = _drinkService.GetDrinksTotal(terms.SearchText),
                 Drinks = _drinkService.GetPagedDrinks(terms)
             };
         }

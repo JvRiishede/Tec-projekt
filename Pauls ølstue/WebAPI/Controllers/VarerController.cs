@@ -48,7 +48,7 @@ namespace WebAPI.Controllers
 
             return new
             {
-                Total = _vareService.GetVareTotal(),
+                Total = _vareService.GetVareTotal(terms.SearchText),
                 Varer = _vareService.GetPagedVare(terms)
             };
         }

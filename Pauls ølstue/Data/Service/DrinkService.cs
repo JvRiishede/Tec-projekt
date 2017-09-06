@@ -276,14 +276,15 @@ namespace Data.Service
             return result;
         }
 
-        public int GetDrinksTotal()
+        public int GetDrinksTotal(string searchText = "")
         {
             using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
             {
                 con.Open();
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "select count(*) as Total from Drink";
+                    cmd.CommandText = "select count(*) as Total from Drink where Navn like @search";
+                    cmd.Parameters.AddWithValue("@search", $"%{searchText}%");
                     return Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
