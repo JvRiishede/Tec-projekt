@@ -42,14 +42,25 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
+        public bool DeleteProduct(int id)
+        {
+            return _vareService.DeleteVare(id);
+        }
+
+        [HttpPost]
         
         public object GetPagedProducts([FromBody]ProductSearchTerms terms)
         {
-
+            var varer = _vareService.GetPagedVare(terms);
+            if (varer == null || varer.Count == 0 && terms.Page != 0)
+            {
+                terms.Page--;
+                varer = _vareService.GetPagedVare(terms);
+            }
             return new
             {
                 Total = _vareService.GetVareTotal(terms.SearchText),
-                Varer = _vareService.GetPagedVare(terms)
+                Varer = varer
             };
         }
     }

@@ -32,14 +32,18 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        
-        public object GetPagedProducts([FromBody]ProductSearchTerms terms)
+        public object GetPagedProducts([FromBody] ProductSearchTerms terms)
         {
-
+            var drinks = _drinkService.GetPagedDrinks(terms);
+            if ((drinks == null || drinks.Count == 0) && terms.Page != 0)
+            {
+                terms.Page--;
+                drinks = _drinkService.GetPagedDrinks(terms);
+            }
             return new
             {
                 Total = _drinkService.GetDrinksTotal(terms.SearchText),
-                Drinks = _drinkService.GetPagedDrinks(terms)
+                Drinks = drinks
             };
         }
 
