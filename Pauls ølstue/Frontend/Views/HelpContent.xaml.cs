@@ -13,6 +13,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Frontend.Models;
+using ViewModels;
+using Windows.UI.Xaml.Documents;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -23,28 +25,40 @@ namespace Frontend.Views
     /// </summary>
     public sealed partial class HelpContent : Page
     {
-        public List<Test> DataList { get; set; }
+        public HelpViewModel HVM;
         public HelpContent()
         {
+            HVM = new HelpViewModel();
+            
             this.InitializeComponent();
-            DataList = new List<Test>
-            {
-                new Test
-                {
-                    Title = "t",
-                    SubText = "f"
-                },
-                new Test()
-                {
-                    Title = "tt",
-                    SubText = "ff"
-                }
-            };
         }
 
         private void HelpList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             throw new NotImplementedException();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            HVM.HelpList.Clear();
+            HVM.LoadAsync();
+        }
+
+        private void SetHelp(object sender, RoutedEventArgs e)
+        {
+            foreach (var item in HVM.HelpList)
+            {
+                if(item.Navn== ((Button)sender).Content.ToString())
+                {
+                    HelpView.Blocks.Clear();
+                    Run run = new Run();
+                    run.Text = item.Text;
+                    Paragraph paragraph = new Paragraph();
+                    paragraph.Inlines.Add(run);
+                    HelpView.Blocks.Add(paragraph);
+                }
+            }
+            
         }
     }
 }

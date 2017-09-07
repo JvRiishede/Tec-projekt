@@ -76,8 +76,8 @@
                         </ListView.ItemTemplate>
                     </ListView>
                     <StackPanel Padding="5" HorizontalAlignment="Center" Orientation="Horizontal" Width="auto">
-                        <Button Content="Køb" Click="Buy"/>
-                        <Button Content="Cancel ordre" Click="Clear"/>
+                        <Button x:Name="Køb" Content="Køb" Click="Buy"/>
+                        <Button x:Name="Cancel" Content="Cancel ordre" Click="Clear"/>
                     </StackPanel>
                 </StackPanel>
             </Grid>

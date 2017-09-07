@@ -35,11 +35,19 @@ namespace Frontend.Views
             this.InitializeComponent();
             UCVM = new UserContentViewModel();
 
-            UCVM.LoadDrinkAsync();
-            UCVM.LoadVarerAsync();
-            
             UCVM.LoadAsync();
+            try
+            {
+                if (App.loginToken != "")
+                {
+                    UCVM.LoadDrinkAsync();
+                    UCVM.LoadVarerAsync();
+                }
+            }
+            catch (Exception e) { }
             Products.IsEnabled = false;
+            Køb.IsEnabled = false;
+            Cancel.IsEnabled = false;
         }
 
         private void UpdateList()
@@ -49,6 +57,16 @@ namespace Frontend.Views
             for (int i = 0; i < UCVM.TempList.Count; i++)
             {
                 UCVM.IndkobListe.Add(UCVM.TempList[i]);
+            }
+            if (UCVM.IndkobListe.Count > 0)
+            {
+                Køb.IsEnabled = true;
+                Cancel.IsEnabled = true;
+            }
+            else
+            {
+                Køb.IsEnabled = false;
+                Cancel.IsEnabled = false;
             }
         }
 
@@ -134,26 +152,23 @@ namespace Frontend.Views
             UCVM.IndkobListe.Clear();
             Find_bruger.SelectedIndex = -1;
             Products.IsEnabled = false;
+            Køb.IsEnabled = false;
+            Cancel.IsEnabled = false;
         }
-
-        private void clearList(object sender, RoutedEventArgs e)
-        {
-            UCVM.TempList = UCVM.IndkobListe.ToList();
-            UCVM.IndkobListe.Clear();
-        }
-        private void fillList(object sender, RoutedEventArgs e)
-        {
-            for (int i = 0; i < UCVM.TempList.Count; i++)
-            {
-                UCVM.IndkobListe.Add(UCVM.TempList[i]);
-            }
-        }
-
+        
         private void Find_bruger_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             UCVM.IndkobListe.Clear();//Hvis brugeren bbliver skiftet undervejs nulstilles indkøbslisten.
+            Køb.IsEnabled = false;
+            Cancel.IsEnabled = false;
             if (Find_bruger == null) return;
             if (Find_bruger != null){Products.IsEnabled = true;}
+            if (App.first)
+            {
+                UCVM.LoadDrinkAsync();
+                UCVM.LoadVarerAsync();
+                App.first = false;
+            }
             var combo = (ComboBox)sender;
             try
             {

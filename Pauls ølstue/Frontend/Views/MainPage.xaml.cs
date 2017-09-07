@@ -26,8 +26,8 @@ namespace Frontend
         public MainPage()
         {
             Login ny = new Login();
-            
             ny.ShowAsync();
+
             this.InitializeComponent();
             
         }

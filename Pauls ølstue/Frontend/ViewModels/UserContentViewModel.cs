@@ -13,6 +13,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using Frontend;
+using Frontend.Assets;
 
 namespace ViewModels
 {
@@ -27,11 +28,9 @@ namespace ViewModels
         public ObservableCollection<VareItem> vareItem;
         public ObservableCollection<string> brugereCombo;
         public int BrugerId;
-        UserContentModel UCM;
 
         public UserContentViewModel()
         {
-            UCM = new UserContentModel();
             IndkobListe = new ObservableCollection<OrderItem>();
             brugere = new ObservableCollection<User>();
             vare = new ObservableCollection<Vare>();
@@ -42,8 +41,6 @@ namespace ViewModels
         
         public async Task LoadVarerAsync()
         {
-            //while(App.loginToken=="")
-            //{ }
             var client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:52856/");
             client.DefaultRequestHeaders.Accept.Clear();
@@ -102,7 +99,12 @@ namespace ViewModels
                     Debug.WriteLine("Frontend");
                     Debug.WriteLine(e.Message);
                 }
-            };
+            }
+            else
+            {
+                Login ny = new Login();
+                   await ny.ShowAsync();
+            }
         }
 
         public async Task LoadAsync()
@@ -182,8 +184,10 @@ namespace ViewModels
                 client.BaseAddress = new Uri("http://localhost:52856/");
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + App.loginToken);
                 FullOrder fo = new FullOrder { Brugerid = BrugerId, FuldPris = FuldPris, OrderList = IndkobListe };
                 HttpResponseMessage response = await client.PostAsJsonAsync("api/Order/placeorder", fo);
+                client.DefaultRequestHeaders.Add("Authorization", "bearer " + App.loginToken);
                 if (response.IsSuccessStatusCode)
                 {
                     bool result = await response.Content.ReadAsAsync<bool>();
@@ -191,6 +195,11 @@ namespace ViewModels
                         Debug.WriteLine("Order Submitted");
                     else
                         Debug.WriteLine("An error has occurred");
+                }
+                else
+                {
+                    Login ny = new Login();
+                    await ny.ShowAsync();
                 }
             }
         }

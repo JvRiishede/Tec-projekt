@@ -58,9 +58,9 @@ namespace Frontend.Assets
                 
                 App.loginToken = buffer2.Token;
             };
-            UserContentViewModel UCVM = new UserContentViewModel();
-            UCVM.LoadDrinkAsync();
-            UCVM.LoadVarerAsync();
+            App.APPUSCVM.LoadAsync();
+            App.APPUSCVM.LoadVarerAsync();
+            App.APPUSCVM.LoadDrinkAsync();
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

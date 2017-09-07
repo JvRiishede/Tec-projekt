@@ -5,10 +5,7 @@
     xmlns:local="using:Frontend.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    
-    
-    mc:Ignorable="d"
-    >
+    mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
@@ -33,20 +30,22 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-        <TextBox Grid.Row="0"  HorizontalAlignment="Stretch" PlaceholderText="Søg"></TextBox>
+        <Button Grid.Row="0" HorizontalAlignment="Stretch" Content="Get Help" Click="Button_Click"/>
+        <!--<TextBox Grid.Row="0"  HorizontalAlignment="Stretch" PlaceholderText="Søg"></TextBox>-->
         <RelativePanel Grid.Row="1" Margin="0,4,0,0">
-            <ListView x:Name="HelpList" ItemsSource="{x:Bind DataList}" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" SelectionChanged="HelpList_OnSelectionChanged">
+            <ListView x:Name="HelpList" ItemsSource="{x:Bind HVM.HelpList}" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" SelectionChanged="HelpList_OnSelectionChanged">
                 <ListView.ItemTemplate >
                     <DataTemplate>
                         <StackPanel>
-                            <TextBlock Text="{Binding Title}"></TextBlock>
-                            <TextBlock Text="{Binding SubText}"></TextBlock>
+                            <Button Content="{Binding Navn}" HorizontalAlignment="Stretch" Click="SetHelp"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Rectangle x:Name="HelpView" RelativePanel.Below="HelpList" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignLeftWithPanel="True" Fill="Aqua"></Rectangle>
+            <RichTextBlock x:Name="HelpView" RelativePanel.Below="HelpList" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignLeftWithPanel="True">
+                
+            </RichTextBlock>
+            <!--<Rectangle x:Name="HelpView" RelativePanel.Below="HelpList" RelativePanel.AlignBottomWithPanel="True" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignLeftWithPanel="True" Fill="Aqua"></Rectangle>-->
         </RelativePanel>
-        
     </Grid>
 </Page>

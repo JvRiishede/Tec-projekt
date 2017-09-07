@@ -42,7 +42,7 @@ namespace Data.Service
             _authorizedTokens.Add(guid, new Token
             {
                 Username = username,
-                Expire = DateTime.Now.AddHours(2)
+                Expire = DateTime.Now.AddSeconds(30)
             });
             return guid;
         }

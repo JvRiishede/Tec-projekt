@@ -100,6 +100,7 @@
     </Compile>
     <Compile Include="Data\DBConnection.cs" />
     <Compile Include="Data\FullOrder.cs" />
+    <Compile Include="Data\Help.cs" />
     <Compile Include="Data\OrderItem.cs" />
     <Compile Include="Data\Role.cs" />
     <Compile Include="Data\Users.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Models\Test.cs" />
     <Compile Include="Models\UserContentModel.cs" />
     <Compile Include="ViewModels\BaseViewmodel.cs" />
+    <Compile Include="ViewModels\HelpViewModel.cs" />
     <Compile Include="ViewModels\UserContentViewModel.cs" />
     <Compile Include="Views\HelpContent.xaml.cs">
       <DependentUpon>HelpContent.xaml</DependentUpon>

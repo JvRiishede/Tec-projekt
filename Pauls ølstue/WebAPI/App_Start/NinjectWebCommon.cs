@@ -74,7 +74,7 @@ namespace Backend.App_Start
             kernel.Bind<IDrinkService>().To<DrinkService>();
             kernel.Bind<IOrderService>().To<OrderService>();
             kernel.Bind<IFormAuthenticationService>().To<FormAuthenticationService>();
-
+            kernel.Bind<IHelpService>().To<HelpService>();
 
         }
     }

@@ -51,6 +51,7 @@
     <Compile Include="Interface\IConnectionInformationService.cs" />
     <Compile Include="Interface\IDrinkService.cs" />
     <Compile Include="Interface\IFormAuthenticationService.cs" />
+    <Compile Include="Interface\IHelpService.cs" />
     <Compile Include="Interface\IUserService.cs" />
     <Compile Include="Interface\IVareService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Service\DrinkService.cs" />
     <Compile Include="Interface\IOrderService.cs" />
     <Compile Include="Service\FormAuthenticationService.cs" />
+    <Compile Include="Service\HelpService.cs" />
     <Compile Include="Service\OrderService.cs" />
     <Compile Include="Service\UserService.cs" />
     <Compile Include="Service\VareService.cs" />

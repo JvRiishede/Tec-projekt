@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Drink.cs" />
     <Compile Include="FullOrder.cs" />
+    <Compile Include="Help.cs" />
     <Compile Include="OrderItem.cs" />
     <Compile Include="ProductSearchTerms.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 namespace WebAPI.Controllers
 {
     [AllowCrossSiteJson]
+    [AuthorizeApi]
     public class OrderController : ApiController
     {
         private readonly IOrderService _orderService;
