@@ -34,9 +34,11 @@ namespace Frontend.Views
         {
             this.InitializeComponent();
             UCVM = new UserContentViewModel();
-            UCVM.LoadAsync();
-            UCVM.LoadVarerAsync();
+
             UCVM.LoadDrinkAsync();
+            UCVM.LoadVarerAsync();
+            
+            UCVM.LoadAsync();
             Products.IsEnabled = false;
         }
 

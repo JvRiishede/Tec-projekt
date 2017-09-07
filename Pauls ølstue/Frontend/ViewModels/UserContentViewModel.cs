@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
+using Frontend;
 
 namespace ViewModels
 {
@@ -41,10 +42,13 @@ namespace ViewModels
         
         public async Task LoadVarerAsync()
         {
+            //while(App.loginToken=="")
+            //{ }
             var client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:52856/");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("Authorization", "bearer " + App.loginToken);
 
             HttpResponseMessage response;
             response = await client.GetAsync("api/varer/getproducts");
@@ -71,10 +75,13 @@ namespace ViewModels
 
         public async Task LoadDrinkAsync()
         {
+            //while (App.loginToken == "")
+            //{ }
             var client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:52856/");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("Authorization","bearer "+App.loginToken);
 
             HttpResponseMessage response;
             response = await client.GetAsync("api/drink/getproducts");

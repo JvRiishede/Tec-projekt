@@ -22,6 +22,7 @@ namespace Frontend
     /// </summary>
     sealed partial class App : Application
     {
+        public static string loginToken="";
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -30,6 +31,7 @@ namespace Frontend
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            
         }
 
         /// <summary>
@@ -92,6 +94,7 @@ namespace Frontend
         /// <param name="e">Details about the suspend request.</param>
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
+            loginToken = "";
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Save application state and stop any background activity
             deferral.Complete();

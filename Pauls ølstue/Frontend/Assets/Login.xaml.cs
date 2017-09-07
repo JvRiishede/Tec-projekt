@@ -14,6 +14,12 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Data;
 using MySql.Data.MySqlClient;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Diagnostics;
+using Newtonsoft.Json;
+using ViewModels;
+using Frontend;
 
 
 // The Content Dialog item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -27,31 +33,39 @@ namespace Frontend.Assets
             this.InitializeComponent();
         }
 
-        private void LoginProcess()
+        public class BrugerLogin
+        {
+            public User Bruger { get; set; }
+            public string Token { get; set; }
+        }
+
+        private async System.Threading.Tasks.Task LoginProcessAsync()
         {
             string password = Password.Text;
             string username = Brugernavn.Text;
-            string passwordHash;
 
-            var dbConn =DBConnection.Instance();
-            if (dbConn.IsConnect())
+            var client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:52856/");
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            HttpResponseMessage response;
+            response = await client.PostAsync("api/account/login?roomnr=" + username + "&password=" + password,null);
+            if (response.IsSuccessStatusCode)
             {
-                string query = "Select KodeHash FROM Bruger where VærelseNr='"+username+"';";
-                var cmd = new MySqlCommand(query, dbConn.Connection);
-                var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    passwordHash=reader.GetString(0);
-                    //brugere.Add(reader.GetInt32(2).ToString() + ", " + reader.GetString(0) + " " + reader.GetString(1));
-                }
-                dbConn.Close();
-            }
-
+                var buffer = await response.Content.ReadAsStringAsync();
+                var buffer2 = JsonConvert.DeserializeObject<BrugerLogin>(buffer);
+                
+                App.loginToken = buffer2.Token;
+            };
+            UserContentViewModel UCVM = new UserContentViewModel();
+            UCVM.LoadDrinkAsync();
+            UCVM.LoadVarerAsync();
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            LoginProcess();
+            LoginProcessAsync();
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

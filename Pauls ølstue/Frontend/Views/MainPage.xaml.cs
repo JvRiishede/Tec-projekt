@@ -28,7 +28,6 @@ namespace Frontend
             Login ny = new Login();
             
             ny.ShowAsync();
-            
             this.InitializeComponent();
             
         }
