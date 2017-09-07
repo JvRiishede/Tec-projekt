@@ -15,7 +15,7 @@ using MySql.Data.MySqlClient;
 
 namespace Data.Service
 {
-    public class UserService:IUserService
+    public class UserService : IUserService
     {
         private readonly IConnectionInformationService _connectionInformationService;
 
@@ -171,7 +171,7 @@ namespace Data.Service
                     {
                         while (dr.Read())
                         {
-                             result.Add(BindUser(dr));
+                            result.Add(BindUser(dr));
                         }
                     }
 
@@ -255,7 +255,7 @@ namespace Data.Service
         public IEnumerable<User> SearchUsers(string searchText, UserSort sort, int pageSize, int offSet)
         {
             var sql = "select Id, Fornavn, Efternavn, VærelseNr, Email, KodeHash, Billede, Type, (select Type from BrugerType where id = Bruger.Type) as TypeName from Bruger [SEARCHTEXT] [SORTNAME] limit [Offset],[PageSize]";
-            
+
 
             switch (sort)
             {
@@ -369,7 +369,7 @@ namespace Data.Service
                     {
                         while (dr.Read())
                         {
-                            return (byte[]) dr["Billede"];
+                            return (byte[])dr["Billede"];
                         }
                     }
 
@@ -383,20 +383,114 @@ namespace Data.Service
             var user = new User();
             if (dr != null)
             {
-                user.Id = (int) dr["Id"];
+                user.Id = (int)dr["Id"];
                 user.Fornavn = (string)dr["Fornavn"];
-                user.Efternavn = (string) dr["Efternavn"];
-                user.Email = (string) dr["Email"];
-                user.VærelseNr = (int) dr["VærelseNr"];
+                user.Efternavn = (string)dr["Efternavn"];
+                user.Email = (string)dr["Email"];
+                user.VærelseNr = (int)dr["VærelseNr"];
                 if (bindPicture)
                 {
-                    user.Billede = (byte[]) dr["Billede"];
+                    user.Billede = (byte[])dr["Billede"];
                 }
-                user.Role = new Role {Id = (int) dr["Type"], Name = (string) dr["TypeName"] ?? ""};
+                user.Role = new Role { Id = (int)dr["Type"], Name = (string)dr["TypeName"] ?? "" };
             }
             return user;
         }
 
+        public List<User> GetPagedUser(UserSearchTerms terms)
+        {
+            var result = new List<User>();
+            var sql = @"select Bruger.Id BrugerId, Bruger.Fornavn BrugerFornavn, Bruger.Efternavn BrugerEfternavn, Bruger.VærelseNr BrugerVærelseNr, Bruger.Email BrugerEmail, Bruger.Billede BrugerBillede, Bruger.Type BrugerType, BrugerType.Id BrugeTypeId, BrugerType.Type BrugerTypeType from ( select * from Bruger where Fornavn like @search [SORT] limit @offset, @pageSize) as Bruger
+                     left join BrugerType on Bruger.Type=BrugerType.Id";
+
+            switch (terms.Sort)
+            {
+                case SortUser.AscFornavn:
+                    sql = sql.Replace("[SORT]", "order by Fornavn asc");
+                    break;
+                case SortUser.DescFornavn:
+                    sql = sql.Replace("[SORT]", "order by Fornavn desc");
+                    break;
+                case SortUser.AscEfternavn:
+                    sql = sql.Replace("[SORT]", "order by Efternavn asc");
+                    break;
+                case SortUser.DescEfternavn:
+                    sql = sql.Replace("[SORT]", "order by Efternavn dsc");
+                    break;
+                case SortUser.AscVærelseNr:
+                    sql = sql.Replace("[SORT]", "order by VærelseNr asc");
+                    break;
+                case SortUser.DescVærelseNr:
+                    sql = sql.Replace("[SORT]", "order by VærelseNr desc");
+                    break;
+                case SortUser.AscEmail:
+                    sql = sql.Replace("[SORT]", "order by Email asc");
+                    break;
+                case SortUser.DescEmail:
+                    sql = sql.Replace("[SORT]", "order by Email desc");
+                    break;
+                case SortUser.AscType:
+                    sql = sql.Replace("[SORT]", "order by Type asc");
+                    break;
+                case SortUser.DescType:
+                    sql = sql.Replace("[SORT]", "order by type desc");
+                    break;
+            }
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    cmd.Parameters.AddWithValue("@offset", terms.PageSize * terms.Page);
+                    cmd.Parameters.AddWithValue("@pageSize", terms.PageSize);
+                    cmd.Parameters.AddWithValue("@search", "%" + (terms.SearchText ?? "") + "%");
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            var brugerId = (int)dr["BrugerId"];
+                            var brugerFornavn = (string)dr["BrugerFornavn"];
+                            var brugerEfternavn = (string)dr["BrugerEfternavn"];
+                            var brugerVærelseNr = (int)dr["BrugerVærelseNr"];
+                            var brugerEmail = (string)dr["BrugerEmail"];
+                            var brugerBillede = dr["BrugerBillede"] != DBNull.Value ? (byte[])dr["BrugerBillede"] :new byte[0];
+                            var brugerType = (int)dr["BrugerType"];
+                            var brugerTypeType = (string)dr["BrugerTypeType"];
+
+                            result.Add(new User()
+                            {
+                                Id = brugerId,
+                                Fornavn = brugerFornavn,
+                                Efternavn = brugerEfternavn,
+                                VærelseNr = brugerVærelseNr,
+                                Email = brugerEmail,
+                                Billede=brugerBillede,
+                                Role = new Role
+                                {
+                                    Id = brugerType,
+                                    Name = brugerTypeType
+                                }                               
+                            });
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public int GetUserTotal()
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "select count(*) as Total from Bruger";
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+        }
 
     }
 }

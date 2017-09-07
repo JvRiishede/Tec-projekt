@@ -23,6 +23,8 @@ namespace Data.Interface
 
         IEnumerable<User> SearchUsers(string searchText, UserSort sort, int pageSize, int offSet);
         int UserCount();
+        int GetUserTotal();
+        List<User> GetPagedUser(UserSearchTerms terms);
 
     }
 }

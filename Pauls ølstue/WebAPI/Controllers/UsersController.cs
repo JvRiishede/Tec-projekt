@@ -8,9 +8,11 @@ using System.Web.Http;
 using Ninject.Web.WebApi;
 using Data.Interface;
 using Model;
+using System.Web.Http.Cors;
 
 namespace WebAPI.Controllers
 {
+    [EnableCors("*", "*", "*")]
     public class UsersController : ApiController
     {
         private readonly IUserService _userService;
@@ -45,6 +47,17 @@ namespace WebAPI.Controllers
         // DELETE: api/Users/5
         public void Delete(int id)
         {
+        }
+
+
+        [HttpPost]
+        public object GetPageduser([FromBody]UserSearchTerms terms)
+        {
+            return new
+            {
+                Total=_userService.GetUserTotal(),
+                User = _userService.GetPagedUser(terms)
+            };
         }
     }
 }
