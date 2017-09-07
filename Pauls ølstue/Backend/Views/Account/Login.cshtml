@@ -14,9 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     @Styles.Render("~/Content/css")
     <style>
-        html, body, h1, h2, h3, h4, h5 {
-            font-family: "Raleway", sans-serif
-        }
+        html, body, h1, h2, h3, h4, h5 { font-family: "Raleway", sans-serif }
     </style>
 </head>
 <body class="w3-light-grey">
@@ -25,18 +23,21 @@
         <div class="w3-center">
             <h2>Log ind</h2>
         </div>
-        @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "w3-container"}))
-        {
-            <div class="w3-section">
-                <label><b>Værelse nr</b></label>
-                @Html.TextBoxFor(a => a.VærelseNr, new { @class = "w3-input w3-border w3-margin-bottom", placeholder = "Indtast dit værelse nr" })
-                <label><b>Adgangskode</b></label>
-                @Html.TextBoxFor(a => a.Password, new { @class = "w3-input w3-border", placeholder = "Indtast adgangskode" })
-                
-                <input class="w3-button w3-block w3-green w3-section w3-padding" type="submit" value="Log ind"/>
-                @Html.CheckBoxFor(a => a.RememberMe, new { @class = "w3-check w3-margin-top" }) Remember me
-            </div>
-        }
+
+        <div class="w3-section w3-container">
+            <label>
+                <b>Værelse nr</b>
+            </label>
+            @Html.TextBoxFor(a => a.VærelseNr, new {@class = "w3-input w3-border w3-margin-bottom", placeholder = "Indtast dit værelse nr", Value = "1995"})
+            <label>
+                <b>Adgangskode</b>
+            </label>
+            @Html.TextBoxFor(a => a.Password, new {@class = "w3-input w3-border", placeholder = "Indtast adgangskode", Value = "jonas"})
+
+            <input class="w3-button w3-block w3-green w3-section w3-padding" type="button" value="Log ind"/>
+            @Html.CheckBoxFor(a => a.RememberMe, new {@class = "w3-check w3-margin-top"}) Remember me
+        </div>
+        
         <div class="w3-container w3-border-top w3-padding-16 w3-light-grey">
             <span class="w3-right w3-padding w3-hide-small">Glemt <a href="#">adgangskode?</a></span>
         </div>
@@ -44,6 +45,32 @@
     </div>
 </div>
 @Scripts.Render("~/bundles/jquery")
+<script>
+    $(function() {
+        $('input[type=button]').on('click', function () {
+            $.ajax({
+                url: 'http://localhost:52856/api/account/login?roomnr=' + $('#V_relseNr').val() + '&password=' + $('#Password').val(),
+                type: 'post',
+                success: function (data) {
+                    if (data.Token.length > 0) {
+                        localStorage.setItem('authToken', data.Token);
+                        data["RememberMe"] = $('#RememberMe').prop('checked');
+                        $.ajax({
+                            url: '/Account/Login',
+                            type: 'post',
+                            data: data,
+                            success: function (link) {
+                                if (link.length > 0) {
+                                    console.log(link);
+                                    window.location.href = link;
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>
-

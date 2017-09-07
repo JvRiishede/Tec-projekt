@@ -26,11 +26,15 @@
                 <tbody data-total="0" data-page="0" data-pagesize="5" data-sort="AscNavn" data-searchtext="">
                 </tbody>
                 <tfoot>
-                    <tr>
-                        <td><button data-command="prev" class="w3-button w3-white w3-border w3-border-gray w3-tiny">Forige</button></td>
-                        <td></td>
-                        <td><button data-command="next" class="w3-button w3-white w3-border w3-border-gray w3-tiny w3-right">Næste</button></td>
-                    </tr>
+                <tr>
+                    <td>
+                        <button data-command="prev" class="w3-button w3-white w3-border w3-border-gray w3-tiny">Forige</button>
+                    </td>
+                    <td></td>
+                    <td>
+                        <button data-command="next" class="w3-button w3-white w3-border w3-border-gray w3-tiny w3-right">Næste</button>
+                    </td>
+                </tr>
                 </tfoot>
             </table>
         </div>
@@ -46,30 +50,28 @@
                 <tbody data-total="0" data-page="0" data-pagesize="5" data-sort="AscNavn" data-searchtext=""></tbody>
                 <tfoot>
                 <tr>
-                    <td><button data-command="prev" class="w3-button w3-white w3-border w3-border-gray w3-tiny">Forige</button></td>
+                    <td>
+                        <button data-command="prev" class="w3-button w3-white w3-border w3-border-gray w3-tiny">Forige</button>
+                    </td>
                     <td></td>
-                    <td><button data-command="next" class="w3-button w3-white w3-border w3-border-gray w3-tiny w3-right">Næste</button></td>
+                    <td>
+                        <button data-command="next" class="w3-button w3-white w3-border w3-border-gray w3-tiny w3-right">Næste</button>
+                    </td>
                 </tr>
                 </tfoot>
             </table>
         </div>
     </div>
-    <div id="userEdit" class="w3-row w3-margin-top w3-animate-zoom" style="display: none">
+    <div id="productInfo" class="w3-row w3-margin-top w3-animate-zoom" style="display: none">
         <div class="w3-col m12">
             <div class="w3-card w3-padding">
                 <div class="w3-row">
-                    <div class="w3-col m3">
-                        <img src="" style="max-width: 200px; max-height: 200px;"/>
-                    </div>
-                    <div class="w3-col m7">
+                    <div class="w3-col m10" id="statisticsContainer">
                         .
-                        <label data-name="fullname"></label>
-                        <label data-name="email"></label>
-                        <label data-name="role"></label>
                     </div>
                     <div class="w3-col m2">
-                        <button id="deleteUser" class="w3-button w3-red w3-right w3-margin-left">Slet</button>
-                        <a href="" class="w3-button w3-blue w3-right">Rediger</a>
+                        <button id="deleteProduct" class="w3-button w3-red w3-right w3-margin-left">Slet</button>
+                        <button id="editProduct" class="w3-button w3-blue w3-right">Rediger</button>
                     </div>
                 </div>
             </div>
@@ -77,9 +79,11 @@
     </div>
     <div id="addProduktModal" class="w3-modal">
         <div class="w3-modal-content w3-card-4">
-            <header class="w3-container w3-green"> 
-                <span onclick="document.getElementById('addProduktModal').style.display='none'" 
-                      class="w3-button w3-display-topright">&times;</span>
+            <header class="w3-container w3-green">
+                <span onclick="document.getElementById('addProduktModal').style.display = 'none'"
+                      class="w3-button w3-display-topright">
+                    &times;
+                </span>
                 <h2>Opret nyt produkt</h2>
             </header>
             <div class="w3-container w3-padding">
@@ -88,7 +92,7 @@
                     <option value="2">Drink</option>
                 </select>
                 <input class="w3-input w3-border w3-margin-top" placeholder="Navn" id="produktNavn"/>
-                <input class="w3-input w3-border w3-margin-top" placeholder="Pris" id="produktPris" />
+                <input class="w3-input w3-border w3-margin-top" placeholder="Pris" id="produktPris"/>
             </div>
             <footer class="w3-container">
                 <button class="w3-button w3-red w3-right w3-margin-left w3-margin-bottom">Annuller</button>
@@ -101,63 +105,69 @@
 @section scripts
 {
     <script>
-        $(function () {
+        $(function() {
 
-            $('#addProdukt').on('click', function () {
-                $('#produktToAdd').on('change', function() {
-                    var value = $(this).val();
-                    if (value == 1) {
-                        $('#produktPris').css('display', 'block');
-                    } else {
-                        $('#produktPris').css('display', 'none');
-                    }
-                });
-                $('#produktToAdd').trigger('change');
-
-                $('#addProduktModal footer button:nth-child(2)').on('click', function () {
-                    var data = {};
-                    var url = "";
-                    if ($('#produktToAdd').val() == 1) {
-                        url = "http://localhost:52856/api/varer/createproduct?navn=" + $('#produktNavn').val() + "&pris=" + $('#produktPris').val();
-                    } else {
-                        url = "http://localhost:52856/api/drink/createproduct?navn=" + $('#produktNavn').val();
-                    }
-                    $.ajax({
-                        url: url,
-                        type: 'post',
-                        dataType: 'json',
-                        success: function (data) {
-                            console.log(data);
-                            if (data) {
-                                var tableTarget = "#vareContainer ";
-                                var pris = 0;
-                                if (data.Ingrediense) {
-                                    tableTarget = "#drinkContainer";
-                                    for (var k = 0; k < data.Ingrediense.length; k++) {
-                                        pris += data.Ingrediense[k].Pris;
-                                    }
-                                } else {
-                                    pris = data.Pris;
-                                }
-
-                                var html = "<tr data-id=" +
-                                    data.Id +
-                                    "><td>" +
-                                    data.Navn +
-                                    "</td><td>" +
-                                    data.Tidsstempel +
-                                    "</td><td>" +
-                                    pris +
-                                    "</td></tr>";
-                                $(tableTarget + "table tbody").append(html);
-                                $('#addProduktModal').css('display', 'none');
+            $('#addProdukt').on('click',
+                function() {
+                    $('#produktToAdd').on('change',
+                        function() {
+                            var value = $(this).val();
+                            if (value == 1) {
+                                $('#produktPris').css('display', 'block');
+                            } else {
+                                $('#produktPris').css('display', 'none');
                             }
-                        }
-                    });
-                });
+                        });
+                    $('#produktToAdd').trigger('change');
 
-                $('#addProduktModal').css('display', 'block');
-            });
+                    $('#addProduktModal footer button:nth-child(2)').on('click',
+                        function() {
+                            var data = {};
+                            var url = "";
+                            if ($('#produktToAdd').val() == 1) {
+                                url = "http://localhost:52856/api/varer/createproduct?navn=" +
+                                    $('#produktNavn').val() +
+                                    "&pris=" +
+                                    $('#produktPris').val();
+                            } else {
+                                url = "http://localhost:52856/api/drink/createproduct?navn=" + $('#produktNavn').val();
+                            }
+                            $.ajax({
+                                url: url,
+                                type: 'post',
+                                dataType: 'json',
+                                success: function(data) {
+                                    console.log(data);
+                                    if (data) {
+                                        var tableTarget = "#vareContainer ";
+                                        var pris = 0;
+                                        if (data.Ingrediense) {
+                                            tableTarget = "#drinkContainer";
+                                            for (var k = 0; k < data.Ingrediense.length; k++) {
+                                                pris += data.Ingrediense[k].Pris;
+                                            }
+                                        } else {
+                                            pris = data.Pris;
+                                        }
+
+                                        var html = "<tr data-id=" +
+                                            data.Id +
+                                            "><td>" +
+                                            data.Navn +
+                                            "</td><td>" +
+                                            data.Tidsstempel +
+                                            "</td><td>" +
+                                            pris +
+                                            "</td></tr>";
+                                        $(tableTarget + "table tbody").append(html);
+                                        $('#addProduktModal').css('display', 'none');
+                                    }
+                                }
+                            });
+                        });
+
+                    $('#addProduktModal').css('display', 'block');
+                });
 
             var drinkTable = $('#drinkContainer table');
             var drinkTbody = drinkTable.children('tbody');
@@ -165,7 +175,7 @@
                 page: parseInt(drinkTbody.data('page')),
                 pageSize: drinkTbody.data('pagesize'),
                 sort: drinkTbody.data('sort'),
-                searhText: drinkTbody.data('searchtext'),
+                searchText: drinkTbody.data('searchtext'),
                 total: 0
             }
 
@@ -175,39 +185,91 @@
                 page: parseInt(vareTbody.data('page')),
                 pageSize: vareTbody.data('pagesize'),
                 sort: vareTbody.data('sort'),
-                searhText: vareTbody.data('searchtext'),
+                searchText: vareTbody.data('searchtext'),
                 total: 0
             }
 
-            drinkTable.find('tfoot button').on('click', function () {
-                
-                if ($(this).data('command') == "prev") {
-                    drinkPageState.page -= 1;
-                } else {
-                    drinkPageState.page += 1;
-                }
-                getPagedDrinks(drinkPageState.page, drinkPageState.pageSize, drinkPageState.sort, drinkPageState.searchText, TableEvents);
-            });
 
-            vareTable.find('tfoot button').on('click', function () {
-                if ($(this).data('command') == "prev") {
-                    varePageState.page -= 1;
-                } else {
-                    varePageState.page += 1;
-                }
-                getPagedVare(varePageState.page, varePageState.pageSize, varePageState.sort, varePageState.searchText, TableEvents);
-            });
+            drinkTable.find('tfoot button').on('click',
+                function() {
+                    if ($(this).hasClass('w3-disabled')) {
+                        return;
+                    }
+                    if ($(this).data('command') == "prev") {
+                        drinkPageState.page -= 1;
+                    } else {
+                        drinkPageState.page += 1;
+                    }
+                    getPagedDrinks(drinkPageState.page,
+                        drinkPageState.pageSize,
+                        drinkPageState.sort,
+                        drinkPageState.searchText,
+                        TableEvents);
+                });
+
+            vareTable.find('tfoot button').on('click',
+                function() {
+                    if ($(this).hasClass('w3-disabled')) {
+                        return;
+                    }
+                    if ($(this).data('command') == "prev") {
+                        varePageState.page -= 1;
+                    } else {
+                        varePageState.page += 1;
+                    }
+                    getPagedVare(varePageState.page,
+                        varePageState.pageSize,
+                        varePageState.sort,
+                        varePageState.searchText,
+                        TableEvents);
+                });
 
             startTables();
+
+            $('#searchUser').on('keypress',
+                function(e) {
+                    if (e.keyCode == 13) {
+                        var value = $(this).val().split(':');
+                        if (value[0] == "drink") {
+                            drinkPageState.page = 0;
+                            drinkPageState.sort = "AscNavn";
+                            drinkPageState.searchText = value[1];
+                            getPagedDrinks(drinkPageState.page,
+                                drinkPageState.pageSize,
+                                drinkPageState.sort,
+                                drinkPageState.searchText,
+                                TableEvents);
+                        }
+                        if (value[0] == "vare") {
+                            varePageState.page = 0;
+                            varePageState.sort = "AscNavn";
+                            varePageState.searchText = value[1];
+                            getPagedVare(varePageState.page,
+                                varePageState.pageSize,
+                                varePageState.sort,
+                                varePageState.searchText,
+                                TableEvents);
+                        }
+                    }
+                });
 
         });
 
         function startTables() {
-            getPagedDrinks(drinkPageState.page, drinkPageState.pageSize, drinkPageState.sort, drinkPageState.searchText, TableEvents);
-            getPagedVare(varePageState.page, varePageState.pageSize, varePageState.sort, varePageState.searchText, TableEvents);
+            getPagedDrinks(drinkPageState.page,
+                drinkPageState.pageSize,
+                drinkPageState.sort,
+                drinkPageState.searchText,
+                TableEvents);
+            getPagedVare(varePageState.page,
+                varePageState.pageSize,
+                varePageState.sort,
+                varePageState.searchText,
+                TableEvents);
         }
 
         function getPagedDrinks(page, pageSize, sort, searchText, eventCallBack) {
+            console.log(searchText);
             $.ajax({
                 url: 'http://localhost:52856/api/drink/getpagedproducts',
                 type: 'post',
@@ -219,7 +281,7 @@
                     sort: sort,
                     searchText: searchText
                 }),
-                success: function (data) {
+                success: function(data) {
                     var drinks = data.Drinks;
                     drinkPageState.total = data.Total;
                     var html = "";
@@ -243,7 +305,10 @@
                     }
                     $('#drinkContainer table tbody').html(html);
                     eventCallBack();
-                    disableButtons('drinkContainer', drinkPageState.page, drinkPageState.pageSize, drinkPageState.total);
+                    disableButtons('drinkContainer',
+                        drinkPageState.page,
+                        drinkPageState.pageSize,
+                        drinkPageState.total);
                 }
             });
 
@@ -251,7 +316,7 @@
 
         function disableButtons(id, page, pageSize, total) {
             if (page == 0) {
-                
+
                 $('#' + id + ' table tfoot button[data-command=prev]').addClass('w3-disabled');
             } else {
                 $('#' + id + ' table tfoot button[data-command=prev]').removeClass('w3-disabled');
@@ -263,19 +328,28 @@
             }
         }
 
+        function getCookie(name) {
+            var value = "; " + document.cookie;
+            var parts = value.split("; " + name + "=");
+            if (parts.length == 2) return parts.pop().split(";").shift();
+        }
+
         function getPagedVare(page, pageSize, sort, searchText, eventCallBack) {
+            var cookie = getCookie('.ASPXAUTH');
+            console.log(document.cookie);
             $.ajax({
                 url: 'http://localhost:52856/api/varer/getpagedproducts',
                 type: 'post',
                 dataType: 'json',
                 contentType: "application/json;charset=utf-8",
+                headers: {Cookie: cookie},
                 data: JSON.stringify({
                     page: page,
                     pageSize: pageSize,
                     sort: sort,
                     searchText: searchText
                 }),
-                success: function (data) {
+                success: function(data) {
                     var varer = data.Varer;
                     varePageState.total = data.Total;
                     var html = "";
@@ -306,27 +380,63 @@
 
             $('#drinkContainer tbody tr').on('click',
                 function() {
-                    $.ajax({
-                        url: 'http://localhost:52856/api/drink/getproduct/' + $(this).data('id'),
-                        type: 'get',
-                        dataType: 'json',
-                        success: function(data) {
-                            $('#userEdit').css('display', 'block');
-                        }
-                    });
+                    renderInfo($(this).data('id'), 'http://localhost:52856/api/drink/', 'drinkContainer');
                 });
 
             $('#vareContainer tbody tr').on('click',
                 function() {
-                    $.ajax({
-                        url: 'http://localhost:52856/api/varer/getproduct/' + $(this).data('id'),
-                        type: 'get',
-                        dataType: 'json',
-                        success: function(data) {
-                            $('#userEdit').css('display', 'block');
-                        }
+                    renderInfo($(this).data('id'), 'http://localhost:52856/api/varer/', 'vareContainer');
+                });
+        }
+
+        function renderInfo(id, baseUrl, containerId) {
+            $('#productInfo').css('display', 'block');
+            $('#deleteProduct').on('click',
+                function() {
+                    swal({
+                        title: 'Er du sikker?',
+                        text:
+                            'Eventuelle drinks, som bruger denne vare vil få den fjernet og alt statistik vil kategoriseres som ukendt.',
+                        type: 'warning',
+                        confirmButtonText: 'Ok',
+                        cancelButtonText: 'Annuller',
+                        showCancelButton: true
+                    }).then(function() {
+                        $.ajax({
+                            url: baseUrl + 'deleteproduct/' + id,
+                            type: 'post',
+                            success: function (check) {
+                                var title = "Noget gik galt";
+                                var text = "Produkt blev ikke slettet korrekt";
+                                var type = "error";
+                                if (check) {
+                                    title = "Success";
+                                    text = "Produkt blev slettet";
+                                    type = "success";
+                                }
+                                swal({
+                                    title: title,
+                                    text: text,
+                                    type: type,
+                                    timer: 4000
+                                });
+                                $('#' + containerId + ' table tbody tr[data-id=' + id + ']').remove();
+                            }
+                        });
                     });
                 });
+            $('#editProduct').on('click',
+                function() {
+
+                });
+            $.ajax({
+                url: baseUrl + '/getproducts/' + id,
+                type: 'get',
+                dataType: 'json',
+                success: function(data) {
+
+                }
+            });
         }
     </script>
 }

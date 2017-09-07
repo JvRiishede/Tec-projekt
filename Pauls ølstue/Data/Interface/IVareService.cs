@@ -16,7 +16,7 @@ namespace Data.Interface
         bool UpdateVare(Vare vare);
         bool DeleteVare(int id);
         List<Vare> GetPagedVare(ProductSearchTerms terms);
-        int GetVareTotal();
+        int GetVareTotal(string searchText = "");
 
     }
 }

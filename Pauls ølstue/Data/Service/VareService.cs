@@ -170,14 +170,15 @@ namespace Data.Service
             }
             return result;
         }
-        public int GetVareTotal()
+        public int GetVareTotal(string searchText = "")
         {
             using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
             {
                 con.Open();
                 using (var cmd = con.CreateCommand())
                 {
-                    cmd.CommandText = "select count(*) as Total from Vare";
+                    cmd.CommandText = "select count(*) as Total from Vare where Navn like @search";
+                    cmd.Parameters.AddWithValue("@search", $"%{searchText}%");
                     return Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }

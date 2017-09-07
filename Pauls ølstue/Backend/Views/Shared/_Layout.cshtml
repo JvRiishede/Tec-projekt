@@ -63,6 +63,11 @@
 </div>
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/Scripts")
+<script>
+    $.ajaxSetup({
+        headers: { 'Authorization': 'bearer ' + localStorage.getItem('authToken')}
+    });
+</script>
 @RenderSection("scripts", required: false)
 <script>
 // Get the Sidebar
