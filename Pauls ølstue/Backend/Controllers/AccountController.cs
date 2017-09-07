@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Backend.Interfaces;
 using Backend.Viewmodels;
 using Data.Interface;
 using Model;
@@ -31,18 +30,14 @@ namespace Backend.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult LogIn(LoginViewmodel model)
+        public string LogIn(User user, string token, bool rememberMe)
         {
-            if (!ModelState.IsValid) return View(model);
-
-            var user = _userService.FindByRoomAndPassword(model.VærelseNr, model.Password);
-            if (user != null)
+            if (token.Length > 0)
             {
-                _authenticationService.SetCookie(user, model.RememberMe);
-                Session["Fullname"] = user.Fornavn + " " + user.Efternavn;
-                return Redirect("/Dashboard/Index");
+                _authenticationService.SetCookie(user, token, rememberMe);
+                return "/Dashboard/Index";
             }
-            return View(model);
+            return "";
         }
 
         [HttpGet]

@@ -174,7 +174,10 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Classes\AllowCrossSiteJsonAttribute.cs" />
+    <Compile Include="Classes\AuthorizeApi.cs" />
+    <Compile Include="Classes\AuthorizeRoles.cs" />
     <Compile Include="Classes\Vare.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\DrinkController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\UsersController.cs" />

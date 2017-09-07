@@ -1,7 +1,5 @@
 using System.Configuration;
 using System.Web.Mvc.Filters;
-using Backend.Interfaces;
-using Backend.Services;
 using Data.Interface;
 using Data.Service;
 
