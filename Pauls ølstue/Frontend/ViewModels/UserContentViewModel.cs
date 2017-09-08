@@ -28,6 +28,7 @@ namespace ViewModels
         public ObservableCollection<VareItem> vareItem;
         public ObservableCollection<string> brugereCombo;
         public int BrugerId;
+        public bool stop;
 
         public UserContentViewModel()
         {
@@ -37,6 +38,7 @@ namespace ViewModels
             brugereCombo = new ObservableCollection<string>();
             drink = new ObservableCollection<Drink>();
             vareItem = new ObservableCollection<VareItem>();
+            stop = true;
         }
         
         public async Task LoadVarerAsync()
@@ -187,19 +189,19 @@ namespace ViewModels
                 client.DefaultRequestHeaders.Add("Authorization", "bearer " + App.loginToken);
                 FullOrder fo = new FullOrder { Brugerid = BrugerId, FuldPris = FuldPris, OrderList = IndkobListe };
                 HttpResponseMessage response = await client.PostAsJsonAsync("api/Order/placeorder", fo);
-                client.DefaultRequestHeaders.Add("Authorization", "bearer " + App.loginToken);
                 if (response.IsSuccessStatusCode)
                 {
+                    stop = false;
                     bool result = await response.Content.ReadAsAsync<bool>();
                     if (result)
                         Debug.WriteLine("Order Submitted");
                     else
                         Debug.WriteLine("An error has occurred");
                 }
-                else
+                else 
                 {
                     Login ny = new Login();
-                    await ny.ShowAsync();
+                    ny.ShowAsync();
                 }
             }
         }

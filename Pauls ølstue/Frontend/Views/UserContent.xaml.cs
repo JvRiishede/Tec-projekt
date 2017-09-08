@@ -36,15 +36,9 @@ namespace Frontend.Views
             UCVM = new UserContentViewModel();
 
             UCVM.LoadAsync();
-            try
-            {
-                if (App.loginToken != "")
-                {
-                    UCVM.LoadDrinkAsync();
-                    UCVM.LoadVarerAsync();
-                }
-            }
-            catch (Exception e) { }
+            UCVM.LoadDrinkAsync();
+            UCVM.LoadVarerAsync();
+
             Products.IsEnabled = false;
             Køb.IsEnabled = false;
             Cancel.IsEnabled = false;
@@ -106,13 +100,13 @@ namespace Frontend.Views
 
         private void DeleteItem(object sender, RoutedEventArgs e)
         {
-            string name="";
+            string name = "";
             try
             {
                 name = ((HyperlinkButton)sender).Content.ToString();
             }
             catch { }
-            
+
             try
             {
                 name = ((TextBlock)sender).Text.ToString();
@@ -143,8 +137,10 @@ namespace Frontend.Views
         private void Buy(object sender, RoutedEventArgs e)
         {
             UCVM.BuyAsync();
-            UCVM.IndkobListe.Clear();
             Find_bruger.SelectedIndex = -1;
+            Products.IsEnabled = false;
+            Køb.IsEnabled = false;
+            Cancel.IsEnabled = false;
         }
 
         private void Clear(object sender, RoutedEventArgs e)
@@ -155,14 +151,14 @@ namespace Frontend.Views
             Køb.IsEnabled = false;
             Cancel.IsEnabled = false;
         }
-        
+
         private void Find_bruger_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             UCVM.IndkobListe.Clear();//Hvis brugeren bbliver skiftet undervejs nulstilles indkøbslisten.
             Køb.IsEnabled = false;
             Cancel.IsEnabled = false;
             if (Find_bruger == null) return;
-            if (Find_bruger != null){Products.IsEnabled = true;}
+            if (Find_bruger != null) { Products.IsEnabled = true; }
             if (App.first)
             {
                 UCVM.LoadDrinkAsync();
@@ -174,12 +170,12 @@ namespace Frontend.Views
             {
                 string[] buffer = combo.SelectedItem.ToString().Split(' ');
                 Debug.WriteLine(buffer[0]);
-                foreach(var item in UCVM.brugere)
+                foreach (var item in UCVM.brugere)
                 {
-                    if(buffer[0]==item.VærelseNr.ToString())
+                    if (buffer[0] == item.VærelseNr.ToString())
                         UCVM.BrugerId = item.Id;
                 }
-                
+
             }
             catch (Exception f)
             {

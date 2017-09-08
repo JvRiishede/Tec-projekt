@@ -50,22 +50,22 @@ namespace Frontend.Assets
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             HttpResponseMessage response;
-            response = await client.PostAsync("api/account/login?roomnr=" + username + "&password=" + password,null);
+            response = await client.PostAsync("api/account/login?roomnr=" + username + "&password=" + password, null);
             if (response.IsSuccessStatusCode)
             {
                 var buffer = await response.Content.ReadAsStringAsync();
                 var buffer2 = JsonConvert.DeserializeObject<BrugerLogin>(buffer);
-                
+
                 App.loginToken = buffer2.Token;
             };
-            App.APPUSCVM.LoadAsync();
-            App.APPUSCVM.LoadVarerAsync();
-            App.APPUSCVM.LoadDrinkAsync();
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-            LoginProcessAsync();
+            if (Brugernavn.Text == "" || Password.Text == "")
+            {}
+            else
+                LoginProcessAsync();
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
