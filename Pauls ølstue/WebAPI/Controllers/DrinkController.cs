@@ -56,6 +56,20 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
+        public Drink EditProduct([FromBody] Drink drink)
+        {
+            if (drink.Id > 0)
+            {
+                var tempDrink = _drinkService.GetDrink(drink.Id);
+                tempDrink.Navn = drink.Navn;
+                tempDrink.Ingrediense = drink.Ingrediense;
+                _drinkService.UpdateDrink(tempDrink);
+                return tempDrink;
+            }
+            return null;
+        }
+
+        [HttpPost]
         public bool DeleteProduct(int id)
         {
             return _drinkService.DeleteDrink(id);

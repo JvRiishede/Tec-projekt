@@ -14,5 +14,10 @@ namespace Backend.Controllers
         {
             return View();
         }
+
+        public ActionResult EditDrinks()
+        {
+            return Content("hey");
+        }
     }
 }

@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using Data.Interface;
+using Model;
 using WebAPI.Classes;
 
 namespace WebAPI.Controllers
@@ -34,6 +35,12 @@ namespace WebAPI.Controllers
                 };
             }
             return new { };
+        }
+        [AllowAnonymous]
+        [HttpGet]
+        public Dictionary<string, Token> CurrentList()
+        {
+            return _authenticationService.CurrentList();
         }
     }
 }

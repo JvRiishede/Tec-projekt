@@ -10,6 +10,7 @@ namespace Data.Interface
         void SetCookie(User user, string token, bool isPersistent);
         string SetToken(string username);
         bool ValidateToken(string token);
+        Dictionary<string, Token> CurrentList();
         void Signout();
     }
 }

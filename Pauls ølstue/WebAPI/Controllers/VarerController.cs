@@ -35,11 +35,22 @@ namespace WebAPI.Controllers
             return _vareService.GetAllVare();
         }
 
+        
+
         [HttpPost]
-        public Vare CreateProduct(string navn, decimal pris)
+        public Vare EditProduct(string navn, decimal pris, int id = 0)
         {
-            var id = _vareService.CreateVare(navn, pris);
-            return _vareService.GetVare(id);
+
+            if (id > 0)
+            {
+                var vare = _vareService.GetVare(id);
+                vare.Navn = navn;
+                vare.Pris = pris;
+                _vareService.UpdateVare(vare);
+                return vare;
+            }
+            var newId = _vareService.CreateVare(navn, pris);
+            return _vareService.GetVare(newId);
         }
 
         [HttpPost]
@@ -49,8 +60,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        
-        public object GetPagedProducts([FromBody]ProductSearchTerms terms)
+        public object GetPagedProducts([FromBody] ProductSearchTerms terms)
         {
             var varer = _vareService.GetPagedVare(terms);
             if (varer == null || varer.Count == 0 && terms.Page != 0)

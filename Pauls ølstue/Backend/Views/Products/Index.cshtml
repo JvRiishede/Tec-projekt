@@ -62,7 +62,7 @@
             </table>
         </div>
     </div>
-    <div id="productInfo" class="w3-row w3-margin-top w3-animate-zoom" style="display: none">
+    <div id="productInfo" class="w3-row w3-margin-top w3-animate-zoom" style="display: none" data-id="" data-baseUrl="" data-containerId="">
         <div class="w3-col m12">
             <div class="w3-card w3-padding">
                 <div class="w3-row">
@@ -71,7 +71,7 @@
                     </div>
                     <div class="w3-col m2">
                         <button id="deleteProduct" class="w3-button w3-red w3-right w3-margin-left">Slet</button>
-                        <button id="editProduct" class="w3-button w3-blue w3-right">Rediger</button>
+                        <button id="editProduct" data-type="" class="w3-button w3-blue w3-right">Rediger</button>
                     </div>
                 </div>
             </div>
@@ -95,8 +95,27 @@
                 <input class="w3-input w3-border w3-margin-top" placeholder="Pris" id="produktPris"/>
             </div>
             <footer class="w3-container">
-                <button class="w3-button w3-red w3-right w3-margin-left w3-margin-bottom">Annuller</button>
+                <button class="w3-button w3-red w3-right w3-margin-left w3-margin-bottom" onclick="document.getElementById('addProduktModal').style.display = 'none'">Annuller</button>
                 <button class="w3-button w3-blue w3-right w3-margin-bottom">Opret</button>
+            </footer>
+        </div>
+    </div>
+    <div id="editProduktModal" class="w3-modal">
+        <div class="w3-modal-content w3-card-4">
+            <header class="w3-container w3-green">
+                <span onclick="document.getElementById('editProduktModal').style.display = 'none'"
+                      class="w3-button w3-display-topright">
+                    &times;
+                </span>
+                <h2>Rediger produkt</h2>
+            </header>
+            <div class="w3-container w3-padding" id="body">
+                <input class="w3-input w3-border w3-margin-top" placeholder="Navn" data-id="produktNavn" />
+                <input class="w3-input w3-border w3-margin-top" placeholder="Pris" data-id="produktPris" />
+            </div>
+            <footer class="w3-container">
+                <button class="w3-button w3-red w3-right w3-margin-left w3-margin-bottom" onclick="document.getElementById('editProduktModal').style.display = 'none'">Annuller</button>
+                <button class="w3-button w3-blue w3-right w3-margin-bottom">Gem</button>
             </footer>
         </div>
     </div>
@@ -105,7 +124,79 @@
 @section scripts
 {
     <script>
-        $(function() {
+        $(function () {
+
+            $('#deleteProduct').on('click',
+                function () {
+                    var id = $('#productInfo').data('id');
+                    var baseUrl = $('#productInfo').data('baseUrl');
+                    var containerId = $('#productInfo').data('containerId');
+                    swal({
+                        title: 'Er du sikker?',
+                        text:
+                        'Eventuelle drinks, som bruger denne vare vil få den fjernet og alt statistik vil kategoriseres som ukendt.',
+                        type: 'warning',
+                        confirmButtonText: 'Ok',
+                        cancelButtonText: 'Annuller',
+                        showCancelButton: true
+                    }).then(function () {
+                        $.ajax({
+                            url: baseUrl + 'deleteproduct/' + id,
+                            type: 'post',
+                            success: function (check) {
+                                var title = "Noget gik galt";
+                                var text = "Produkt blev ikke slettet korrekt";
+                                var type = "error";
+                                if (check) {
+                                    title = "Success";
+                                    text = "Produkt blev slettet";
+                                    type = "success";
+                                }
+                                swal({
+                                    title: title,
+                                    text: text,
+                                    type: type,
+                                    timer: 4000
+                                });
+                                $('#' + containerId + ' table tbody tr[data-id=' + id + ']').remove();
+                            }
+                        });
+                    });
+                });
+            $('#editProduct').on('click',
+                function () {
+                    var id = $('#productInfo').data('id');
+                    var baseUrl = $('#productInfo').data('baseUrl');
+                    var containerId = $('#productInfo').data('containerId');
+
+                    if (containerId.indexOf('drink') > -1) {
+                        location.href = "/Products/EditDrinks";
+                        return;
+                    }
+                    var selectedTr = $('#' + containerId + ' table tbody tr[data-id=' + id + ']');
+                    $('#editProduktModal input[data-id=produktNavn]').val(selectedTr.children('td:first').html());
+                    $('#editProduktModal input[data-id=produktPris]').val(selectedTr.children('td:last').html());
+                    $('#editProduktModal').css('display', 'block');
+                    $('#editProduktModal footer button:nth-child(2)').on('click',
+                        function () {
+                            $.ajax({
+                                url: baseUrl + "editproduct?navn=" + $('#editProduktModal input[data-id=produktNavn]').val() + "&pris=" + $('#editProduktModal input[data-id=produktPris]').val() + "&id=" + id,
+                                type: 'post',
+                                dataType: 'json',
+                                success: function (check) {
+                                    if (check) {
+                                        getPagedVare(varePageState.page,
+                                            varePageState.pageSize,
+                                            varePageState.sort,
+                                            varePageState.searchText,
+                                            TableEvents);
+                                    }
+
+                                }
+                            });
+                            $('#editProduktModal').css('display', 'none');
+                        });
+                });
 
             $('#addProdukt').on('click',
                 function() {
@@ -391,52 +482,9 @@
 
         function renderInfo(id, baseUrl, containerId) {
             $('#productInfo').css('display', 'block');
-            $('#deleteProduct').on('click',
-                function() {
-                    swal({
-                        title: 'Er du sikker?',
-                        text:
-                            'Eventuelle drinks, som bruger denne vare vil få den fjernet og alt statistik vil kategoriseres som ukendt.',
-                        type: 'warning',
-                        confirmButtonText: 'Ok',
-                        cancelButtonText: 'Annuller',
-                        showCancelButton: true
-                    }).then(function() {
-                        $.ajax({
-                            url: baseUrl + 'deleteproduct/' + id,
-                            type: 'post',
-                            success: function (check) {
-                                var title = "Noget gik galt";
-                                var text = "Produkt blev ikke slettet korrekt";
-                                var type = "error";
-                                if (check) {
-                                    title = "Success";
-                                    text = "Produkt blev slettet";
-                                    type = "success";
-                                }
-                                swal({
-                                    title: title,
-                                    text: text,
-                                    type: type,
-                                    timer: 4000
-                                });
-                                $('#' + containerId + ' table tbody tr[data-id=' + id + ']').remove();
-                            }
-                        });
-                    });
-                });
-            $('#editProduct').on('click',
-                function() {
-
-                });
-            $.ajax({
-                url: baseUrl + '/getproducts/' + id,
-                type: 'get',
-                dataType: 'json',
-                success: function(data) {
-
-                }
-            });
+            $('#productInfo').data('id', id);
+            $('#productInfo').data('baseUrl', baseUrl);
+            $('#productInfo').data('containerId', containerId);
         }
     </script>
 }

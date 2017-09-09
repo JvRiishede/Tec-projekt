@@ -65,7 +65,13 @@
 @Scripts.Render("~/Scripts")
 <script>
     $.ajaxSetup({
-        headers: { 'Authorization': 'bearer ' + localStorage.getItem('authToken')}
+        headers: { 'Authorization': 'bearer ' + localStorage.getItem('authToken') },
+        error: function (xhr) {
+            console.log(xhr);
+            if (xhr.status == 401) {
+                window.location.href = "/Account/Login";
+            }
+        }
     });
 </script>
 @RenderSection("scripts", required: false)
