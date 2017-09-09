@@ -110,8 +110,8 @@
                 <h2>Rediger produkt</h2>
             </header>
             <div class="w3-container w3-padding" id="body">
-                <input class="w3-input w3-border w3-margin-top" placeholder="Navn" data-id="produktNavn" />
-                <input class="w3-input w3-border w3-margin-top" placeholder="Pris" data-id="produktPris" />
+                <input class="w3-input w3-border w3-margin-top" placeholder="Navn" data-id="produktNavn"/>
+                <input class="w3-input w3-border w3-margin-top" placeholder="Pris" data-id="produktPris"/>
             </div>
             <footer class="w3-container">
                 <button class="w3-button w3-red w3-right w3-margin-left w3-margin-bottom" onclick="document.getElementById('editProduktModal').style.display = 'none'">Annuller</button>
@@ -124,26 +124,26 @@
 @section scripts
 {
     <script>
-        $(function () {
+        $(function() {
 
             $('#deleteProduct').on('click',
-                function () {
+                function() {
                     var id = $('#productInfo').data('id');
                     var baseUrl = $('#productInfo').data('baseUrl');
                     var containerId = $('#productInfo').data('containerId');
                     swal({
                         title: 'Er du sikker?',
                         text:
-                        'Eventuelle drinks, som bruger denne vare vil få den fjernet og alt statistik vil kategoriseres som ukendt.',
+                            'Eventuelle drinks, som bruger denne vare vil få den fjernet og alt statistik vil kategoriseres som ukendt.',
                         type: 'warning',
                         confirmButtonText: 'Ok',
                         cancelButtonText: 'Annuller',
                         showCancelButton: true
-                    }).then(function () {
+                    }).then(function() {
                         $.ajax({
                             url: baseUrl + 'deleteproduct/' + id,
                             type: 'post',
-                            success: function (check) {
+                            success: function(check) {
                                 var title = "Noget gik galt";
                                 var text = "Produkt blev ikke slettet korrekt";
                                 var type = "error";
@@ -164,7 +164,7 @@
                     });
                 });
             $('#editProduct').on('click',
-                function () {
+                function() {
                     var id = $('#productInfo').data('id');
                     var baseUrl = $('#productInfo').data('baseUrl');
                     var containerId = $('#productInfo').data('containerId');
@@ -178,12 +178,18 @@
                     $('#editProduktModal input[data-id=produktPris]').val(selectedTr.children('td:last').html());
                     $('#editProduktModal').css('display', 'block');
                     $('#editProduktModal footer button:nth-child(2)').on('click',
-                        function () {
+                        function() {
                             $.ajax({
-                                url: baseUrl + "editproduct?navn=" + $('#editProduktModal input[data-id=produktNavn]').val() + "&pris=" + $('#editProduktModal input[data-id=produktPris]').val() + "&id=" + id,
+                                url: baseUrl +
+                                    "editproduct?navn=" +
+                                    $('#editProduktModal input[data-id=produktNavn]').val() +
+                                    "&pris=" +
+                                    $('#editProduktModal input[data-id=produktPris]').val() +
+                                    "&id=" +
+                                    id,
                                 type: 'post',
                                 dataType: 'json',
-                                success: function (check) {
+                                success: function(check) {
                                     if (check) {
                                         getPagedVare(varePageState.page,
                                             varePageState.pageSize,
@@ -388,7 +394,7 @@
                             "><td>" +
                             drinks[i].Navn +
                             "</td><td>" +
-                            drinks[i].Tidsstempel +
+                            parseDate(drinks[i].Tidsstempel) +
                             "</td><td>" +
                             pris +
                             "</td></tr>";
@@ -433,7 +439,7 @@
                 type: 'post',
                 dataType: 'json',
                 contentType: "application/json;charset=utf-8",
-                headers: {Cookie: cookie},
+                headers: { Cookie: cookie },
                 data: JSON.stringify({
                     page: page,
                     pageSize: pageSize,
@@ -450,7 +456,7 @@
                             "><td>" +
                             varer[i].Navn +
                             "</td><td>" +
-                            varer[i].Tidsstempel +
+                            parseDate(varer[i].Tidsstempel) +
                             "</td><td>" +
                             varer[i].Pris +
                             "</td></tr>";
@@ -485,6 +491,11 @@
             $('#productInfo').data('id', id);
             $('#productInfo').data('baseUrl', baseUrl);
             $('#productInfo').data('containerId', containerId);
+        }
+
+        function parseDate(dateString) {
+            var dateArray = dateString.split(/-|T/g);
+            return dateArray[2] + '-' + dateArray[1] + '-' + dateArray[0];
         }
     </script>
 }
