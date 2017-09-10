@@ -325,5 +325,33 @@ namespace Data.Service
                 }
             }
         }
+
+        public List<ItemSold> GetTopMostSold()
+        {
+            var result = new List<ItemSold>();
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"select DrinkId,count(DrinkId) as Total, Drink.Navn from Ordre_Drink_Vare
+                                        join Drink on Drink.Id = DrinkId
+                                        group by DrinkId order by Total desc limit 3;";
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            result.Add(new ItemSold
+                            {
+                                Id = Convert.ToInt32(dr["DrinkId"]),
+                                Navn = (string)dr["Navn"],
+                                Total = Convert.ToInt32(dr["Total"])
+                            });
+                        }
+                    }
+                }
+            }
+            return result;
+        }
     }
 }

@@ -70,7 +70,11 @@ namespace Backend.App_Start
             kernel.Bind<IConnectionInformationService>().To<ConnectionInformationService>()
                 .WithConstructorArgument("connectionString", ConnectionString);
             kernel.Bind<IUserService>().To<UserService>();
+            kernel.Bind<IVareService>().To<VareService>();
+            kernel.Bind<IDrinkService>().To<DrinkService>();
+            kernel.Bind<IOrderService>().To<OrderService>();
             kernel.Bind<IFormAuthenticationService>().To<FormAuthenticationService>();
+            kernel.Bind<IHelpService>().To<HelpService>();
 
 
         }        

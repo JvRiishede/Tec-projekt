@@ -183,5 +183,33 @@ namespace Data.Service
                 }
             }
         }
+
+        public List<ItemSold> GetTopMostSold()
+        {
+            var result = new List<ItemSold>();
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"select VareId,count(VareId) as Total, Vare.Navn from Ordre_Drink_Vare
+                                        join Vare on Vare.Id = VareId
+                                        group by VareId order by Total desc limit 3";
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            result.Add(new ItemSold
+                            {
+                                Id = Convert.ToInt32(dr["VareId"]),
+                                Navn = (string)dr["Navn"],
+                                Total = Convert.ToInt32(dr["Total"])
+                            });
+                        }
+                    }
+                }
+            }
+            return result;
+        }
     }
 }

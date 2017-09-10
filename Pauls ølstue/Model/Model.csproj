@@ -44,6 +44,8 @@
     <Compile Include="Drink.cs" />
     <Compile Include="FullOrder.cs" />
     <Compile Include="Help.cs" />
+    <Compile Include="ItemSold.cs" />
+    <Compile Include="Order.cs" />
     <Compile Include="OrderItem.cs" />
     <Compile Include="ProductSearchTerms.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

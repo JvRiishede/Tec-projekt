@@ -479,6 +479,35 @@ namespace Data.Service
             return result;
         }
 
+        public List<ItemSold> GetTopBuyers()
+        {
+            var result = new List<ItemSold>();
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"select Bruger.Id, concat_ws(' ', Fornavn, Efternavn) as FullName, count(BrugerId) as Total from Ordre 
+                    join Bruger on Bruger.Id = BrugerId
+                    group by BrugerId
+                        order by Total desc limit 3";
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            result.Add(new ItemSold
+                            {
+                                Id = Convert.ToInt32(dr["Id"]),
+                                Navn = (string)dr["FullName"],
+                                Total = Convert.ToInt32(dr["Total"])
+                            });
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
         public int GetUserTotal()
         {
             using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))

@@ -19,5 +19,6 @@ namespace Data.Interface
         bool DeleteDrink(int id);
         List<Drink> GetPagedDrinks(ProductSearchTerms terms);
         int GetDrinksTotal(string searchText = "");
+        List<ItemSold> GetTopMostSold();
     }
 }

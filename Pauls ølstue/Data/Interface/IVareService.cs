@@ -18,5 +18,7 @@ namespace Data.Interface
         List<Vare> GetPagedVare(ProductSearchTerms terms);
         int GetVareTotal(string searchText = "");
 
+        List<ItemSold> GetTopMostSold();
+
     }
 }

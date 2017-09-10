@@ -16,7 +16,8 @@ namespace Backend
 
             bundles.Add(new ScriptBundle("~/Scripts").Include(
                 "~/Scripts/Sweetalert2/sweetalert2.min.js",
-                "~/Scripts/Polyfill/core.js"));
+                "~/Scripts/Polyfill/core.js",
+                "~/Scripts/ChartJs/Chart.bundle.min.js"));
 
             // Use the development version of Modernizr to develop with and learn from. Then, when you're
             // ready for production, use the build tool at https://modernizr.com to pick only the tests you need.

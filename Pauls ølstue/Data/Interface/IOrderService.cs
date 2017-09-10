@@ -11,5 +11,9 @@ namespace Data.Interface
     public interface IOrderService
     {
         int PlaceOrder(FullOrder orders);
+        int GetOrdreTotal();
+
+        List<Order> GetOrdersForYear(int year);
+
     }
 }
