@@ -15,7 +15,6 @@ using Vare = Model.Vare;
 namespace WebAPI.Controllers
 {
     [EnableCors("*", "*", "*")]
-    [AuthorizeApi]
     public class VarerController : ApiController
     {
         private readonly IVareService _vareService;

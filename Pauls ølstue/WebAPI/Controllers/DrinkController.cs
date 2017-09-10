@@ -12,7 +12,6 @@ using WebAPI.Classes;
 namespace WebAPI.Controllers
 {
     [EnableCors("*", "*", "*")]
-    [AuthorizeApi]
     public class DrinkController : ApiController
     {
         private readonly IDrinkService _drinkService;

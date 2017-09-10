@@ -11,7 +11,7 @@
     SecondaryButtonText="Cancel"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
-
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"></ColumnDefinition>
@@ -21,12 +21,12 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Grid.Column="0">
-        <TextBlock Text="Brugernavn"/>
-        <TextBox Name="Brugernavn"/>
+            <TextBlock Text="Brugernavn"/>
+            <TextBox Name="Brugernavn"/>
         </StackPanel>
         <StackPanel Grid.Column="1">
             <TextBlock Text="Password"/>
             <TextBox Name="Password"/>
         </StackPanel>
-    </Grid>
+    </Grid>    
 </ContentDialog>
