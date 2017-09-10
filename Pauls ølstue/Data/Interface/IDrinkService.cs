@@ -14,6 +14,8 @@ namespace Data.Interface
         List<Drink> GetDrinks();
         int CreateDrink(string navn);
         bool UpdateDrink(Drink drink);
+        bool AddVareToDrink(int drinkId, int[] ids);
+        bool RemoveVareFromDrink(int drinkId, int[] ids);
         bool DeleteDrink(int id);
         List<Drink> GetPagedDrinks(ProductSearchTerms terms);
         int GetDrinksTotal(string searchText = "");

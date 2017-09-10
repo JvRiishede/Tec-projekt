@@ -1,0 +1,161 @@
+﻿@model int
+
+<style>
+    .smallInput {
+        display: inline;
+        width: 38px;
+    }
+
+    .vertical-center {
+        display: inline-block;
+        height: 39px;
+        line-height: 39px;
+        padding-left: 2px;
+        width: 135px;
+        max-width: 135px;
+        overflow: hidden;
+    }
+
+    .w3-card {
+        margin-left: 5px;    
+    } 
+    .w3-button-height {
+        height: 39px;
+    }
+</style>
+<div class="w3-container w3-padding">
+    <div class="w3-row">
+        <div class="w3-col m12 w3-white">
+            <div class="w3-row w3-cell-row w3-fill w3-padding">
+                <div class="w3-col m2">
+                    <input id="produktNavn" class="w3-input w3-border"/>
+                </div>
+                <div class="w3-col m2 w3-margin-left">
+                    Total pris: <span id="totalPris">0</span>
+                </div>
+                <div class="w3-col m2 w3-right">
+                    <button data-id="@Model" id="saveProdukt" class="w3-button w3-blue w3-right">Gem</button>
+                </div>
+            </div>
+            <div class="w3-row w3-border-top w3-padding">
+                <div class="w3-col m12" id="vareContainer">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var vareids = [];
+        var produkt = {};
+        $(function () {
+            $.ajax({
+                url: 'http://localhost:52856/api/drink/getproduct/' + @Model,
+                type: 'get',
+                success: function (data) {
+                    $('#produktNavn').val(data.Navn);
+                    produkt = data;
+                    updateVareList();
+                }
+            });
+            $.ajax({
+                url: 'http://localhost:52856/api/varer/getproducts',
+                type: 'get',
+                success: function(data) {
+                    var html = "";
+                    for (var i = 0; i < data.length; i++) {
+                        if (i % 6 == 0) {
+                            html += '<div class="w3-row w3-margin-bottom">';
+                        }
+                        html += createItem(data[i]);
+                        if (i % 6 == 5 | i == data.length) {
+                            html += '</div>';
+                        }
+                    }
+                    $('#vareContainer').html(html);
+                    initEvetns();
+                    updateVareList();
+                }
+            });
+
+            $('#saveProdukt').on('click', function() {
+                $.ajax({
+                    url: 'http://localhost:52856/api/Drink/EditProduct',
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: "application/json;charset=utf-8",
+                    data: JSON.stringify({
+                        drinkId: produkt.Id,
+                        navn: $('#produktNavn').val(),
+                        vareids: vareids
+                    }),
+                    success: function (check) {
+                        window.location.href = "/Products/Index";
+                    }
+                });
+            });
+        });
+
+        function updateVareList() {
+            if (produkt.Ingrediense) {
+                for (var i = 0; i < produkt.Ingrediense.length; i++) {
+                    var id = produkt.Ingrediense[i].Id;
+                    vareids.push(id);
+                    var card = $('#vareContainer div div[data-id=' + id + ']');
+                    var input = card.children('input');
+                    input.val(parseInt(input.val()) + 1);
+                    updateTotal(parseInt(card.data('pris')));
+                }
+            }
+            
+        }
+
+        function updateTotal(addValue) {
+            var total = parseInt($('#totalPris').html());
+            total += addValue;
+            $('#totalPris').html(total);
+        }
+
+        function initEvetns() {
+            $('button').on('click', function() {
+                var command = $(this).data('command');
+                var card = $(this).parent();
+                var input = $(this).siblings('input');
+                switch (command) {
+                case 'add':
+                    input.val(parseInt(input.val()) + 1);
+                    updateTotal(parseInt(card.data('pris')));
+                    vareids.push(card.data('id'));
+                    break;
+                case 'sub':
+                    input.val(parseInt(input.val()) - 1);
+                    updateTotal(-parseInt(card.data('pris')));
+                    var index = vareids.indexOf(card.data('id'));
+                    vareids.splice(index,1);
+                    break;
+                default:
+                }
+            });
+            $('input.smallInput').on('change', function() {
+                
+            });
+
+        }
+
+        function createItem(item) {
+            var html = '<div class="w3-col m2">' +
+                '<div class="w3-card w3-button-height" data-id="' + item.Id +'" data-pris="' + item.Pris + '">' +
+                '<span class="vertical-center">' +
+                item.Navn +
+                '</span>' +
+                '<button data-command="add" class="w3-button w3-blue w3-right w3-button-height">+</button>' +
+                '<button data-command="sub" class="w3-button w3-gray w3-right w3-button-height">-</button>' +
+                '<input type="text" class="w3-input w3-right smallInput w3-border-0 w3-border-left" value="0" />' +
+                '</div></div>';
+            return html;
+
+        }
+    </script>
+}

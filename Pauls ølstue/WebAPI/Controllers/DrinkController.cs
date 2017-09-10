@@ -22,11 +22,12 @@ namespace WebAPI.Controllers
             _drinkService = drinkService;
         }
 
+        
         public Drink GetProduct(int id)
         {
             return _drinkService.GetDrink(id);
         }
-
+        
         public List<Drink> GetProducts()
         {
             return _drinkService.GetDrinks();
@@ -55,18 +56,25 @@ namespace WebAPI.Controllers
             return _drinkService.GetDrink(id);
         }
 
-        [HttpPost]
-        public Drink EditProduct([FromBody] Drink drink)
+        public class EditProductData
         {
-            if (drink.Id > 0)
+            public int DrinkId { get; set; }
+            public string Navn { get; set; }
+            public int[] VareIds { get; set; }
+        }
+
+        [HttpPost]
+        public bool EditProduct([FromBody] EditProductData editProduct)
+        {
+            var drink = new Drink
             {
-                var tempDrink = _drinkService.GetDrink(drink.Id);
-                tempDrink.Navn = drink.Navn;
-                tempDrink.Ingrediense = drink.Ingrediense;
-                _drinkService.UpdateDrink(tempDrink);
-                return tempDrink;
-            }
-            return null;
+                Id = editProduct.DrinkId,
+                Navn = editProduct.Navn
+            };
+            _drinkService.UpdateDrink(drink);
+            _drinkService.RemoveVareFromDrink(editProduct.DrinkId, editProduct.VareIds);
+            var exceptList = _drinkService.GetDrink(editProduct.DrinkId).Ingrediense.Select(a => a.Id);
+            return _drinkService.AddVareToDrink(editProduct.DrinkId, editProduct.VareIds.Except(exceptList).ToArray());
         }
 
         [HttpPost]
@@ -74,5 +82,6 @@ namespace WebAPI.Controllers
         {
             return _drinkService.DeleteDrink(id);
         }
+
     }
 }

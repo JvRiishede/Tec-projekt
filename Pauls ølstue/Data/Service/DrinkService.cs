@@ -168,6 +168,42 @@ namespace Data.Service
             }
         }
 
+        public bool AddVareToDrink(int drinkId, int[] ids)
+        {
+            var check = false;
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    foreach (var id in ids)
+                    {
+                        cmd.CommandText = "insert into Vare_Drink(VareId, DrinkId) values(@vareid, @drinkid)";
+                        cmd.Parameters.AddWithValue("@vareid", id);
+                        cmd.Parameters.AddWithValue("@drinkid", drinkId);
+                        check = cmd.ExecuteNonQuery() > 0;
+                    }
+                }
+            }
+            return check;
+        }
+
+        public bool RemoveVareFromDrink(int drinkId, int[] ids)
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "delete from Vare_Drink where drinkid = @drinkid and VareId not in ([IDS])";
+                    cmd.CommandText = cmd.CommandText.Replace("[IDS]", string.Join(",", ids));
+                    cmd.Parameters.AddWithValue("@drinkid", drinkId);
+
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
         public bool DeleteDrink(int id)
         {
             using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))

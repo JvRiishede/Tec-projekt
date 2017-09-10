@@ -170,7 +170,7 @@
                     var containerId = $('#productInfo').data('containerId');
 
                     if (containerId.indexOf('drink') > -1) {
-                        location.href = "/Products/EditDrinks";
+                        location.href = "/Products/EditDrink/"+id;
                         return;
                     }
                     var selectedTr = $('#' + containerId + ' table tbody tr[data-id=' + id + ']');
