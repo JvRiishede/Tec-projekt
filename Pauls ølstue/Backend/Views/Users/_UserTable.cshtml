@@ -22,4 +22,13 @@
         </tr>
     }
     </tbody>
+    <tfoot>
+    <tr>
+        <td><button data-command="prev" class="w3-button w3-white w3-border w3-border-gray w3-tiny @(Model.Offset == 0 ? "w3-disabled" : "" )">Forige</button></td>
+        <td> </td>
+        <td> </td>
+        <td> </td>
+        <td><button data-command="next" class="w3-button w3-white w3-border w3-border-gray w3-tiny w3-right @((Model.Offset * Model.PageSize >= Model.UserTotal) ? "w3-disabled" : "" )">Næste</button></td>
+    </tr>
+    </tfoot>
 </table>

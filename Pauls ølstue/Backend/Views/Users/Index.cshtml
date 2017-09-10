@@ -1,4 +1,4 @@
-﻿@*@model Backend.Viewmodels.UsersViewmodel*@
+﻿@model Backend.Viewmodels.UsersViewmodel
 @{
     ViewBag.Title = "Index";
 }
@@ -16,28 +16,7 @@
     </div>
     <div class="w3-row w3-margin-top">
         <div class="w3-col m12" id="userContainer">
-            <table class="w3-table-all w3-card w3-hoverable">
-                <thead>
-                    <tr>
-                        <td>Værelse Nr</td>
-                        <td>Fornavn</td>
-                        <td>Efternavn</td>
-                        <td>Email</td>
-                        <td>Type</td>
-                    </tr>
-                </thead>
-                <tbody data-total="0" data-page="0" data-pagesize="5" data-sort="AscNavn" data-searchtext=""></tbody>
-                @*@{ Html.RenderPartial("_UserTable", Model);}*@
-                <tfoot>
-                    <tr>
-                        <td><button data-command="prev" class="w3-button w3-white w3-border w3-border-gray w3-tiny">Forige</button></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td><button data-command="next" class="w3-button w3-white w3-border w3-border-gray w3-tiny w3-right">Næste</button></td>
-                    </tr>
-                </tfoot>
-            </table>
+            @{ Html.RenderPartial("_UserTable", Model);}
         </div>
     </div>
     <div id="userEdit" class="w3-row w3-margin-top w3-animate-zoom" style="display: none">
@@ -63,16 +42,9 @@
 </div>
 @section scripts {
     <script>
-        $(function() {
-            $('table tbody tr').on('click',
-                function() {
-                    $(this).parent().children('.w3-blue').removeClass('w3-blue');
-                    $(this).addClass('w3-blue');
-                    var userid = $(this).data('id');
-                    $('#userEdit div div img').attr('src', '/Image/UserImage/' + userid);
-                    $('#userEdit div div:nth-child(3) a').attr('href', '/Users/Rediger/' + userid);
-                    $('#userEdit').css('display', 'block');
-                });
+        $(function () {
+            initEvents();
+            
 
             $('#deleteUser').on('click',
                 function() {
@@ -113,76 +85,58 @@
                             success: function(data) {
                                 $('#userContainer').html(data);
                                 $('a[data-action]').on('click', SortAble);
+                                $('table tfoot button').on('click', changePage);
+                                initEvents();
                             }
                         });
                     }
                 });
 
             $('a[data-action]').on('click', SortAble);
+            $('table tfoot button').on('click', changePage);
 
-            var userTable = $('#userContainer table');
-            var userTbody = userTable.children('tbody');
-            window.userPageState = {
-                page: parseInt(userTbody.data('page')),
-                pageSize: userTbody.data('pagesize'),
-                sort: userTbody.data('sort'),
-                searhText: userTbody.data('searchtext'),
-                total: 0
-            }
-
-            userTable.find('tfoot button').on('click', function () {
-                if ($(this).data('command') == "prev") {
-                    userPageState.page -= 1;
-                } else {
-                    userPageState.page += 1;
-                }
-                getPagedUser(userPageState.page, userPageState.pageSize, userPageState.sort, userPageState.searchText, TableEvents);
-            });
-
-            startTables();
         });
 
-        function startTables() {
-            getPagedUser(userPageState.page, userPageState.pageSize, userPageState.sort, userPageState.searchText, TableEvents);
-        }
-        
-        function getPagedUser(page, pageSize, sort, searchText, eventCallBack) {
+        function changePage() {
+            
+            var command = $(this).data('command');
+            var thead = $('table thead');
+            var offset = parseInt(thead.data('offset'));
+            var pageSize = parseInt(thead.data('pagesize'));
+            var total = parseInt(thead.data('total'));
+            if (command == 'prev' && offset > 0) {
+                offset -= pageSize;
+            } else if (command == 'next' && (pageSize * offset) <= total) {
+                offset += pageSize;
+            }
             $.ajax({
-                url: 'http://localhost:52856/api/users/getpageduser',
+                url: '/Users/Index',
                 type: 'post',
-                dataType: 'json',
-                contentType: "application/json;charset=utf-8",
-                data: JSON.stringify({
-                    page: page,
-                    pageSize: pageSize,
-                    sort: sort,
-                    searchText: searchText
-                }),
-                success: function (data) {
-                    var user = data.User;
-                    userPageState.total = data.Total;
-                    var html = "";
-                    for (var i = 0; i < user.length; i++) {
-                        //var type = user[i].Type.Name;
-                        html += "<tr data-id=" +
-                            user[i].id +
-                            "><td>" +
-                            user[i].Fornavn +
-                            "</td><td>" +
-                            user[i].Efternavn +
-                            "</td><td>" +
-                            user[i].VærelseNr +
-                            "</td><td>" +
-                            user[i].Email +
-                            "</td><td>" +
-                            //type +
-                            "</td></tr>";
-                    }
-                    $('#userContainer table tbody').html(html);
-                    eventCallBack();
-                    disableButtons('userContainer', userPageState.page, userpageState.pageSize, userPageState.total);
+                data: {
+                    searchText: thead.data('search'),
+                    sort: thead.data('sort'),
+                    pageSize: thead.data('pagesize'),
+                    offSet: offset
+                },
+                success: function(data) {
+                    $('#userContainer').html(data);
+                    $('a[data-action]').on('click', SortAble);
+                    $('table tfoot button').on('click', changePage);
+                    initEvents();
                 }
             });
+        }
+
+        function initEvents() {
+            $('table tbody tr').on('click',
+                function () {
+                    $(this).parent().children('.w3-blue').removeClass('w3-blue');
+                    $(this).addClass('w3-blue');
+                    var userid = $(this).data('id');
+                    $('#userEdit div div img').attr('src', '/Image/UserImage/' + userid);
+                    $('#userEdit div div:nth-child(3) a').attr('href', '/Users/Rediger/' + userid);
+                    $('#userEdit').css('display', 'block');
+                });
         }
 
         function disableButtons(id, page, pageSize, total) {
@@ -196,26 +150,6 @@
             } else {
                 $('#' + id + ' table tfoot button[data-command=next]').removeClass('w3-disabled');
             }
-        }
-
-        function TableEvents() {
-            $('table tbody tr').on('click',
-                function () {
-                    $('tbody tr.w3-blue').removeClass('w3-blue');
-                    $(this).addClass('w3-blue');
-                });
-
-            $('#userContainer tbody tr').on('click',
-                function () {
-                    $.ajax({
-                        url: 'http://localhost:52856/api/users/getuser/' + $(this).data('id'),
-                        type: 'get',
-                        dataType: 'json',
-                        success: function (data) {
-                            $('#userEdit').css('display', 'block');
-                        }
-                    });
-                });
         }
 
         function SortAble(e) {
@@ -234,6 +168,8 @@
                 success: function(data) {
                     $('#userContainer').html(data);
                     $('a[data-action]').on('click', SortAble);
+                    $('table tfoot button').on('click', changePage);
+                    initEvents();
                 }
             });
         }

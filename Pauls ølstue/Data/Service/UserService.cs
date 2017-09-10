@@ -322,6 +322,10 @@ namespace Data.Service
                             sql = sql.Replace("[SEARCHTEXT]", "where Email like @search");
                             cmd.Parameters.AddWithValue("@search", string.Format("%{0}%", searchText.Replace("Email:", "")));
                         }
+                        if (sql.Contains("[SEARCHTEXT]"))
+                        {
+                            sql = sql.Replace("[SEARCHTEXT]", "");
+                        }
                     }
                     else
                     {
