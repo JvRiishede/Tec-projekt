@@ -200,6 +200,49 @@ namespace Data.Service
             }
         }
 
+        public List<Tuple<DateTime, decimal>> GetVarerForYear(int year, int id)
+        {
+            var result = new List<Tuple<DateTime, decimal>>();
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"select Ordre.Tidsstempel, Vare.Pris from Ordre 
+                        join Ordre_Drink_Vare on OrdreId = Ordre.Id
+                        join Vare on Vare.Id = VareId
+                        where Ordre.Tidsstempel between @startdate and @enddate and VareId = @vareId and DrinkId = 0";
+                    cmd.Parameters.AddWithValue("@startdate", new DateTime(year, 1, 1));
+                    cmd.Parameters.AddWithValue("@enddate", new DateTime(year, 12, 31));
+                    cmd.Parameters.AddWithValue("@vareId", id);
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            result.Add(new Tuple<DateTime, decimal>((DateTime)dr["Tidsstempel"], (decimal)dr["Pris"]));
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public int GetTotalSold(int id)
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"select count(VareId) as Total from Ordre_Drink_Vare
+                        where DrinkId = 0 and VareId = @vareId
+                        group by VareId";
+                    cmd.Parameters.AddWithValue("@vareId", id);
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+        }
+
         public List<ItemSold> GetTopMostSold()
         {
             var result = new List<ItemSold>();

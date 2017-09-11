@@ -82,5 +82,25 @@ namespace WebAPI.Controllers
             return _drinkService.DeleteDrink(id);
         }
 
+        [HttpGet]
+        public object GetStats(int id)
+        {
+            var solgtTotal = new int[12];
+            var solgtPrisTotal = new decimal[12];
+            var orders = _drinkService.GetDrinksForYear(DateTime.Now.Year, id);
+            foreach (var item in orders)
+            {
+                //Item1 = tidsstempel, Item2 = Sum af vare priser
+                solgtTotal[item.Item1.Month - 1] += 1;
+                solgtPrisTotal[item.Item1.Month - 1] += item.Item2;
+            }
+            return new
+            {
+                SolgtTotal = _drinkService.GetTotalSold(id),
+                SolgtTotalYear = solgtTotal,
+                SolgtPriceTotalYear = solgtPrisTotal
+            };
+        }
+
     }
 }

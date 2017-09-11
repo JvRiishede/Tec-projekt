@@ -10,7 +10,7 @@ using Model;
 
 namespace Backend.Controllers
 {
-    public class UsersController : Controller
+    public class UsersController : BaseController
     {
         private readonly IUserService _userService;
 

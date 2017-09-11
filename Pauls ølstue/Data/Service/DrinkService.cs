@@ -342,6 +342,48 @@ namespace Data.Service
             }
         }
 
+        public List<Tuple<DateTime, decimal>> GetDrinksForYear(int year, int id)
+        {
+            var result = new List<Tuple<DateTime, decimal>> ();
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"select DrinkId, Tidsstempel, ifnull((select sum(Pris) from Vare where Vare.Id = DrinkId), 0.00) as Pris from Ordre 
+                        join Ordre_Drink_Vare on OrdreId = Ordre.Id
+                        where Tidsstempel between @startdate and @enddate and DrinkId = @drinkId and VareId = 0";
+                    cmd.Parameters.AddWithValue("@startdate", new DateTime(year, 1, 1));
+                    cmd.Parameters.AddWithValue("@enddate", new DateTime(year, 12, 31));
+                    cmd.Parameters.AddWithValue("@drinkId", id);
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            result.Add(new Tuple<DateTime, decimal>((DateTime)dr["Tidsstempel"], (decimal)dr["Pris"]));
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public int GetTotalSold(int id)
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"select count(DrinkId) as Total from Ordre_Drink_Vare
+                        where VareId = 0 and DrinkId = @drinkId
+                        group by DrinkId";
+                    cmd.Parameters.AddWithValue("@drinkId", id);
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+        }
+
         public List<ItemSold> GetTopMostSold()
         {
             var result = new List<ItemSold>();
@@ -352,6 +394,7 @@ namespace Data.Service
                 {
                     cmd.CommandText = @"select DrinkId,count(DrinkId) as Total, Drink.Navn from Ordre_Drink_Vare
                                         join Drink on Drink.Id = DrinkId
+                                        where VareId = 0
                                         group by DrinkId order by Total desc limit 3;";
                     using (var dr = cmd.ExecuteReader())
                     {

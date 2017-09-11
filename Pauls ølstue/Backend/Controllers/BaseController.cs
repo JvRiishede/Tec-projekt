@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Backend.HelperClasses;
+using Model;
 
 namespace Backend.Controllers
 {
-    [Authorize]
+    [AuthorizeRoles(Privileges.Administrator)]
     public class BaseController : Controller
     {
        

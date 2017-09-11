@@ -7,7 +7,7 @@ using System.Web.Mvc;
 namespace Backend.Controllers
 {
     [Authorize]
-    public class ProductsController : Controller
+    public class ProductsController : BaseController
     {
         // GET: Products
         public ActionResult Index()
