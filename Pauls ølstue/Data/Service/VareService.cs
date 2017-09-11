@@ -184,6 +184,22 @@ namespace Data.Service
             }
         }
 
+        public int GetVareTotalForUser(int userId)
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"select count(VareId) as Total  from Ordre 
+                        join Ordre_Drink_Vare on OrdreId = Ordre.Id
+                        where BrugerId = @userId and DrinkId = 0";
+                    cmd.Parameters.AddWithValue("@userId", userId);
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+        }
+
         public List<ItemSold> GetTopMostSold()
         {
             var result = new List<ItemSold>();

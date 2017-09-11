@@ -26,10 +26,8 @@
                     <div class="w3-col m3">
                         <img src="" style="max-width: 200px; max-height: 200px;"/>
                     </div>
-                    <div class="w3-col m7">.
-                        <label data-name="fullname"></label>
-                        <label data-name="email"></label>
-                        <label data-name="role"></label>
+                    <div class="w3-col m7" id="infoContainer">
+                        &nbsp;
                     </div>
                     <div class="w3-col m2">
                         <button id="deleteUser" class="w3-button w3-red w3-right w3-margin-left">Slet</button>
@@ -41,6 +39,7 @@
     </div>
 </div>
 @section scripts {
+    <script src="/Scripts/Paulscripts/loadUserStats.js"></script>
     <script>
         $(function () {
             initEvents();
@@ -135,7 +134,9 @@
                     var userid = $(this).data('id');
                     $('#userEdit div div img').attr('src', '/Image/UserImage/' + userid);
                     $('#userEdit div div:nth-child(3) a').attr('href', '/Users/Rediger/' + userid);
+                    //info boks vises, før bruger oversigt hentes, da bruger ikke skal vente for at kunne redigere.
                     $('#userEdit').css('display', 'block');
+                    loadUserStats(userid, 'infoContainer');
                 });
         }
 

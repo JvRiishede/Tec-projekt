@@ -26,6 +26,7 @@ namespace Data.Interface
         int GetUserTotal();
         List<User> GetPagedUser(UserSearchTerms terms);
         List<ItemSold> GetTopBuyers();
+        int GetUserBuyerPlace(int userId);
 
     }
 }

@@ -12,8 +12,10 @@ namespace Data.Interface
     {
         int PlaceOrder(FullOrder orders);
         int GetOrdreTotal();
+        int GetOrdreTotalForUser(int userId);
 
         List<Order> GetOrdersForYear(int year);
+        List<Order> GetOrdersYearForUser(int year, int userId);
 
     }
 }

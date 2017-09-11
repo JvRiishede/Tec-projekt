@@ -373,7 +373,7 @@ namespace Data.Service
                     {
                         while (dr.Read())
                         {
-                            return (byte[])dr["Billede"];
+                            return dr["Billede"] == DBNull.Value ? new byte[0] : (byte[])dr["Billede"];
                         }
                     }
 
@@ -510,6 +510,28 @@ namespace Data.Service
                 }
             }
             return result;
+        }
+
+        public int GetUserBuyerPlace(int userId)
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"
+set @rownr = 0;
+select rownumber from (
+select @rownr:=@rownr+1 as rownumber, users.* from (select Bruger.Id, ifnull(count(Ordre.Id), 0) as Total from Bruger
+left join Ordre on Ordre.BrugerId = Bruger.Id
+group by Bruger.Id
+order by Total desc, Fornavn asc) as users
+) as userrows
+where Id = @userId";
+                    cmd.Parameters.AddWithValue("@userId", userId);
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
         }
 
         public int GetUserTotal()

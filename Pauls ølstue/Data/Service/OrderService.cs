@@ -70,6 +70,20 @@ namespace Data.Service
             }
         }
 
+        public int GetOrdreTotalForUser(int userId)
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "select count(*) as Total from Ordre where BrugerId = @userId";
+                    cmd.Parameters.AddWithValue("@userId", userId);
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+        }
+
         public List<Order> GetOrdersForYear(int year)
         {
             var result = new List<Order>();
@@ -81,6 +95,36 @@ namespace Data.Service
                     cmd.CommandText = "select Id, BrugerId, Pris, Tidsstempel from Ordre where Tidsstempel between @startdate and @enddate";
                     cmd.Parameters.AddWithValue("@startdate", new DateTime(year, 1, 1));
                     cmd.Parameters.AddWithValue("@enddate", new DateTime(year, 12, 31));
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            result.Add(new Order
+                            {
+                                Id = (int)dr["Id"],
+                                BrugerId = (int)dr["BrugerId"],
+                                Pris = (decimal)dr["Pris"],
+                                Tidsstempel = (DateTime)dr["Tidsstempel"]
+                            });
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public List<Order> GetOrdersYearForUser(int year, int userId)
+        {
+            var result = new List<Order>();
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = "select Id, BrugerId, Pris, Tidsstempel from Ordre where Tidsstempel between @startdate and @enddate and BrugerId = @userId";
+                    cmd.Parameters.AddWithValue("@startdate", new DateTime(year, 1, 1));
+                    cmd.Parameters.AddWithValue("@enddate", new DateTime(year, 12, 31));
+                    cmd.Parameters.AddWithValue("@userId", userId);
                     using (var dr = cmd.ExecuteReader())
                     {
                         while (dr.Read())

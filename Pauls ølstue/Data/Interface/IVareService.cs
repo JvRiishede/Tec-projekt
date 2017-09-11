@@ -17,7 +17,7 @@ namespace Data.Interface
         bool DeleteVare(int id);
         List<Vare> GetPagedVare(ProductSearchTerms terms);
         int GetVareTotal(string searchText = "");
-
+        int GetVareTotalForUser(int userId);
         List<ItemSold> GetTopMostSold();
 
     }
