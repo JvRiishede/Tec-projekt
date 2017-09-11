@@ -7,9 +7,11 @@ using Backend.Viewmodels;
 using Data.Interface;
 using Model;
 using System.Reflection;
+using Backend.HelperClasses;
 
 namespace Backend.Controllers
 {
+    [AuthorizeRoles(Privileges.Bartender, Privileges.Administrator)]
     public class AccountController : BaseController
     {
         private readonly IUserService _userService;
@@ -35,7 +37,14 @@ namespace Backend.Controllers
             if (token.Length > 0)
             {
                 _authenticationService.SetCookie(user, token, rememberMe);
-                return "/Dashboard/Index";
+                var currentUser = _userService.FindById(_userService.UserId);
+                Session["Fullname"] = currentUser.Fornavn + " " + currentUser.Efternavn;
+                if (currentUser.Role.Name.Contains(Privileges.Administrator.ToString()))
+                {
+                    return "/Dashboard/Index";
+                }
+                return "/Home/Index";
+                
             }
             return "";
         }

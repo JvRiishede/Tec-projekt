@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Backend.HelperClasses
+@using Model
+<!DOCTYPE html>
 <html>
 <head>
     <title>Pauls ølstue</title>
@@ -33,7 +35,10 @@
             </div>
             <div class="w3-col s9">
                 <a href="/Account/MyPage" class="w3-bar-item w3-button"><i class="fa fa-user"></i></a>
-                <a href="#" class="w3-bar-item w3-button"><i class="fa fa-cog"></i></a>
+                @if (User.IsInRoles(Privileges.Administrator))
+                {
+                    <a href="#" class="w3-bar-item w3-button"><i class="fa fa-cog"></i></a>
+                }
                 @if (Request.IsAuthenticated)
                 {
                     using (Html.BeginForm("LogOff", "Account", FormMethod.Post))
@@ -48,10 +53,13 @@
     <hr>
     <div class="w3-bar-block" id="menuContainer">
         <a href="#" class="w3-bar-item w3-button w3-padding-16 w3-hide-large w3-dark-grey w3-hover-black" onclick="w3_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
-        <a href="/Dashboard/Index" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Oversigt</a>
-        <a href="/Users/Index" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Brugere</a>
-        <a href="/Products/Index" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Produkter</a>
-        
+        @if (User.IsInRoles(Privileges.Administrator))
+        {
+            <a href="/Dashboard/Index" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Oversigt</a>
+            <a href="/Users/Index" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Brugere</a>
+            <a href="/Products/Index" class="w3-bar-item w3-button w3-padding"><i class="fa fa-users fa-fw"></i>  Produkter</a>
+        }
+
     </div>
 </nav>
 
