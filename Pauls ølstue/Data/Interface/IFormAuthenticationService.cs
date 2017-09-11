@@ -11,6 +11,7 @@ namespace Data.Interface
         string SetToken(string username);
         bool ValidateToken(string token);
         Dictionary<string, Token> CurrentList();
+        void ClearOldTokens();
         void Signout();
     }
 }

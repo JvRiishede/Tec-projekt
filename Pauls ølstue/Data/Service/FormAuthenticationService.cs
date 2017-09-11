@@ -42,7 +42,7 @@ namespace Data.Service
             _authorizedTokens.Add(guid, new Token
             {
                 Username = username,
-                Expire = DateTime.Now.AddHours(2)
+                Expire = DateTime.Now.AddSeconds(10)
             });
             return guid;
         }
@@ -54,12 +54,24 @@ namespace Data.Service
             {
                 return true;
             }
+            _authorizedTokens.Remove(token);
             return false;
         }
 
         public Dictionary<string, Token> CurrentList()
         {
             return _authorizedTokens;
+        }
+
+        public void ClearOldTokens()
+        {
+            foreach (var item in _authorizedTokens)
+            {
+                if (item.Value.Expire < DateTime.Now)
+                {
+                    _authorizedTokens.Remove(item.Key);
+                }
+            }
         }
 
         public void Signout()
