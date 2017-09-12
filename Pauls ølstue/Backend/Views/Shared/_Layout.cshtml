@@ -37,7 +37,7 @@
                 <a href="/Account/MyPage" class="w3-bar-item w3-button"><i class="fa fa-user"></i></a>
                 @if (User.IsInRoles(Privileges.Administrator))
                 {
-                    <a href="#" class="w3-bar-item w3-button"><i class="fa fa-cog"></i></a>
+                    <a href="/Orders/Settings" class="w3-bar-item w3-button"><i class="fa fa-cog"></i></a>
                 }
                 @if (Request.IsAuthenticated)
                 {

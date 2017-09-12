@@ -34,6 +34,15 @@
     <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Quickpay, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\QuickPay.API.Client.1.0.0.1\lib\net45\Quickpay.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net451\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
@@ -53,6 +62,8 @@
     <Compile Include="Interface\IFormAuthenticationService.cs" />
     <Compile Include="Interface\IHelpService.cs" />
     <Compile Include="Interface\IMailService.cs" />
+    <Compile Include="Interface\IPropertyService.cs" />
+    <Compile Include="Interface\IQuickpayService.cs" />
     <Compile Include="Interface\IUserService.cs" />
     <Compile Include="Interface\IVareService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -63,6 +74,8 @@
     <Compile Include="Service\HelpService.cs" />
     <Compile Include="Service\MailService.cs" />
     <Compile Include="Service\OrderService.cs" />
+    <Compile Include="Service\PropertyService.cs" />
+    <Compile Include="Service\QuickpayService.cs" />
     <Compile Include="Service\UserService.cs" />
     <Compile Include="Service\VareService.cs" />
   </ItemGroup>

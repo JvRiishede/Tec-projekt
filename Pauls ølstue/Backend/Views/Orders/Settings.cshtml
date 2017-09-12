@@ -1,0 +1,50 @@
+﻿@model Backend.Viewmodels.SettingsViewmodel
+<div class="w3-container">
+    <div class="w3-row w3-margin-top">
+        @using (Html.BeginForm("Settings", "Orders", FormMethod.Post))
+        {
+            <div class="w3-third w3-card w3-padding">
+                <h3>Mail indstillinger</h3>
+                <label>Host</label>
+                @Html.TextBoxFor(a => a.Host, new { @class = "w3-input" })
+                <br />
+                <label>port</label>
+                @Html.TextBoxFor(a => a.Port, new { @class = "w3-input" })
+                <br />
+                <label>Aktiver ssl</label>
+                @Html.CheckBoxFor(a => a.EnableSsl, new { @class = "w3-check" })
+                <br />
+                <br />
+                <label>Email</label>
+                @Html.TextBoxFor(a => a.Email, new { @class = "w3-input" })
+                <br />
+                <label>Email visningsnavn</label>
+                @Html.TextBoxFor(a => a.Displayname, new { @class = "w3-input" })
+                <br />
+                <label>Adgangskode</label>
+                @Html.TextBoxFor(a => a.Password, new { @class = "w3-input" })
+            </div>
+            <div class="w3-third w3-card w3-padding w3-margin-left">
+                <h3>Quickpay indstillinger</h3>
+                <label>Møntendhed</label>
+                @Html.TextBoxFor(a => a.Currency, new {@class = "w3-input"})
+                <br/>
+                <label>Deaktiver test kort</label>
+                @Html.CheckBoxFor(a => a.DisableTestCards, new {@class = "w3-check"})
+                <br/>
+                <br/>
+                <label>Interval</label>
+                @Html.DropDownListFor(a => a.SelectedInterval, Model.Intervals, new {@class = "w3-input"})
+                <br/>
+                <label>Email emne</label>
+                @Html.TextBoxFor(a => a.Subject, new {@class = "w3-input"})
+                <br/>
+                <label>Email besked</label>
+                @Html.TextAreaFor(a => a.Message, new {@class = "w3-input"})
+                <br/>
+                <input type="submit" value="Gem" class="w3-button w3-blue w3-right"/>
+            </div>
+        }
+        
+    </div>
+</div>
