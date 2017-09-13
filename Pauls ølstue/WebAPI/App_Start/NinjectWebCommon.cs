@@ -20,6 +20,7 @@ namespace Backend.App_Start
     {
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
         private static readonly string ConnectionString = ConfigurationManager.ConnectionStrings["PaulsData"].ConnectionString;
+        private static readonly string QuickpayApikey = ConfigurationManager.AppSettings["QuickpayApi"];
 
         /// <summary>
         /// Starts the application
@@ -76,6 +77,8 @@ namespace Backend.App_Start
             kernel.Bind<IOrderService>().To<OrderService>();
             kernel.Bind<IFormAuthenticationService>().To<FormAuthenticationService>();
             kernel.Bind<IHelpService>().To<HelpService>();
+            kernel.Bind<IQuickpayService>().To<QuickpayService>()
+                .WithConstructorArgument("apikey", QuickpayApikey);
 
         }
     }

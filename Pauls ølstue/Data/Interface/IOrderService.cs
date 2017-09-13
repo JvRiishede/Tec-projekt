@@ -16,6 +16,9 @@ namespace Data.Interface
 
         List<Order> GetOrdersForYear(int year);
         List<Order> GetOrdersYearForUser(int year, int userId);
+        List<Order> GetUnPaiedOrders();
+        bool SetOrdersToPaid(string quickpayGuid);
+        bool CreateTransactionForOrders(Transaction transaction, int[] orderIds);
 
     }
 }

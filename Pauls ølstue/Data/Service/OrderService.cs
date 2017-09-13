@@ -142,5 +142,80 @@ namespace Data.Service
             }
             return result;
         }
+
+        public List<Order> GetUnPaiedOrders()
+        {
+            var result = new List<Order>();
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"select Ordre.Id, Ordre.BrugerId, Ordre.Pris, Ordre.Tidsstempel from Ordre 
+left join Order_Transaktion on Order_Transaktion.OrderId = Ordre.Id
+left join Transaktion on Transaktion.Id = Order_Transaktion.TransaktionId
+where Transaktion.Tidsstempel is null and Transaktion.QuickpayGuide is null";
+                    using (var dr = cmd.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            result.Add(new Order
+                            {
+                                Id = (int) dr["Id"],
+                                BrugerId = (int) dr["BrugerId"],
+                                Pris = (decimal) dr["Pris"],
+                                Tidsstempel = (DateTime) dr["Tidsstempel"]
+                            });
+                        }   
+                    }
+                    
+                }
+            }
+            return result;
+        }
+
+        public bool SetOrdersToPaid(string quickpayGuid)
+        {
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"update Transaktion set Tidsstempel = now()
+                        where Transaktion.QuickpayGuid = @quickpayGuide";
+                    cmd.Parameters.AddWithValue("@quickpayGuide", quickpayGuid);
+                    return cmd.ExecuteNonQuery() > 0;
+                }
+            }
+        }
+
+        public bool CreateTransactionForOrders(Transaction transaction, int[] orderIds)
+        {
+            var count = 0;
+            using (var con = new MySqlConnection(_connectionInformationService.ConnectionString))
+            {
+                con.Open();
+                int id;
+                using (var cmd = con.CreateCommand())
+                {
+                    cmd.CommandText = @"insert into Transaktion(QuickpayGuid, Beløb) values(@quickpayGuid, @beløb); select LAST_INSERT_ID(); ";
+                    cmd.Parameters.AddWithValue("@quickpayGuid", transaction.QuickpayGuid);
+                    cmd.Parameters.AddWithValue("@beløb", transaction.Beløb);
+                    id = Convert.ToInt32(cmd.ExecuteScalar());
+
+                }
+                foreach (var orderId in orderIds)
+                {
+                    using (var cmd = con.CreateCommand())
+                    {
+                        cmd.CommandText = "insert into Order_Transaktion(OrderId, TransaktionId) values(@orderId, @transaktionId)";
+                        cmd.Parameters.AddWithValue("@orderId", orderId);
+                        cmd.Parameters.AddWithValue("@transaktionId", id);
+                        count += cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            return count > 0;
+        }
     }
 }

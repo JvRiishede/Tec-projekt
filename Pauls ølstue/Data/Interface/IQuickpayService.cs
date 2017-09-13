@@ -8,5 +8,6 @@ namespace Data.Interface
 {
     public interface IQuickpayService
     {
+        void CreatePaymentLinks();
     }
 }

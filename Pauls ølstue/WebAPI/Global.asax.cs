@@ -31,7 +31,7 @@ namespace WebAPI
             var connectionService = new ConnectionInformationService(ConfigurationManager.ConnectionStrings["PaulsData"].ConnectionString);
             _authenticationService = new FormAuthenticationService();
             _propertyService = new PropertyService(connectionService);
-            _quickpayService = new QuickpayService();
+            _quickpayService = new QuickpayService(ConfigurationManager.AppSettings["QuickpayApi"], _propertyService, new OrderService(connectionService), new MailService(_propertyService), new UserService(connectionService));
         }
         protected void Application_Start()
         {
@@ -57,19 +57,19 @@ namespace WebAPI
                 case MailIntervals.FirstDayInMonth:
                     if (current.Day == 1 && current.CompareTo(startRunTime) >= 0 && current.CompareTo(latestRunTime) <= 0)
                     {
-                        
+                        _quickpayService.CreatePaymentLinks();
                     }
                     break;
                 case MailIntervals.EachDayInMonth:
                     if (current.CompareTo(startRunTime) >= 0 && current.CompareTo(latestRunTime) <= 0)
                     {
-
+                        _quickpayService.CreatePaymentLinks();
                     }
                     break;
                 case MailIntervals.LastDayInMonth:
                     if ((current.Day == 30 || current.Day == 31) && current.CompareTo(startRunTime) >= 0 && current.CompareTo(latestRunTime) <= 0)
                     {
-
+                        _quickpayService.CreatePaymentLinks();
                     }
                     break;
             }

@@ -8,6 +8,6 @@ namespace Data.Interface
 {
     public interface IMailService
     {
-        bool SendEmail(string email, string name);
+        bool SendEmail(string email, string name, string subject, string body);
     }
 }
