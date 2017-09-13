@@ -32,8 +32,8 @@ namespace Data.Service
                 {
                     a.Method = Method.POST;
                     a.AddParameter("currency", _propertyService.GetProperty(Properties.Currency, "DKK"));
-                    a.AddParameter("order_id", "Order-" + transaction.OrdreId);
-                    a.AddParameter("callbackurl", "http://localhost:52856/api/paymentcallback/");
+                    a.AddParameter("order_id", "OrderId-" + transaction.OrdreId);
+                    a.AddParameter("QuickPay-Callback-Url", "http://localhost:52856/api/paymentcallback");
                     a.AddParameter("variables[genericPaymentid]", transaction.QuickpayGuid);
                 });
                 string id = Convert.ToString(payment["id"]);

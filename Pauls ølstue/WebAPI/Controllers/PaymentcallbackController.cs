@@ -21,6 +21,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
+        [Route("api/paymentcallback")]
         public HttpResponseMessage Post()
         {
             var checkSum = HttpContext.Current.Request.Headers["QuickPay-Checksum-Sha256"];

@@ -77,6 +77,7 @@ namespace Backend.App_Start
             kernel.Bind<IOrderService>().To<OrderService>();
             kernel.Bind<IFormAuthenticationService>().To<FormAuthenticationService>();
             kernel.Bind<IHelpService>().To<HelpService>();
+            kernel.Bind<IMailService>().To<MailService>();
             kernel.Bind<IQuickpayService>().To<QuickpayService>()
                 .WithConstructorArgument("apikey", QuickpayApikey);
 

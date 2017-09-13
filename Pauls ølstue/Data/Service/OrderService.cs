@@ -154,7 +154,7 @@ namespace Data.Service
                     cmd.CommandText = @"select Ordre.Id, Ordre.BrugerId, Ordre.Pris, Ordre.Tidsstempel from Ordre 
 left join Order_Transaktion on Order_Transaktion.OrderId = Ordre.Id
 left join Transaktion on Transaktion.Id = Order_Transaktion.TransaktionId
-where Transaktion.Tidsstempel is null and Transaktion.QuickpayGuide is null";
+where Transaktion.Tidsstempel is null and Transaktion.QuickpayGuid is null";
                     using (var dr = cmd.ExecuteReader())
                     {
                         while (dr.Read())
