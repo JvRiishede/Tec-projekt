@@ -105,21 +105,12 @@ namespace Frontend.Views
             string name = "";
             try
             {
-                name = ((HyperlinkButton)sender).Content.ToString();
-            }
-            catch { }
-
-            try
-            {
-                name = ((TextBlock)sender).Text.ToString();
-                name = name.Split(',')[0];
-            }
-            catch { }
-
-            try
-            {
                 name = ((Button)sender).Content.ToString();
-                name = name.Split(',')[0];
+                for (int i = 0; i < name.Length; i++)
+                {
+                    if (name.Substring(i, 3) == "   ")
+                        name = name.Substring(0, i);
+                }
             }
             catch { }
 
