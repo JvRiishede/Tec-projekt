@@ -107,6 +107,7 @@
     <Compile Include="Data\Vare.cs" />
     <Compile Include="Models\Test.cs" />
     <Compile Include="Models\UserContentModel.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\BaseViewmodel.cs" />
     <Compile Include="ViewModels\HelpViewModel.cs" />
     <Compile Include="ViewModels\UserContentViewModel.cs" />

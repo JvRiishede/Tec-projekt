@@ -15,7 +15,9 @@ using Windows.UI.Xaml.Navigation;
 using ViewModels;
 using Data;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 
