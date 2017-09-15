@@ -70,7 +70,7 @@
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                    <Button Content="{Binding Full}" Width="auto" Click="DeleteItem" HorizontalContentAlignment="Stretch"/>
+                                    <Button Content="{Binding Path=Full, UpdateSourceTrigger=PropertyChanged}" Width="auto" Click="DeleteItem" HorizontalContentAlignment="Stretch"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
