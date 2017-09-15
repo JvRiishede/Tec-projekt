@@ -154,7 +154,7 @@ namespace Frontend.Views
 
         private void Find_bruger_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            UCVM.IndkobListe.Clear();//Hvis brugeren bbliver skiftet undervejs nulstilles indkøbslisten.
+            UCVM.IndkobListe.Clear();//Hvis brugeren bliver skiftet undervejs nulstilles indkøbslisten.
             Køb.IsEnabled = false;
             Cancel.IsEnabled = false;
             if (Find_bruger == null) return;
