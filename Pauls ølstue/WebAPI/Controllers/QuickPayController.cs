@@ -12,10 +12,12 @@ namespace WebAPI.Controllers
     public class QuickPayController : ApiController
     {
         private readonly IPropertyService _propertyService;
+        private readonly IQuickpayService _quickpayService;
 
-        public QuickPayController(IPropertyService propertyService)
+        public QuickPayController(IPropertyService propertyService, IQuickpayService quickpayService)
         {
             _propertyService = propertyService;
+            _quickpayService = quickpayService;
         }
 
         [HttpPost]
@@ -35,6 +37,12 @@ namespace WebAPI.Controllers
             var currency = _propertyService.GetProperty(Properties.Currency, "tsk");
             var disableTestCards = _propertyService.GetProperty(Properties.DisableTestCards, true);
             return new {interval, currency, disableTestCards};
+        }
+
+        [HttpGet]
+        public void CreatePaymentLink()
+        {
+            _quickpayService.CreatePaymentLinks();
         }
     }
 }
